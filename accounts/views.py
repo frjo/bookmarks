@@ -17,9 +17,13 @@ from webauthn import (
     verify_authentication_response,
     verify_registration_response,
 )
+from webauthn.helpers import base64url_to_bytes
 from webauthn.helpers.structs import (
     AuthenticationCredential,
+    AuthenticatorAssertionResponse,
+    AuthenticatorAttestationResponse,
     AuthenticatorSelectionCriteria,
+    AuthenticatorTransport,
     RegistrationCredential,
     ResidentKeyRequirement,
     UserVerificationRequirement,
@@ -93,7 +97,21 @@ def register_complete(request):
 
     try:
         challenge = base64.b64decode(challenge_b64)
-        credential = RegistrationCredential.model_validate_json(request.body)
+        data = json.loads(request.body)
+        resp = data["response"]
+        transports = [
+            AuthenticatorTransport(t) for t in resp.get("transports", [])
+            if t in AuthenticatorTransport._value2member_map_
+        ]
+        credential = RegistrationCredential(
+            id=data["id"],
+            raw_id=base64url_to_bytes(data["rawId"]),
+            response=AuthenticatorAttestationResponse(
+                client_data_json=base64url_to_bytes(resp["clientDataJSON"]),
+                attestation_object=base64url_to_bytes(resp["attestationObject"]),
+                transports=transports or None,
+            ),
+        )
         verification = verify_registration_response(
             credential=credential,
             expected_challenge=challenge,
@@ -149,11 +167,22 @@ def login_complete(request):
 
     try:
         challenge = base64.b64decode(challenge_b64)
-        credential = AuthenticationCredential.model_validate_json(request.body)
+        data = json.loads(request.body)
+        resp = data["response"]
+        raw_id = base64url_to_bytes(data["rawId"])
+        credential = AuthenticationCredential(
+            id=data["id"],
+            raw_id=raw_id,
+            response=AuthenticatorAssertionResponse(
+                client_data_json=base64url_to_bytes(resp["clientDataJSON"]),
+                authenticator_data=base64url_to_bytes(resp["authenticatorData"]),
+                signature=base64url_to_bytes(resp["signature"]),
+                user_handle=base64url_to_bytes(resp["userHandle"]) if resp.get("userHandle") else None,
+            ),
+        )
 
-        credential_id_bytes = bytes(credential.raw_id)
         stored = WebAuthnCredential.objects.select_related("user").get(
-            credential_id=credential_id_bytes
+            credential_id=bytes(raw_id)
         )
 
         verification = verify_authentication_response(
