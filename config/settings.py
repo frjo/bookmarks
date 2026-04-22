@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     "django.contrib.postgres",
     "django_htmx",
     "django_nh3",
+    "django_extensions",
     "accounts",
     "links",
 ]
