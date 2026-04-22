@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% block title %}Register — Bookmarks{% endblock %}
+
+{% block content %}
+<article>
+  <h1>Create an account</h1>
+
+  <p>Choose a username, then follow the prompt to create a passkey on this device.</p>
+
+  <form id="register-form" novalidate>
+    {% csrf_token %}
+    <div>
+      <label for="username">Username</label>
+      <input
+        type="text"
+        id="username"
+        name="username"
+        required
+        minlength="3"
+        maxlength="50"
+        pattern="[a-zA-Z0-9_-]+"
+        autocomplete="username"
+        aria-describedby="username-hint"
+      >
+      <p id="username-hint">3–50 characters. Letters, numbers, <code>_</code> and <code>-</code> only.</p>
+    </div>
+
+    <p role="status" id="status-msg" aria-live="polite" hidden></p>
+
+    <button type="submit">Register with passkey</button>
+  </form>
+
+  <p>Already have an account? <a href="{% url 'login' %}">Log in</a></p>
+</article>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+{% include "accounts/_webauthn_utils.html" %}
+
+document.getElementById('register-form').addEventListener('submit', async (evt) => {
+  evt.preventDefault();
+  const username = document.getElementById('username').value.trim();
+  const statusEl = document.getElementById('status-msg');
+  const btn = evt.target.querySelector('button[type="submit"]');
+
+  setStatus(statusEl, '');
+  btn.disabled = true;
+
+  try {
+    // 1. Fetch registration options from the server.
+    const beginResp = await fetch('{% url "register_begin" %}', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCsrf() },
+      body: JSON.stringify({ username }),
+    });
+    const options = await beginResp.json();
+    if (!beginResp.ok) throw new Error(options.error || 'Could not begin registration.');
+
+    // 2. Decode base64url fields expected by the browser API.
+    options.challenge = b64urlToBuffer(options.challenge);
+    options.user.id = b64urlToBuffer(options.user.id);
+    if (options.excludeCredentials) {
+      options.excludeCredentials = options.excludeCredentials.map(c => ({
+        ...c, id: b64urlToBuffer(c.id),
+      }));
+    }
+
+    // 3. Prompt the user to create a passkey.
+    const credential = await navigator.credentials.create({ publicKey: options });
+
+    // 4. Encode the credential for the server.
+    const payload = {
+      id: credential.id,
+      rawId: bufferToB64url(credential.rawId),
+      type: credential.type,
+      response: {
+        clientDataJSON: bufferToB64url(credential.response.clientDataJSON),
+        attestationObject: bufferToB64url(credential.response.attestationObject),
+        transports: credential.response.getTransports ? credential.response.getTransports() : [],
+      },
+      authenticatorAttachment: credential.authenticatorAttachment || null,
+    };
+
+    // 5. Complete registration.
+    const completeResp = await fetch('{% url "register_complete" %}', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCsrf() },
+      body: JSON.stringify(payload),
+    });
+    const result = await completeResp.json();
+    if (!completeResp.ok) throw new Error(result.error || 'Could not complete registration.');
+
+    window.location.href = result.redirect || '/';
+  } catch (err) {
+    if (err.name === 'NotAllowedError') {
+      setStatus(statusEl, 'Passkey creation was cancelled or timed out.');
+    } else {
+      setStatus(statusEl, err.message || 'Registration failed. Please try again.');
+    }
+    btn.disabled = false;
+  }
+});
+</script>
+{% endblock %}

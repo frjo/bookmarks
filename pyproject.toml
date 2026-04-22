@@ -1,13 +1,16 @@
 [project]
 name = "bookmarks"
 version = "0.1.0"
-description = "Add your description here"
+description = "A private bookmark service with passkey authentication."
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
+    "cuid2>=2.0.1",
     "django>=6.0.4",
     "django-htmx>=1.27.0",
     "django-nh3>=0.3.1",
+    "psycopg[binary]>=3.2.0",
+    "webauthn>=2.2.0",
 ]
 
 [dependency-groups]
@@ -19,3 +22,9 @@ dev = [
     "ruff>=0.15.11",
     "werkzeug>=3.1.8",
 ]
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "config.settings"
+
+[tool.ruff.lint]
+select = ["E", "F", "I"]

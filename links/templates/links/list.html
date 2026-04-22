@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}
+  {% if query %}Search: {{ query }} — {% elif tag %}Tag: {{ tag }} — {% endif %}Bookmarks
+{% endblock %}
+
+{% block content %}
+<article>
+  <h1>
+    {% if tag %}
+      Bookmarks tagged <em>{{ tag }}</em>
+    {% elif query %}
+      Search results for <em>{{ query }}</em>
+    {% else %}
+      Bookmarks
+    {% endif %}
+  </h1>
+
+  <section aria-label="Search and filter">
+    <form role="search" method="get">
+      <label for="search-input">Search bookmarks</label>
+      <input
+        type="search"
+        id="search-input"
+        name="q"
+        value="{{ query }}"
+        placeholder="Search titles, descriptions, URLs…"
+        autocomplete="off"
+        hx-get="/"
+        hx-trigger="input changed delay:400ms, search"
+        hx-target="#bookmark-list"
+        hx-push-url="true"
+      >
+      <button type="submit">Search</button>
+      {% if query or tag %}
+        <a href="/">Clear</a>
+      {% endif %}
+    </form>
+
+    {% if tag %}
+      <p>Filtering by tag: <strong>{{ tag }}</strong></p>
+    {% endif %}
+  </section>
+
+  {% include "links/_list_partial.html" %}
+</article>
+{% endblock %}

@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}Import bookmarks — Bookmarks{% endblock %}
+
+{% block content %}
+<article>
+  <h1>Import bookmarks</h1>
+
+  {% if done %}
+    <p role="status">
+      Import complete:
+      <strong>{{ created }}</strong> bookmark{{ created|pluralize }} added,
+      <strong>{{ skipped }}</strong> skipped (already exist).
+    </p>
+    <p><a href="{% url 'bookmark_list' %}">View your bookmarks</a></p>
+  {% else %}
+    {% if error %}
+      <p role="alert">{{ error }}</p>
+    {% endif %}
+
+    <p>
+      Supported formats:
+    </p>
+    <ul>
+      <li>Netscape HTML bookmark file (<code>.html</code>) — exported by most browsers and by Pinboard.</li>
+      <li>Pinboard JSON export (<code>.json</code>).</li>
+    </ul>
+    <p>Existing bookmarks with the same URL are not duplicated.</p>
+
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      <div>
+        <label for="file">Bookmark file</label>
+        <input type="file" id="file" name="file" accept=".html,.htm,.json" required>
+      </div>
+      <button type="submit">Import</button>
+      <a href="{% url 'bookmark_list' %}">Cancel</a>
+    </form>
+  {% endif %}
+</article>
+{% endblock %}

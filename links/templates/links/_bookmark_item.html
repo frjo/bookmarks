@@ -1,0 +1,38 @@
+<li>
+  <article aria-labelledby="bm-title-{{ bookmark.id }}">
+    <h2 id="bm-title-{{ bookmark.id }}">
+      <a href="{{ bookmark.url }}" rel="noopener noreferrer" target="_blank">{{ bookmark.title|default:bookmark.url }}</a>
+    </h2>
+
+    {% if bookmark.description %}
+      <p>{{ bookmark.description }}</p>
+    {% endif %}
+
+    <footer>
+      {% if bookmark.tags %}
+        <ul aria-label="Tags" role="list">
+          {% for tag in bookmark.tags %}
+            <li>
+              <a
+                href="?tag={{ tag }}"
+                hx-get="?tag={{ tag }}"
+                hx-target="#bookmark-list"
+                hx-push-url="true"
+                rel="tag"
+              >{{ tag }}</a>
+            </li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+
+      <time datetime="{{ bookmark.created_at|date:"Y-m-d" }}" title="{{ bookmark.created_at|date:"Y-m-d H:i" }}">
+        {{ bookmark.created_at|date:"j N Y" }}
+      </time>
+
+      <nav aria-label="Actions for {{ bookmark.title|default:bookmark.url }}">
+        <a href="{% url 'bookmark_edit' bookmark.pk %}">Edit</a>
+        <a href="{% url 'bookmark_delete' bookmark.pk %}">Delete</a>
+      </nav>
+    </footer>
+  </article>
+</li>
