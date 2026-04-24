@@ -1,54 +1,26 @@
-import os
 from pathlib import Path
+
+from environs import env
+
+from .django import *  # noqa
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+env.read_env()
+
+
 # ---------------------------------------------------------------------------
-# Load .env file (no external dependency needed)
+# App settings
 # ---------------------------------------------------------------------------
-_env_file = BASE_DIR / ".env"
-if _env_file.exists():
-    with open(_env_file) as _f:
-        for _line in _f:
-            _line = _line.strip()
-            if _line and not _line.startswith("#") and "=" in _line:
-                _key, _, _val = _line.partition("=")
-                os.environ.setdefault(_key.strip(), _val.strip())
+BOOKMARKS_PER_PAGE = 30
 
 # ---------------------------------------------------------------------------
 # Core
 # ---------------------------------------------------------------------------
-SECRET_KEY = os.environ["DJANGO_SECRET_KEY"]
-DEBUG = os.environ.get("DJANGO_DEBUG", "False") == "True"
-ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
-
-INSTALLED_APPS = [
-    "django.contrib.admin",
-    "django.contrib.auth",
-    "django.contrib.contenttypes",
-    "django.contrib.sessions",
-    "django.contrib.messages",
-    "django.contrib.staticfiles",
-    "django.contrib.postgres",
-    "django_htmx",
-    "django_nh3",
-    "django_extensions",
-    "accounts",
-    "links",
-]
-
-MIDDLEWARE = [
-    "django.middleware.security.SecurityMiddleware",
-    "django.contrib.sessions.middleware.SessionMiddleware",
-    "django.middleware.common.CommonMiddleware",
-    "django.middleware.csrf.CsrfViewMiddleware",
-    "django.contrib.auth.middleware.AuthenticationMiddleware",
-    "django.contrib.messages.middleware.MessageMiddleware",
-    "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "django_htmx.middleware.HtmxMiddleware",
-]
-
-ROOT_URLCONF = "config.urls"
+SECRET_KEY = env.str("DJANGO_SECRET_KEY")
+DEBUG = env.bool("DJANGO_DEBUG", False)
+ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS", ["localhost", "127.0.0.1"])
+LANGUAGE_CODE = env.str("LANGUAGE_CODE", "en")
 
 TEMPLATES = [
     {
@@ -66,40 +38,29 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "config.wsgi.application"
-
 # ---------------------------------------------------------------------------
 # Database
 # ---------------------------------------------------------------------------
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.environ.get("DB_NAME", "bookmarks"),
-        "USER": os.environ.get("DB_USER", "postgres"),
-        "PASSWORD": os.environ.get("DB_PASSWORD", ""),
-        "HOST": os.environ.get("DB_HOST", "localhost"),
-        "PORT": os.environ.get("DB_PORT", "5432"),
+        "NAME": env.str("DB_NAME", "bookmarks"),
+        "USER": env.str("DB_USER", "postgres"),
+        "PASSWORD": env.str("DB_PASSWORD", ""),
+        "HOST": env.str("DB_HOST", "localhost"),
+        "PORT": env.int("DB_PORT", 5432),
     }
 }
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# ---------------------------------------------------------------------------
-# Authentication
-# ---------------------------------------------------------------------------
-AUTH_USER_MODEL = "accounts.User"
-AUTHENTICATION_BACKENDS = ["accounts.backends.PasskeyBackend"]
-
-LOGIN_URL = "/auth/login/"
-LOGIN_REDIRECT_URL = "/"
-LOGOUT_REDIRECT_URL = "/auth/login/"
 
 # ---------------------------------------------------------------------------
 # WebAuthn / Passkeys
 # ---------------------------------------------------------------------------
-WEBAUTHN_RP_ID = os.environ.get("WEBAUTHN_RP_ID", "localhost")
-WEBAUTHN_RP_NAME = os.environ.get("WEBAUTHN_RP_NAME", "Bookmarks")
-WEBAUTHN_ORIGIN = os.environ.get("WEBAUTHN_ORIGIN", "http://localhost:8000")
+WEBAUTHN_RP_ID = env.str("WEBAUTHN_RP_ID", "localhost")
+WEBAUTHN_RP_NAME = env.str("WEBAUTHN_RP_NAME", "Bookmarks")
+WEBAUTHN_ORIGIN = env.str("WEBAUTHN_ORIGIN", "http://localhost:8000")
 
 # ---------------------------------------------------------------------------
 # Sessions
@@ -111,21 +72,8 @@ if not DEBUG:
     CSRF_COOKIE_SECURE = True
 
 # ---------------------------------------------------------------------------
-# Internationalisation
-# ---------------------------------------------------------------------------
-LANGUAGE_CODE = "en-us"
-TIME_ZONE = "UTC"
-USE_I18N = True
-USE_TZ = True
-
-# ---------------------------------------------------------------------------
 # Static files
 # ---------------------------------------------------------------------------
 STATIC_URL = "/static/"
 STATICFILES_DIRS = [BASE_DIR / "assets"]
 STATIC_ROOT = BASE_DIR / "static"
-
-# ---------------------------------------------------------------------------
-# App settings
-# ---------------------------------------------------------------------------
-BOOKMARKS_PER_PAGE = 20
