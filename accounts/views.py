@@ -1,6 +1,7 @@
 import base64
 import json
 import re
+import secrets
 
 from django.conf import settings
 from django.contrib import messages
@@ -89,24 +90,25 @@ def register(request):
 @require_POST
 @ratelimit(key="ip", rate=settings.LOGIN_RATE_LIMIT)
 def register_username(request):
-    """Validate and store a chosen username in the session."""
+    """Validate and store a chosen username in the session (optional)."""
     try:
         body = json.loads(request.body)
     except (json.JSONDecodeError, ValueError):
         return JsonResponse({"error": "Invalid request body."}, status=400)
 
     username = body.get("username", "").strip()
-    if not username:
-        return JsonResponse({"error": "Username is required."}, status=400)
-    if not _USERNAME_RE.match(username):
-        return JsonResponse(
-            {
-                "error": "Username must be 3–50 characters and contain only letters, numbers, _ or -."
-            },
-            status=400,
-        )
-    if User.objects.filter(username=username).exists():
-        return JsonResponse({"error": "That username is already taken."}, status=400)
+    if username:
+        if not _USERNAME_RE.match(username):
+            return JsonResponse(
+                {
+                    "error": "Username must be 3–50 characters and contain only letters, numbers, _ or -."
+                },
+                status=400,
+            )
+        if User.objects.filter(username=username).exists():
+            return JsonResponse(
+                {"error": "That username is already taken."}, status=400
+            )
 
     request.session["reg_username"] = username
     return JsonResponse({"status": "ok"})
@@ -115,15 +117,21 @@ def register_username(request):
 @require_POST
 @ratelimit(key="ip", rate=settings.LOGIN_RATE_LIMIT)
 def register_begin(request):
-    """Begin passkey registration for a new user (username stored in session)."""
-    username = request.session.get("reg_username", "")
-    if not username:
+    """Begin passkey registration for a new user (username may be absent)."""
+    if "reg_username" not in request.session:
         return JsonResponse(
-            {"error": "No username in session. Please start over."}, status=400
+            {"error": "No registration session found. Please start over."}, status=400
         )
 
-    user_handle = base64.urlsafe_b64encode(username.encode()).rstrip(b"=")
-    options = _registration_options(user_handle, username)
+    username = request.session["reg_username"]
+    if username:
+        user_handle = base64.urlsafe_b64encode(username.encode()).rstrip(b"=")
+        display_name = username
+    else:
+        user_handle = base64.urlsafe_b64encode(secrets.token_bytes(16))
+        display_name = "user"
+
+    options = _registration_options(user_handle, display_name)
     request.session["reg_challenge"] = base64.b64encode(options.challenge).decode()
     return JsonResponse(json.loads(options_to_json(options)))
 
@@ -132,14 +140,14 @@ def register_begin(request):
 @ratelimit(key="ip", rate=settings.LOGIN_RATE_LIMIT)
 def register_complete(request):
     challenge_b64 = request.session.get("reg_challenge", "")
-    username = request.session.get("reg_username", "")
+    username = request.session.get("reg_username", "") or None
 
-    if not challenge_b64 or not username:
+    if not challenge_b64 or "reg_username" not in request.session:
         return JsonResponse(
             {"error": "Registration session expired. Please try again."}, status=400
         )
 
-    if User.objects.filter(username=username).exists():
+    if username and User.objects.filter(username=username).exists():
         return JsonResponse({"error": "That username is already taken."}, status=400)
 
     try:

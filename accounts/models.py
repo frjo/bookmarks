@@ -16,10 +16,8 @@ def generate_cuid() -> str:
 
 
 class UserManager(BaseUserManager):
-    def create_user(self, username: str, **extra_fields):
-        if not username:
-            raise ValueError("Username is required.")
-        user = self.model(username=username, **extra_fields)
+    def create_user(self, username: str | None = None, **extra_fields):
+        user = self.model(username=username or None, **extra_fields)
         user.set_unusable_password()
         user.save(using=self._db)
         return user
@@ -42,7 +40,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         default=generate_cuid,
         editable=False,
     )
-    username = models.CharField(max_length=50, unique=True)
+    username = models.CharField(max_length=50, unique=True, blank=True, null=True)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)

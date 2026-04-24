@@ -5,7 +5,7 @@
   <article>
     <h1>Create an account</h1>
 
-    <p>Choose a username, then follow the prompt to create a passkey on this device.</p>
+    <p>Optionally choose a username, then follow the prompt to create a passkey on this device. You can set or change your username later in settings.</p>
 
     <form
       id="register-form"
@@ -22,14 +22,13 @@
           type="text"
           id="username"
           name="username"
-          required
           minlength="3"
           maxlength="50"
           pattern="[a-zA-Z0-9_-]+"
           autocomplete="username"
           aria-describedby="username-hint"
         >
-        <p id="username-hint">3–50 characters. Letters, numbers, <code>_</code> and <code>-</code> only.</p>
+        <p id="username-hint">Optional. 3–50 characters. Letters, numbers, <code>_</code> and <code>-</code> only.</p>
       </div>
 
     {# Hidden name field — passkeys.js sends this to complete_url; left blank for initial registration #}
