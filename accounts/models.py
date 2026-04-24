@@ -55,6 +55,10 @@ class User(AbstractBaseUser, PermissionsMixin):
     class Meta:
         db_table = "accounts_user"
 
+    @property
+    def handle(self) -> str:
+        return self.username or self.id
+
     def __str__(self) -> str:
         return self.username
 

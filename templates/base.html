@@ -25,7 +25,7 @@
       <a href="/" aria-label="Bookmarks home">Bookmarks</a>
 
       {% if user.is_authenticated %}
-        {% with handle=user.username|default:user.id %}
+        {% with handle=user.handle %}
         <span aria-hidden="true">|</span>
         <a href="{% url 'bookmark_add' handle=handle %}">Add</a>
         <span aria-hidden="true">|</span>

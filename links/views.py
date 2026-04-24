@@ -22,7 +22,7 @@ from .models import Bookmark
 def index(request):
     if not request.user.is_authenticated:
         return redirect("login")
-    handle = request.user.username or request.user.id
+    handle = request.user.handle
     return redirect("user_bookmark_list", handle=handle)
 
 
@@ -35,7 +35,7 @@ def bookmark_add(request, handle: str):
             bookmark = form.save(commit=False)
             bookmark.user = request.user
             bookmark.save()
-            handle = request.user.username or request.user.id
+            handle = request.user.handle
             return redirect("user_bookmark_list", handle=handle)
     else:
         initial = {
@@ -53,7 +53,7 @@ def bookmark_edit(request, handle: str, pk):
         form = BookmarkForm(request.POST, instance=bookmark)
         if form.is_valid():
             form.save()
-            handle = request.user.username or request.user.id
+            handle = request.user.handle
             return redirect("user_bookmark_list", handle=handle)
     else:
         form = BookmarkForm(instance=bookmark)
@@ -69,7 +69,7 @@ def bookmark_delete(request, handle: str, pk):
     bookmark = get_object_or_404(Bookmark, pk=pk, user=request.user)
     if request.method == "POST":
         bookmark.delete()
-        handle = request.user.username or request.user.id
+        handle = request.user.handle
         return redirect("user_bookmark_list", handle=handle)
     return render(request, "links/confirm_delete.html", {"bookmark": bookmark})
 

@@ -326,7 +326,7 @@ def settings_view(request, handle: str):
             )
             messages.success(request, "API token regenerated.")
 
-        handle = user.username or user.id
+        handle = user.handle
         return redirect("settings", handle=handle)
 
     return render(
