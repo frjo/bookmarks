@@ -32,11 +32,13 @@ import hmac
 from functools import wraps
 from xml.etree.ElementTree import Element, SubElement, tostring
 
+from django.conf import settings
 from django.db.models import Count
 from django.http import HttpResponse, JsonResponse
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
+from django_ratelimit.decorators import ratelimit
 
 from accounts.models import APIToken
 from links.models import Bookmark
@@ -141,6 +143,8 @@ def _api_auth(view_func):
             return _result_error(request, "invalid token", 401)
         request.api_user = record.user
         request.api_token = record.token
+        # Set request.user so @ratelimit(key="user") can key per API user.
+        request.user = record.user
         return view_func(request, *args, **kwargs)
 
     return wrapper
@@ -153,6 +157,7 @@ def _api_auth(view_func):
 
 @_ALLOW
 @_api_auth
+@ratelimit(key="user", rate=settings.DEFAULT_RATE_LIMIT)
 def posts_update(request):
     """Return the timestamp of the most recent bookmark change."""
     latest = (
@@ -175,6 +180,7 @@ def posts_update(request):
 
 @_ALLOW
 @_api_auth
+@ratelimit(key="user", rate=settings.DEFAULT_RATE_LIMIT)
 def posts_add(request):
     """Add or update a bookmark (matched by URL)."""
     user = request.api_user
@@ -231,6 +237,7 @@ def posts_add(request):
 
 @_ALLOW
 @_api_auth
+@ratelimit(key="user", rate=settings.DEFAULT_RATE_LIMIT)
 def posts_delete(request):
     user = request.api_user
     params = request.GET if request.method == "GET" else request.POST
@@ -250,6 +257,7 @@ def posts_delete(request):
 
 @_ALLOW
 @_api_auth
+@ratelimit(key="user", rate=settings.DEFAULT_RATE_LIMIT)
 def posts_get(request):
     """Return bookmarks matching URL, tags, and/or date."""
     user = request.api_user
@@ -298,6 +306,7 @@ def posts_get(request):
 
 @_ALLOW
 @_api_auth
+@ratelimit(key="user", rate=settings.DEFAULT_RATE_LIMIT)
 def posts_recent(request):
     user = request.api_user
     params = request.GET if request.method == "GET" else request.POST
@@ -337,6 +346,7 @@ def posts_recent(request):
 
 @_ALLOW
 @_api_auth
+@ratelimit(key="user", rate=settings.DEFAULT_RATE_LIMIT)
 def posts_all(request):
     user = request.api_user
     params = request.GET if request.method == "GET" else request.POST
@@ -387,6 +397,7 @@ def posts_all(request):
 
 @_ALLOW
 @_api_auth
+@ratelimit(key="user", rate=settings.DEFAULT_RATE_LIMIT)
 def posts_dates(request):
     user = request.api_user
     params = request.GET if request.method == "GET" else request.POST
@@ -428,6 +439,7 @@ def posts_dates(request):
 
 @_ALLOW
 @_api_auth
+@ratelimit(key="user", rate=settings.DEFAULT_RATE_LIMIT)
 def posts_suggest(request):
     """Return popular (site-wide) and recommended (personal) tags for a URL."""
     user = request.api_user
@@ -483,6 +495,7 @@ def posts_suggest(request):
 
 @_ALLOW
 @_api_auth
+@ratelimit(key="user", rate=settings.DEFAULT_RATE_LIMIT)
 def tags_get(request):
     from django.db.models.functions import Unnest
 
@@ -511,6 +524,7 @@ def tags_get(request):
 
 @_ALLOW
 @_api_auth
+@ratelimit(key="user", rate=settings.DEFAULT_RATE_LIMIT)
 def tags_delete(request):
     user = request.api_user
     params = request.GET if request.method == "GET" else request.POST
@@ -532,6 +546,7 @@ def tags_delete(request):
 
 @_ALLOW
 @_api_auth
+@ratelimit(key="user", rate=settings.DEFAULT_RATE_LIMIT)
 def tags_rename(request):
     user = request.api_user
     params = request.GET if request.method == "GET" else request.POST
@@ -555,6 +570,7 @@ def tags_rename(request):
 
 @_ALLOW
 @_api_auth
+@ratelimit(key="user", rate=settings.DEFAULT_RATE_LIMIT)
 def user_secret(request):
     secret = _rss_secret(request.api_token)
     if _fmt(request) == "json":
@@ -570,6 +586,7 @@ def user_secret(request):
 
 @_ALLOW
 @_api_auth
+@ratelimit(key="user", rate=settings.DEFAULT_RATE_LIMIT)
 def user_api_token(request):
     user = request.api_user
     result = f"{user.username}:{request.api_token}"
@@ -586,6 +603,7 @@ def user_api_token(request):
 
 @_ALLOW
 @_api_auth
+@ratelimit(key="user", rate=settings.DEFAULT_RATE_LIMIT)
 def notes_list(request):
     user = request.api_user
     if _fmt(request) == "json":
@@ -601,5 +619,6 @@ def notes_list(request):
 
 @_ALLOW
 @_api_auth
+@ratelimit(key="user", rate=settings.DEFAULT_RATE_LIMIT)
 def notes_detail(request, note_id):
     return _result_error(request, "note not found", 404)

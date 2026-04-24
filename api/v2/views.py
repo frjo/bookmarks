@@ -19,7 +19,7 @@ GET          /api/v2/posts/dates      Number of bookmarks per date.
 GET          /api/v2/tags/get         All tags with counts.
 GET/POST/PUT /api/v2/tags/rename      Rename a tag.
 GET/DELETE   /api/v2/tags/delete      Delete a tag.
-GET          /api/v2/user/api_token/  Return current token.
+GET          /api/v2/user/api_token   Return current token.
 
 All responses are JSON: {"status": "ok|error", ...}.
 Errors include "error", "error_code", and "error_message" fields.
@@ -29,11 +29,13 @@ import datetime
 import hashlib
 from functools import wraps
 
+from django.conf import settings
 from django.db.models import Count
 from django.http import JsonResponse
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
+from django_ratelimit.decorators import ratelimit
 
 from accounts.models import APIToken
 from links.models import Bookmark
@@ -48,9 +50,7 @@ _DELETE = require_http_methods(["GET", "DELETE"])
 # ---------------------------------------------------------------------------
 
 
-def _ok(data: dict | list | None = None) -> JsonResponse:
-    if isinstance(data, list):
-        return JsonResponse({"status": "ok", "posts": data})
+def _ok(data: dict | None = None) -> JsonResponse:
     payload = {"status": "ok"}
     if data:
         payload.update(data)
@@ -123,6 +123,8 @@ def _api_auth(view_func):
 
         request.api_user = record.user
         request.api_token = record.token
+        # Set request.user so @ratelimit(key="user") can key per API user.
+        request.user = record.user
         return view_func(request, *args, **kwargs)
 
     return wrapper
@@ -142,6 +144,7 @@ def _params(request):
 
 @_READ
 @_api_auth
+@ratelimit(key="user", rate=settings.DEFAULT_RATE_LIMIT)
 def posts_get(request):
     """Return bookmarks matching URL, tags, and/or date."""
     user = request.api_user
@@ -183,6 +186,7 @@ def posts_get(request):
 
 @_READ
 @_api_auth
+@ratelimit(key="user", rate=settings.DEFAULT_RATE_LIMIT)
 def posts_recent(request):
     user = request.api_user
     params = _params(request)
@@ -215,6 +219,7 @@ def posts_recent(request):
 
 @_READ
 @_api_auth
+@ratelimit(key="user", rate=settings.DEFAULT_RATE_LIMIT)
 def posts_all(request):
     user = request.api_user
     params = _params(request)
@@ -276,6 +281,7 @@ def posts_all(request):
 
 @_WRITE
 @_api_auth
+@ratelimit(key="user", rate=settings.DEFAULT_RATE_LIMIT)
 def posts_add(request):
     """Add or update a bookmark (matched by URL)."""
     user = request.api_user
@@ -337,6 +343,7 @@ def posts_add(request):
 
 @_DELETE
 @_api_auth
+@ratelimit(key="user", rate=settings.DEFAULT_RATE_LIMIT)
 def posts_delete(request):
     user = request.api_user
     params = _params(request)
@@ -354,6 +361,7 @@ def posts_delete(request):
 
 @_READ
 @_api_auth
+@ratelimit(key="user", rate=settings.DEFAULT_RATE_LIMIT)
 def posts_dates(request):
     user = request.api_user
     params = _params(request)
@@ -388,6 +396,7 @@ def posts_dates(request):
 
 @_READ
 @_api_auth
+@ratelimit(key="user", rate=settings.DEFAULT_RATE_LIMIT)
 def tags_get(request):
     from django.db.models.functions import Unnest
 
@@ -409,6 +418,7 @@ def tags_get(request):
 
 @_WRITE
 @_api_auth
+@ratelimit(key="user", rate=settings.DEFAULT_RATE_LIMIT)
 def tags_rename(request):
     user = request.api_user
     params = _params(request)
@@ -431,6 +441,7 @@ def tags_rename(request):
 
 @_DELETE
 @_api_auth
+@ratelimit(key="user", rate=settings.DEFAULT_RATE_LIMIT)
 def tags_delete(request):
     user = request.api_user
     params = _params(request)
@@ -452,6 +463,7 @@ def tags_delete(request):
 
 @_READ
 @_api_auth
+@ratelimit(key="user", rate=settings.DEFAULT_RATE_LIMIT)
 def user_api_token(request):
     user = request.api_user
     return _ok({"result": f"{user.username}:{request.api_token}"})

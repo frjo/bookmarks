@@ -5,6 +5,7 @@ from django.core.paginator import Paginator
 from django.db.models import F
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django_ratelimit.decorators import ratelimit
 
 from accounts.models import User
 
@@ -26,6 +27,7 @@ def index(request):
 
 
 @login_required
+@ratelimit(key="user", rate=settings.DEFAULT_RATE_LIMIT)
 def bookmark_add(request, handle: str):
     if request.method == "POST":
         form = BookmarkForm(request.POST)
@@ -45,6 +47,7 @@ def bookmark_add(request, handle: str):
 
 
 @login_required
+@ratelimit(key="user", rate=settings.DEFAULT_RATE_LIMIT)
 def bookmark_edit(request, handle: str, pk):
     bookmark = get_object_or_404(Bookmark, pk=pk, user=request.user)
     if request.method == "POST":
@@ -63,6 +66,7 @@ def bookmark_edit(request, handle: str, pk):
 
 
 @login_required
+@ratelimit(key="user", rate=settings.DEFAULT_RATE_LIMIT)
 def bookmark_delete(request, handle: str, pk):
     bookmark = get_object_or_404(Bookmark, pk=pk, user=request.user)
     if request.method == "POST":
@@ -73,6 +77,7 @@ def bookmark_delete(request, handle: str, pk):
 
 
 @login_required
+@ratelimit(key="user", rate="10/h")
 def bookmark_import(request, handle: str):
     if request.method == "POST":
         uploaded = request.FILES.get("file")
@@ -100,6 +105,7 @@ def bookmark_import(request, handle: str):
 
 
 @login_required
+@ratelimit(key="user", rate="20/h")
 def bookmark_export(request, handle: str):
     fmt = request.GET.get("format", "html")
     bookmarks = Bookmark.objects.filter(user=request.user).order_by("-created_at")

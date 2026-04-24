@@ -11,6 +11,7 @@ from django.shortcuts import redirect, render
 from django.utils import timezone
 from django.utils.http import url_has_allowed_host_and_scheme
 from django.views.decorators.http import require_GET, require_POST
+from django_ratelimit.decorators import ratelimit
 from webauthn import (
     generate_authentication_options,
     generate_registration_options,
@@ -86,6 +87,7 @@ def register(request):
 
 
 @require_POST
+@ratelimit(key="ip", rate=settings.LOGIN_RATE_LIMIT)
 def register_username(request):
     """Validate and store a chosen username in the session."""
     try:
@@ -111,6 +113,7 @@ def register_username(request):
 
 
 @require_POST
+@ratelimit(key="ip", rate=settings.LOGIN_RATE_LIMIT)
 def register_begin(request):
     """Begin passkey registration for a new user (username stored in session)."""
     username = request.session.get("reg_username", "")
@@ -126,6 +129,7 @@ def register_begin(request):
 
 
 @require_POST
+@ratelimit(key="ip", rate=settings.LOGIN_RATE_LIMIT)
 def register_complete(request):
     challenge_b64 = request.session.get("reg_challenge", "")
     username = request.session.get("reg_username", "")
@@ -175,6 +179,7 @@ def login_view(request):
 
 
 @require_POST
+@ratelimit(key="ip", rate=settings.LOGIN_RATE_LIMIT)
 def login_begin(request):
     options = generate_authentication_options(
         rp_id=settings.WEBAUTHN_RP_ID,
@@ -185,6 +190,7 @@ def login_begin(request):
 
 
 @require_POST
+@ratelimit(key="ip", rate=settings.LOGIN_RATE_LIMIT)
 def login_complete(request):
     challenge_b64 = request.session.get("auth_challenge", "")
     if not challenge_b64:
@@ -266,6 +272,7 @@ def logout_view(request):
 
 @login_required
 @require_POST
+@ratelimit(key="user", rate=settings.DEFAULT_RATE_LIMIT)
 def passkey_add_begin(request):
     """Begin adding a new passkey for an already-authenticated user."""
     user = request.user
@@ -279,6 +286,7 @@ def passkey_add_begin(request):
 
 @login_required
 @require_POST
+@ratelimit(key="user", rate=settings.DEFAULT_RATE_LIMIT)
 def passkey_add_complete(request):
     """Complete adding a new passkey for an already-authenticated user."""
     challenge_b64 = request.session.get("add_passkey_challenge", "")
@@ -311,6 +319,7 @@ def passkey_add_complete(request):
 
 
 @login_required
+@ratelimit(key="user", rate=settings.DEFAULT_RATE_LIMIT)
 def settings_view(request, handle: str):
     user = request.user
     api_token = APIToken.objects.filter(user=user).first()
