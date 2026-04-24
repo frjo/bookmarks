@@ -63,13 +63,9 @@ WEBAUTHN_RP_NAME = env.str("WEBAUTHN_RP_NAME", "Bookmarks")
 WEBAUTHN_ORIGIN = env.str("WEBAUTHN_ORIGIN", "http://localhost:8000")
 
 # ---------------------------------------------------------------------------
-# Sessions
+# Rate-Limit configuration
 # ---------------------------------------------------------------------------
-SESSION_COOKIE_HTTPONLY = True
-SESSION_COOKIE_SAMESITE = "Lax"
-if not DEBUG:
-    SESSION_COOKIE_SECURE = True
-    CSRF_COOKIE_SECURE = True
+DEFAULT_RATE_LIMIT = env.str("DEFAULT_RATE_LIMIT", "5/m")
 
 # ---------------------------------------------------------------------------
 # Static files
