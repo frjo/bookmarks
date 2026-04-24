@@ -15,7 +15,7 @@
     <form method="post">
       {% csrf_token %}
       <button type="submit">Yes, delete</button>
-      <a href="{% url 'user_bookmark_list' %}">Cancel</a>
+      <a href="{% url 'user_bookmark_list' slug=user.slug %}">Cancel</a>
     </form>
   </article>
 {% endblock %}

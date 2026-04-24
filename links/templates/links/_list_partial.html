@@ -47,7 +47,7 @@
       {% elif tag %}
         No bookmarks with this tag.
       {% else %}
-        You have no bookmarks yet. <a href="{% url 'bookmark_add' %}">Add your first one</a>.
+        You have no bookmarks yet. <a href="{% url 'bookmark_add' slug=user.slug %}">Add your first one</a>.
       {% endif %}
     </p>
   {% endif %}

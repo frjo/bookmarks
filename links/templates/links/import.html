@@ -11,7 +11,7 @@
         <strong>{{ created }}</strong> bookmark{{ created|pluralize }} added,
         <strong>{{ skipped }}</strong> skipped (already exist).
       </p>
-      <p><a href="{% url 'user_bookmark_list' %}">View your bookmarks</a></p>
+      <p><a href="{% url 'user_bookmark_list' slug=user.slug %}">View your bookmarks</a></p>
     {% else %}
       {% if error %}
         <p role="alert">{{ error }}</p>
@@ -33,7 +33,7 @@
           <input type="file" id="file" name="file" accept=".html,.htm,.json" required>
         </div>
         <button type="submit">Import</button>
-        <a href="{% url 'user_bookmark_list' %}">Cancel</a>
+        <a href="{% url 'user_bookmark_list' slug=user.slug %}">Cancel</a>
       </form>
     {% endif %}
   </article>

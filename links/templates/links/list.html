@@ -1,17 +1,17 @@
 {% extends "base.html" %}
 {% block title %}
-  {% if query %}Search: {{ query }} — {% elif tag %}Tag: {{ tag }} — {% endif %}Bookmarks
+  {% if query %}Search: {{ query }} — {% elif tag %}Tag: {{ tag }} — {% endif %}{{ user }}'s Bookmarks
 {% endblock %}
 
 {% block content %}
   <article>
     <h1>
       {% if tag %}
-        Bookmarks tagged <em>{{ tag }}</em>
+        {{ user }}'s bookmarks tagged <em>{{ tag }}</em>
       {% elif query %}
-        Search results for <em>{{ query }}</em>
+        Search results for <em>{{ query }}</em> in {{ user }}'s bookmarks
       {% else %}
-        Bookmarks
+        {{ user }}'s bookmarks
       {% endif %}
     </h1>
 

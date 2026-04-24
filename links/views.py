@@ -20,7 +20,7 @@ from .models import Bookmark
 def index(request):
     if not request.user.is_authenticated:
         return redirect("login")
-    return redirect("user_bookmark_list")
+    return redirect("user_bookmark_list", slug=request.user.slug)
 
 
 @login_required
@@ -32,7 +32,7 @@ def bookmark_add(request, slug: str = ""):
             bookmark = form.save(commit=False)
             bookmark.user = request.user
             bookmark.save()
-            return redirect("user_bookmark_list")
+            return redirect("user_bookmark_list", slug=request.user.slug)
     else:
         initial = {
             "url": request.GET.get("url", ""),
@@ -50,7 +50,7 @@ def bookmark_edit(request, slug: str = "", *, pk):
         form = BookmarkForm(request.POST, instance=bookmark)
         if form.is_valid():
             form.save()
-            return redirect("user_bookmark_list")
+            return redirect("user_bookmark_list", slug=request.user.slug)
     else:
         form = BookmarkForm(instance=bookmark)
     return render(
@@ -66,7 +66,7 @@ def bookmark_delete(request, slug: str = "", *, pk):
     bookmark = get_object_or_404(Bookmark, pk=pk, user=request.user)
     if request.method == "POST":
         bookmark.delete()
-        return redirect("user_bookmark_list")
+        return redirect("user_bookmark_list", slug=request.user.slug)
     return render(request, "links/confirm_delete.html", {"bookmark": bookmark})
 
 
@@ -138,7 +138,7 @@ def user_bookmark_list(request, slug: str = ""):
     page_obj = paginator.get_page(request.GET.get("page", 1))
 
     context = {
-        "owner": user,
+        "user": user,
         "page_obj": page_obj,
         "query": query,
         "tag": tag,
@@ -146,5 +146,5 @@ def user_bookmark_list(request, slug: str = ""):
     }
 
     if request.htmx:
-        return render(request, "links/_public_list_partial.html", context)
-    return render(request, "links/public_list.html", context)
+        return render(request, "links/_list_partial.html", context)
+    return render(request, "links/list.html", context)

@@ -359,7 +359,7 @@ def settings_view(request, slug: str = ""):
             )
             messages.success(request, "API token regenerated.")
 
-        return redirect("settings")
+        return redirect("settings", slug=user.slug)
 
     return render(
         request,

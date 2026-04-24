@@ -1,7 +1,10 @@
-{% load static django_htmx %}<!DOCTYPE html>
-<html lang="en">
+{% load i18n static django_htmx %}
+{% get_current_language as LANGUAGE_CODE %}
+{% get_current_language_bidi as LANGUAGE_BIDI %}
+<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE }}" dir="{% if LANGUAGE_BIDI %}rtl{% else %}ltr{% endif %}">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="utf-8">
   <meta name="viewport" content="width=device-width">
   <title>{% block title %}Bookmarks{% endblock %}</title>
   <meta name="description" content="A bookmark service by xdeb.net.">
@@ -16,7 +19,6 @@
   {% htmx_script %}
 </head>
 <body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
-
   <header>
     <a href="/" title="Home" rel="home"><img alt="Home" src="{% static 'favicon/favicon.svg' %}" width="80" height="80"></a>
 
