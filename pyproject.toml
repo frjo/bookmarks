@@ -59,4 +59,5 @@ extend-exclude = [
     "*.min.js",
     "*.po",
     "*.min.json",
+    "*.css.map",
 ]

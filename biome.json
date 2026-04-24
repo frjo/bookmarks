@@ -10,7 +10,7 @@
 		"ignoreUnknown": true,
 		"includes": [
 			"assets/js/**",
-			"assets/css/**"
+			"assets_src/css/**"
 		]
 	},
 	"formatter": {

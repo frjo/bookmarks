@@ -1,0 +1,28 @@
+{
+  "name": "bookmarks",
+  "version": "1.0.0",
+  "description": "The node.js requirements to build this project.",
+  "author": "Fredrik Jonsson",
+  "license": "GPL-2.0",
+  "devDependencies": {
+    "lightningcss-cli": "^1.32.0",
+    "nodemon": "^3.1.14",
+    "npm-run-all2": "^8.0.4"
+  },
+  "scripts": {
+    "build": "npm-run-all --print-label --parallel build:*",
+    "dev:build": "npm-run-all --print-label --serial clean --parallel dev:build:*",
+    "watch": "npm-run-all --print-label --parallel watch:*",
+    "build:css": "npx lightningcss-cli --minify --bundle assets_src/css/styles.css --output-file assets/css/styles.css",
+    "build:collectstatic": "npm run collectstatic",
+    "dev:build:css": "npx lightningcss-cli --sourcemap --bundle assets_src/css/styles.css --output-file assets/css/styles.css",
+    "watch:css": "nodemon --exec \"npm run dev:build:css\" --watch ./assets_src/css --ext css",
+    "watch:collectstatic": "nodemon --exec \"npm run collectstatic\" --watch ./assets/css --watch ./assets/js --ext css,js",
+    "collectstatic": "uv run python manage.py collectstatic --no-post-process --noinput --verbosity 0",
+    "clean": "rm -rf ./static"
+  },
+  "engines": {
+    "node": "24.x"
+  },
+  "private": true
+}
