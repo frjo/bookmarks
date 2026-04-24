@@ -7,8 +7,6 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django_ratelimit.decorators import ratelimit
 
-from accounts.models import User
-
 from .forms import BookmarkForm
 from .importexport import (
     export_json,
@@ -22,21 +20,19 @@ from .models import Bookmark
 def index(request):
     if not request.user.is_authenticated:
         return redirect("login")
-    handle = request.user.handle
-    return redirect("user_bookmark_list", handle=handle)
+    return redirect("user_bookmark_list")
 
 
 @login_required
 @ratelimit(key="user", rate=settings.DEFAULT_RATE_LIMIT)
-def bookmark_add(request, handle: str):
+def bookmark_add(request):
     if request.method == "POST":
         form = BookmarkForm(request.POST)
         if form.is_valid():
             bookmark = form.save(commit=False)
             bookmark.user = request.user
             bookmark.save()
-            handle = request.user.handle
-            return redirect("user_bookmark_list", handle=handle)
+            return redirect("user_bookmark_list")
     else:
         initial = {
             "url": request.GET.get("url", ""),
@@ -48,14 +44,13 @@ def bookmark_add(request, handle: str):
 
 @login_required
 @ratelimit(key="user", rate=settings.DEFAULT_RATE_LIMIT)
-def bookmark_edit(request, handle: str, pk):
+def bookmark_edit(request, pk):
     bookmark = get_object_or_404(Bookmark, pk=pk, user=request.user)
     if request.method == "POST":
         form = BookmarkForm(request.POST, instance=bookmark)
         if form.is_valid():
             form.save()
-            handle = request.user.handle
-            return redirect("user_bookmark_list", handle=handle)
+            return redirect("user_bookmark_list")
     else:
         form = BookmarkForm(instance=bookmark)
     return render(
@@ -67,18 +62,17 @@ def bookmark_edit(request, handle: str, pk):
 
 @login_required
 @ratelimit(key="user", rate=settings.DEFAULT_RATE_LIMIT)
-def bookmark_delete(request, handle: str, pk):
+def bookmark_delete(request, pk):
     bookmark = get_object_or_404(Bookmark, pk=pk, user=request.user)
     if request.method == "POST":
         bookmark.delete()
-        handle = request.user.handle
-        return redirect("user_bookmark_list", handle=handle)
+        return redirect("user_bookmark_list")
     return render(request, "links/confirm_delete.html", {"bookmark": bookmark})
 
 
 @login_required
 @ratelimit(key="user", rate="10/h")
-def bookmark_import(request, handle: str):
+def bookmark_import(request):
     if request.method == "POST":
         uploaded = request.FILES.get("file")
         if not uploaded:
@@ -106,7 +100,7 @@ def bookmark_import(request, handle: str):
 
 @login_required
 @ratelimit(key="user", rate="20/h")
-def bookmark_export(request, handle: str):
+def bookmark_export(request):
     fmt = request.GET.get("format", "html")
     bookmarks = Bookmark.objects.filter(user=request.user).order_by("-created_at")
 
@@ -123,16 +117,12 @@ def bookmark_export(request, handle: str):
 
 
 @login_required
-def user_bookmark_list(request, handle: str):
-    try:
-        owner = User.objects.get(username=handle)
-    except User.DoesNotExist:
-        owner = get_object_or_404(User, id=handle)
-
+def user_bookmark_list(request):
+    user = request.user
     tag = request.GET.get("tag", "").strip()
     query = request.GET.get("q", "").strip()
 
-    qs = Bookmark.objects.filter(user=owner)
+    qs = Bookmark.objects.filter(user=user)
 
     if query:
         search_query = SearchQuery(query)
@@ -148,8 +138,7 @@ def user_bookmark_list(request, handle: str):
     page_obj = paginator.get_page(request.GET.get("page", 1))
 
     context = {
-        "owner": owner,
-        "handle": handle,
+        "owner": user,
         "page_obj": page_obj,
         "query": query,
         "tag": tag,

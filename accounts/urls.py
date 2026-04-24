@@ -11,6 +11,7 @@ urlpatterns = [
     path("login/begin/", views.login_begin, name="login_begin"),
     path("login/complete/", views.login_complete, name="login_complete"),
     path("logout/", views.logout_view, name="logout"),
+    path("settings/", views.settings_view, name="settings"),
     path("passkeys/add/begin/", views.passkey_add_begin, name="passkey_add_begin"),
     path(
         "passkeys/add/complete/",

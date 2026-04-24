@@ -7,6 +7,7 @@ from django.contrib.auth.models import (
     PermissionsMixin,
 )
 from django.db import models
+from slugify import slugify
 
 _cuid = Cuid(length=24)
 
@@ -57,8 +58,13 @@ class User(AbstractBaseUser, PermissionsMixin):
     def handle(self) -> str:
         return self.username or self.id
 
+    @property
+    def slug(self) -> str:
+        """Return a URL-safe slug from a username for use in URL paths."""
+        return slugify(self.username) if self.username else self.id
+
     def __str__(self) -> str:
-        return self.username
+        return self.username or self.id
 
 
 class WebAuthnCredential(models.Model):

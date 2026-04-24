@@ -1,6 +1,5 @@
 import base64
 import json
-import re
 import secrets
 
 from django.conf import settings
@@ -33,8 +32,6 @@ from webauthn.helpers.structs import (
 )
 
 from .models import APIToken, User, WebAuthnCredential
-
-_USERNAME_RE = re.compile(r"^[a-zA-Z0-9_-]{3,50}$")
 
 
 def _registration_options(user_handle, username):
@@ -98,11 +95,9 @@ def register_username(request):
 
     username = body.get("username", "").strip()
     if username:
-        if not _USERNAME_RE.match(username):
+        if not (3 <= len(username) <= 50):
             return JsonResponse(
-                {
-                    "error": "Username must be 3–50 characters and contain only letters, numbers, _ or -."
-                },
+                {"error": "Username must be 3–50 characters."},
                 status=400,
             )
         if User.objects.filter(username=username).exists():
@@ -328,7 +323,7 @@ def passkey_add_complete(request):
 
 @login_required
 @ratelimit(key="user", rate=settings.DEFAULT_RATE_LIMIT)
-def settings_view(request, handle: str):
+def settings_view(request):
     user = request.user
     api_token = APIToken.objects.filter(user=user).first()
     credentials = user.credentials.order_by("created_at")
@@ -338,10 +333,10 @@ def settings_view(request, handle: str):
 
         if action == "update_username":
             new_username = request.POST.get("username", "").strip()
-            if not _USERNAME_RE.match(new_username):
+            if not (3 <= len(new_username) <= 50):
                 messages.error(
                     request,
-                    "Username must be 3–50 characters and contain only letters, numbers, _ or -.",
+                    "Username must be 3–50 characters.",
                 )
             elif (
                 new_username != user.username
@@ -361,8 +356,7 @@ def settings_view(request, handle: str):
             )
             messages.success(request, "API token regenerated.")
 
-        handle = user.handle
-        return redirect("settings", handle=handle)
+        return redirect("settings")
 
     return render(
         request,

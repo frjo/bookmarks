@@ -30,8 +30,8 @@
       </time>
 
       <nav aria-label="Actions for {{ bookmark.title|default:bookmark.url }}">
-        <a href="{% url 'bookmark_edit' handle=user.handle pk=bookmark.pk %}">Edit</a>
-        <a href="{% url 'bookmark_delete' handle=user.handle pk=bookmark.pk %}">Delete</a>
+        <a href="{% url 'bookmark_edit' pk=bookmark.pk %}">Edit</a>
+        <a href="{% url 'bookmark_delete' pk=bookmark.pk %}">Delete</a>
       </nav>
     </footer>
   </article>
