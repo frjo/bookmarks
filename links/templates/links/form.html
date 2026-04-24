@@ -80,7 +80,7 @@
     </div>
 
     <button type="submit">{{ action }}</button>
-    <a href="{% url 'bookmark_list' %}">Cancel</a>
+    <a href="{% url 'user_bookmark_list' handle=user.username|default:user.id %}">Cancel</a>
   </form>
 </article>
 {% endblock %}

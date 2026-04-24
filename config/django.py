@@ -33,15 +33,6 @@ ROOT_URLCONF = "config.urls"
 WSGI_APPLICATION = "config.wsgi.application"
 
 # ---------------------------------------------------------------------------
-# Sessions
-# ---------------------------------------------------------------------------
-SESSION_COOKIE_HTTPONLY = True
-SESSION_COOKIE_SAMESITE = "Lax"
-if not DEBUG:
-    SESSION_COOKIE_SECURE = True
-    CSRF_COOKIE_SECURE = True
-
-# ---------------------------------------------------------------------------
 # Authentication
 # ---------------------------------------------------------------------------
 AUTH_USER_MODEL = "accounts.User"

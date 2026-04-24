@@ -25,16 +25,18 @@
       <a href="/" aria-label="Bookmarks home">Bookmarks</a>
 
       {% if user.is_authenticated %}
+        {% with handle=user.username|default:user.id %}
         <span aria-hidden="true">|</span>
-        <a href="{% url 'bookmark_add' %}">Add</a>
+        <a href="{% url 'bookmark_add' handle=handle %}">Add</a>
         <span aria-hidden="true">|</span>
-        <a href="{% url 'bookmark_import' %}">Import</a>
+        <a href="{% url 'bookmark_import' handle=handle %}">Import</a>
         <span aria-hidden="true">|</span>
-        <a href="{% url 'bookmark_export' %}">Export HTML</a>
+        <a href="{% url 'bookmark_export' handle=handle %}">Export HTML</a>
         <span aria-hidden="true">|</span>
-        <a href="{% url 'bookmark_export' %}?format=json">Export JSON</a>
+        <a href="{% url 'bookmark_export' handle=handle %}?format=json">Export JSON</a>
         <span aria-hidden="true">|</span>
-        <a href="{% url 'settings' %}">Settings ({{ user.username }})</a>
+        <a href="{% url 'settings' handle=handle %}">Settings ({{ user.username }})</a>
+        {% endwith %}
         <span aria-hidden="true">|</span>
         <form method="post" action="{% url 'logout' %}" style="display:inline">
           {% csrf_token %}

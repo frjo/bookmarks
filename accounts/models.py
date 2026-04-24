@@ -1,7 +1,11 @@
 import secrets
 
 from cuid2 import Cuid
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
+from django.contrib.auth.models import (
+    AbstractBaseUser,
+    BaseUserManager,
+    PermissionsMixin,
+)
 from django.db import models
 
 _cuid = Cuid(length=24)

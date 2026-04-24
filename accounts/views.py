@@ -296,7 +296,7 @@ def passkey_add_complete(request):
 
 
 @login_required
-def settings_view(request):
+def settings_view(request, handle: str):
     user = request.user
     api_token = APIToken.objects.filter(user=user).first()
     credentials = user.credentials.order_by("created_at")
@@ -326,7 +326,8 @@ def settings_view(request):
             )
             messages.success(request, "API token regenerated.")
 
-        return redirect("settings")
+        handle = user.username or user.id
+        return redirect("settings", handle=handle)
 
     return render(
         request,
