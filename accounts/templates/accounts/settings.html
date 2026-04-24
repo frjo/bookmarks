@@ -65,8 +65,8 @@
           {% for cred in credentials %}
             <li>
               {% if cred.name %}{{ cred.name }}{% else %}Passkey {{ forloop.counter }}{% endif %} —
-              added <time datetime="{{ cred.created_at|date:"Y-m-d" }}">{{ cred.created_at|date:"j N Y" }}</time>{% if cred.last_used_at %},
-                last used <time datetime="{{ cred.last_used_at|date:"Y-m-d" }}">{{ cred.last_used_at|date:"j N Y" }}</time>{% endif %}
+              added <time datetime="{{ cred.created_at|date:"Y-m-d" }}">{{ cred.created_at|date:"DATE_FORMAT" }}</time>{% if cred.last_used_at %},
+                last used <time datetime="{{ cred.last_used_at|date:"Y-m-d" }}">{{ cred.last_used_at|date:"DATE_FORMAT" }}</time>{% endif %}
             </li>
           {% endfor %}
         </ul>
