@@ -2,35 +2,35 @@
 {% block title %}Log in — Bookmarks{% endblock %}
 
 {% block content %}
-<article>
-  <h1>Log in</h1>
+  <article>
+    <h1>Log in</h1>
 
-  <p>Use a passkey saved on this device to sign in.</p>
+    <p>Use a passkey saved on this device to sign in.</p>
 
   {# Username input enables conditional mediation (passkey autofill in browser UI) #}
-  <input type="text" name="username" autocomplete="username webauthn" hidden aria-hidden="true">
+    <input type="text" name="username" autocomplete="username webauthn" hidden aria-hidden="true">
 
-  <p role="alert" id="passkey-auth-error" hidden></p>
+    <p role="alert" id="passkey-auth-error" hidden></p>
 
-  <div data-passkey-ui hidden>
-    <button
-      id="btn-passkey-login"
-      type="button"
-      data-begin-url="{% url 'login_begin' %}"
-      data-complete-url="{% url 'login_complete' %}"
-      data-next-url=""
-      onclick="window.bookmarks.passkeys.authenticate()"
-    >Sign in with passkey</button>
-  </div>
+    <div data-passkey-ui hidden>
+      <button
+        id="btn-passkey-login"
+        type="button"
+        data-begin-url="{% url 'login_begin' %}"
+        data-complete-url="{% url 'login_complete' %}"
+        data-next-url=""
+        onclick="window.bookmarks.passkeys.authenticate()"
+      >Sign in with passkey</button>
+    </div>
 
-  <p>Don't have an account yet? <a href="{% url 'register' %}">Register</a></p>
-</article>
+    <p>Don't have an account yet? <a href="{% url 'register' %}">Register</a></p>
+  </article>
 {% endblock %}
 
 {% block extra_scripts %}
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    window.bookmarks?.passkeys?.initUI();
-  });
-</script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      window.bookmarks?.passkeys?.initUI();
+    });
+  </script>
 {% endblock %}

@@ -8,9 +8,9 @@
 	},
 	"files": {
 		"ignoreUnknown": true,
-		"ignore": [
-			"static/**",
-			"**/migrations/**"
+		"includes": [
+			"assets/js/**",
+			"assets/css/**"
 		]
 	},
 	"formatter": {
@@ -21,7 +21,10 @@
 	"linter": {
 		"enabled": true,
 		"rules": {
-			"recommended": true
+			"recommended": true,
+			"suspicious": {
+				"useIterableCallbackReturn": "off"
+			}
 		}
 	},
 	"html": {

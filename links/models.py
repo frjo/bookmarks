@@ -19,6 +19,8 @@ class Bookmark(models.Model):
     title = models.CharField(max_length=500)
     description = models.TextField(blank=True)
     tags = ArrayField(models.CharField(max_length=100), blank=True, default=list)
+    shared = models.BooleanField(default=True)
+    toread = models.BooleanField(default=False)
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
     # Populated asynchronously via a post-save signal.
@@ -29,7 +31,9 @@ class Bookmark(models.Model):
         indexes = [
             GinIndex(fields=["search_vector"], name="links_bookmark_fts_idx"),
             GinIndex(fields=["tags"], name="links_bookmark_tags_idx"),
-            models.Index(fields=["user", "-created_at"], name="links_bookmark_user_date_idx"),
+            models.Index(
+                fields=["user", "-created_at"], name="links_bookmark_user_date_idx"
+            ),
         ]
 
     def __str__(self) -> str:

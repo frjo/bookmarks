@@ -2,20 +2,20 @@
 {% block title %}Delete bookmark — Bookmarks{% endblock %}
 
 {% block content %}
-<article>
-  <h1>Delete bookmark</h1>
+  <article>
+    <h1>Delete bookmark</h1>
 
-  <p>Are you sure you want to delete this bookmark?</p>
+    <p>Are you sure you want to delete this bookmark?</p>
 
-  <blockquote>
-    <p><strong>{{ bookmark.title|default:bookmark.url }}</strong></p>
-    <p><a href="{{ bookmark.url }}" rel="noopener noreferrer" target="_blank">{{ bookmark.url }}</a></p>
-  </blockquote>
+    <blockquote>
+      <p><strong>{{ bookmark.title|default:bookmark.url }}</strong></p>
+      <p><a href="{{ bookmark.url }}" rel="noopener noreferrer" target="_blank">{{ bookmark.url }}</a></p>
+    </blockquote>
 
-  <form method="post">
-    {% csrf_token %}
-    <button type="submit">Yes, delete</button>
-    <a href="{% url 'user_bookmark_list' handle=user.handle %}">Cancel</a>
-  </form>
-</article>
+    <form method="post">
+      {% csrf_token %}
+      <button type="submit">Yes, delete</button>
+      <a href="{% url 'user_bookmark_list' handle=user.handle %}">Cancel</a>
+    </form>
+  </article>
 {% endblock %}

@@ -2,86 +2,86 @@
 {% block title %}Register — Bookmarks{% endblock %}
 
 {% block content %}
-<article>
-  <h1>Create an account</h1>
+  <article>
+    <h1>Create an account</h1>
 
-  <p>Choose a username, then follow the prompt to create a passkey on this device.</p>
+    <p>Choose a username, then follow the prompt to create a passkey on this device.</p>
 
-  <form
-    id="register-form"
-    novalidate
-    data-begin-url="{% url 'register_begin' %}"
-    data-complete-url="{% url 'register_complete' %}"
-    data-error-server="Could not begin registration."
-    data-error-register="Registration failed."
-    data-error-duplicate="A passkey for this authenticator is already registered."
-  >
-    <div>
-      <label for="username">Username</label>
-      <input
-        type="text"
-        id="username"
-        name="username"
-        required
-        minlength="3"
-        maxlength="50"
-        pattern="[a-zA-Z0-9_-]+"
-        autocomplete="username"
-        aria-describedby="username-hint"
-      >
-      <p id="username-hint">3–50 characters. Letters, numbers, <code>_</code> and <code>-</code> only.</p>
-    </div>
+    <form
+      id="register-form"
+      novalidate
+      data-begin-url="{% url 'register_begin' %}"
+      data-complete-url="{% url 'register_complete' %}"
+      data-error-server="Could not begin registration."
+      data-error-register="Registration failed."
+      data-error-duplicate="A passkey for this authenticator is already registered."
+    >
+      <div>
+        <label for="username">Username</label>
+        <input
+          type="text"
+          id="username"
+          name="username"
+          required
+          minlength="3"
+          maxlength="50"
+          pattern="[a-zA-Z0-9_-]+"
+          autocomplete="username"
+          aria-describedby="username-hint"
+        >
+        <p id="username-hint">3–50 characters. Letters, numbers, <code>_</code> and <code>-</code> only.</p>
+      </div>
 
     {# Hidden name field — passkeys.js sends this to complete_url; left blank for initial registration #}
-    <input type="hidden" name="name" value="">
+      <input type="hidden" name="name" value="">
 
-    <p role="alert" id="passkey-error" hidden></p>
+      <p role="alert" id="passkey-error" hidden></p>
 
-    <button type="submit" data-passkey-ui hidden>Register with passkey</button>
-    <p id="no-passkey-msg">Your browser does not support passkeys.</p>
-  </form>
+      <button type="submit" data-passkey-ui hidden>Register with passkey</button>
+      <p id="no-passkey-msg">Your browser does not support passkeys.</p>
+    </form>
 
-  <p>Already have an account? <a href="{% url 'login' %}">Log in</a></p>
-</article>
+    <p>Already have an account? <a href="{% url 'login' %}">Log in</a></p>
+  </article>
 {% endblock %}
 
 {% block extra_scripts %}
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    window.bookmarks?.passkeys?.initUI();
-  });
-
-  document.getElementById("register-form").addEventListener("submit", async function (evt) {
-    evt.preventDefault();
-    const form = evt.target;
-    const username = form.querySelector("[name=username]").value.trim();
-    const errorEl = document.getElementById("passkey-error");
-
-    if (errorEl) { errorEl.hidden = true; }
-
-    // Step 1: validate username and store in session.
-    const resp = await fetch("{% url 'register_username' %}", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-CSRFToken": JSON.parse(document.body.getAttribute("hx-headers") || "{}")[
-          "X-CSRFToken"
-        ] || "",
-      },
-      body: JSON.stringify({ username }),
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      window.bookmarks?.passkeys?.initUI();
     });
 
-    if (!resp.ok) {
-      const err = await resp.json();
-      if (errorEl) {
-        errorEl.textContent = err.error || "Could not validate username.";
-        errorEl.hidden = false;
+    document.getElementById("register-form").addEventListener("submit", async function (evt) {
+      evt.preventDefault();
+      const form = evt.target;
+      const username = form.querySelector("[name=username]").value.trim();
+      const errorEl = document.getElementById("passkey-error");
+
+      if (errorEl) { errorEl.hidden = true; }
+
+    // Step 1: validate username and store in session.
+      const resp = await fetch("{% url 'register_username' %}", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": JSON.parse(document.body.getAttribute("hx-headers") || "{}")[
+            "X-CSRFToken"
+          ] || "",
+        },
+        body: JSON.stringify({ username }),
+      });
+
+      if (!resp.ok) {
+        const err = await resp.json();
+        if (errorEl) {
+          errorEl.textContent = err.error || "Could not validate username.";
+          errorEl.hidden = false;
+        }
+        return;
       }
-      return;
-    }
 
     // Step 2: passkeys.js handles the rest (begin → browser prompt → complete → reload).
-    window.bookmarks.passkeys.register(form);
-  });
-</script>
+      window.bookmarks.passkeys.register(form);
+    });
+  </script>
 {% endblock %}

@@ -13,7 +13,7 @@
 
 window.bookmarks = window.bookmarks || {};
 
-window.bookmarks.passkeys = (function () {
+window.bookmarks.passkeys = (() => {
   let _conditionalAbortController = null;
   function getCsrfToken() {
     const hxheaders = document.body.getAttribute("hx-headers") || "{}";
@@ -23,8 +23,7 @@ window.bookmarks.passkeys = (function () {
 
   function getRememberMe() {
     const el =
-      document.getElementById("id_auth-remember_me") ||
-      document.getElementById("id_remember_me");
+      document.getElementById("id_auth-remember_me") || document.getElementById("id_remember_me");
     return el ? el.checked : false;
   }
 
@@ -45,19 +44,14 @@ window.bookmarks.passkeys = (function () {
    * by default and revealed here.
    */
   async function initUI() {
-    const webAuthnAvailable = !!(
-      window.PublicKeyCredential && navigator.credentials
-    );
+    const webAuthnAvailable = !!(window.PublicKeyCredential && navigator.credentials);
 
     const conditionalOk = await (
-      window.PublicKeyCredential?.isConditionalMediationAvailable?.() ??
-      Promise.resolve(false)
+      window.PublicKeyCredential?.isConditionalMediationAvailable?.() ?? Promise.resolve(false)
     ).catch(() => false);
 
     if (webAuthnAvailable) {
-      document
-        .querySelectorAll("[data-passkey-ui]")
-        .forEach((el) => el.removeAttribute("hidden"));
+      document.querySelectorAll("[data-passkey-ui]").forEach((el) => el.removeAttribute("hidden"));
     }
 
     if (conditionalOk) {
@@ -87,9 +81,7 @@ window.bookmarks.passkeys = (function () {
       const beginResp = await jsonPost(beginUrl, {});
       if (!beginResp.ok) {
         const err = await beginResp.json();
-        throw new Error(
-          err.error || formEl?.dataset.errorServer || "Server error"
-        );
+        throw new Error(err.error || formEl?.dataset.errorServer || "Server error");
       }
       const options = await beginResp.json();
 
@@ -105,9 +97,7 @@ window.bookmarks.passkeys = (function () {
       });
       if (!completeResp.ok) {
         const err = await completeResp.json();
-        throw new Error(
-          err.error || formEl?.dataset.errorRegister || "Registration failed"
-        );
+        throw new Error(err.error || formEl?.dataset.errorRegister || "Registration failed");
       }
 
       // Reload to show the new passkey in the list
@@ -153,9 +143,7 @@ window.bookmarks.passkeys = (function () {
     try {
       const beginResp = await jsonPost(beginUrl, {});
       if (!beginResp.ok)
-        throw new Error(
-          errorEl?.dataset.errorBegin || "Failed to begin authentication"
-        );
+        throw new Error(errorEl?.dataset.errorBegin || "Failed to begin authentication");
       const authOptions = await beginResp.json();
 
       // Triggers native OS passkey selection UI
@@ -170,15 +158,10 @@ window.bookmarks.passkeys = (function () {
       });
       if (!completeResp.ok) {
         const err = await completeResp.json();
-        throw new Error(
-          err.error || errorEl?.dataset.errorAuth || "Authentication failed"
-        );
+        throw new Error(err.error || errorEl?.dataset.errorAuth || "Authentication failed");
       }
       const data = await completeResp.json();
-      const redirectUrl = new URL(
-        data.redirect_url || "/",
-        window.location.origin
-      );
+      const redirectUrl = new URL(data.redirect_url || "/", window.location.origin);
       window.location.href =
         redirectUrl.origin === window.location.origin
           ? redirectUrl.pathname + redirectUrl.search + redirectUrl.hash
@@ -229,10 +212,7 @@ window.bookmarks.passkeys = (function () {
       });
       if (!completeResp.ok) return;
       const data = await completeResp.json();
-      const redirectUrl = new URL(
-        data.redirect_url || "/",
-        window.location.origin
-      );
+      const redirectUrl = new URL(data.redirect_url || "/", window.location.origin);
       window.location.href =
         redirectUrl.origin === window.location.origin
           ? redirectUrl.pathname + redirectUrl.search + redirectUrl.hash

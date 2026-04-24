@@ -2,97 +2,97 @@
 {% block title %}Settings — Bookmarks{% endblock %}
 
 {% block content %}
-<article>
-  <h1>Settings</h1>
+  <article>
+    <h1>Settings</h1>
 
-  <section aria-labelledby="profile-heading">
-    <h2 id="profile-heading">Profile</h2>
-    <dl>
-      <dt>Account ID</dt>
-      <dd><code>{{ user.id }}</code></dd>
-    </dl>
-    <form method="post">
-      {% csrf_token %}
-      <input type="hidden" name="action" value="update_username">
-      <div>
-        <label for="username">Display username</label>
-        <input
-          type="text"
-          id="username"
-          name="username"
-          value="{{ user.username }}"
-          required
-          minlength="3"
-          maxlength="50"
-          pattern="[a-zA-Z0-9_-]+"
-          autocomplete="username"
-          aria-describedby="username-hint"
-        >
-        <p id="username-hint">3–50 characters. Letters, numbers, <code>_</code> and <code>-</code> only.</p>
-      </div>
-      <button type="submit">Update username</button>
-    </form>
-  </section>
-
-  <section aria-labelledby="api-heading">
-    <h2 id="api-heading">API token</h2>
-    {% if api_token %}
-      <p>
-        Your API token:
-        <code>{{ user.id }}:{{ api_token.token }}</code>
-      </p>
-      <p>
-        Use this as the <code>auth_token</code> query parameter when calling
-        the API, e.g.
-        <code>/api/v2/posts/recent?auth_token={{ user.id }}:{{ api_token.token }}</code>
-      </p>
-    {% else %}
-      <p>You don't have an API token yet.</p>
-    {% endif %}
-    <form method="post">
-      {% csrf_token %}
-      <input type="hidden" name="action" value="regenerate_token">
-      <button type="submit">
-        {% if api_token %}Regenerate token{% else %}Generate token{% endif %}
-      </button>
-    </form>
-  </section>
-
-  <section aria-labelledby="passkeys-heading">
-    <h2 id="passkeys-heading">Passkeys</h2>
-    {% if credentials %}
-      <ul>
-        {% for cred in credentials %}
-          <li>
-            {% if cred.name %}{{ cred.name }}{% else %}Passkey {{ forloop.counter }}{% endif %} —
-            added <time datetime="{{ cred.created_at|date:"Y-m-d" }}">{{ cred.created_at|date:"j N Y" }}</time>{% if cred.last_used_at %},
-            last used <time datetime="{{ cred.last_used_at|date:"Y-m-d" }}">{{ cred.last_used_at|date:"j N Y" }}</time>{% endif %}
-          </li>
-        {% endfor %}
-      </ul>
-    {% else %}
-      <p>No passkeys found.</p>
-    {% endif %}
-
-    <div data-passkey-ui hidden>
-      <h3>Add a passkey</h3>
-      <form
-        id="add-passkey-form"
-        data-begin-url="{% url 'passkey_add_begin' %}"
-        data-complete-url="{% url 'passkey_add_complete' %}"
-        data-error-server="Could not begin passkey registration."
-        data-error-register="Passkey registration failed."
-        data-error-duplicate="A passkey for this authenticator is already registered."
-        onsubmit="event.preventDefault(); window.bookmarks.passkeys.register(this)"
-      >
+    <section aria-labelledby="profile-heading">
+      <h2 id="profile-heading">Profile</h2>
+      <dl>
+        <dt>Account ID</dt>
+        <dd><code>{{ user.id }}</code></dd>
+      </dl>
+      <form method="post">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="update_username">
         <div>
-          <label for="passkey-name">Passkey name (optional)</label>
-          <input type="text" id="passkey-name" name="name" maxlength="100" autocomplete="off" placeholder="e.g. MacBook Touch ID">
+          <label for="username">Display username</label>
+          <input
+            type="text"
+            id="username"
+            name="username"
+            value="{{ user.username }}"
+            required
+            minlength="3"
+            maxlength="50"
+            pattern="[a-zA-Z0-9_-]+"
+            autocomplete="username"
+            aria-describedby="username-hint"
+          >
+          <p id="username-hint">3–50 characters. Letters, numbers, <code>_</code> and <code>-</code> only.</p>
         </div>
-        <p role="alert" id="passkey-error" hidden></p>
-        <button type="submit">Add passkey</button>
+        <button type="submit">Update username</button>
       </form>
-    </div>
-  </section>
-</article>
+    </section>
+
+    <section aria-labelledby="api-heading">
+      <h2 id="api-heading">API token</h2>
+      {% if api_token %}
+        <p>
+          Your API token:
+          <code>{{ user.id }}:{{ api_token.token }}</code>
+        </p>
+        <p>
+          Use this as the <code>auth_token</code> query parameter when calling
+          the API, e.g.
+          <code>/api/v2/posts/recent?auth_token={{ user.id }}:{{ api_token.token }}</code>
+        </p>
+      {% else %}
+        <p>You don't have an API token yet.</p>
+      {% endif %}
+      <form method="post">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="regenerate_token">
+        <button type="submit">
+          {% if api_token %}Regenerate token{% else %}Generate token{% endif %}
+        </button>
+      </form>
+    </section>
+
+    <section aria-labelledby="passkeys-heading">
+      <h2 id="passkeys-heading">Passkeys</h2>
+      {% if credentials %}
+        <ul>
+          {% for cred in credentials %}
+            <li>
+              {% if cred.name %}{{ cred.name }}{% else %}Passkey {{ forloop.counter }}{% endif %} —
+              added <time datetime="{{ cred.created_at|date:"Y-m-d" }}">{{ cred.created_at|date:"j N Y" }}</time>{% if cred.last_used_at %},
+                last used <time datetime="{{ cred.last_used_at|date:"Y-m-d" }}">{{ cred.last_used_at|date:"j N Y" }}</time>{% endif %}
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p>No passkeys found.</p>
+      {% endif %}
+
+      <div data-passkey-ui hidden>
+        <h3>Add a passkey</h3>
+        <form
+          id="add-passkey-form"
+          data-begin-url="{% url 'passkey_add_begin' %}"
+          data-complete-url="{% url 'passkey_add_complete' %}"
+          data-error-server="Could not begin passkey registration."
+          data-error-register="Passkey registration failed."
+          data-error-duplicate="A passkey for this authenticator is already registered."
+          onsubmit="event.preventDefault(); window.bookmarks.passkeys.register(this)"
+        >
+          <div>
+            <label for="passkey-name">Passkey name (optional)</label>
+            <input type="text" id="passkey-name" name="name" maxlength="100" autocomplete="off" placeholder="e.g. MacBook Touch ID">
+          </div>
+          <p role="alert" id="passkey-error" hidden></p>
+          <button type="submit">Add passkey</button>
+        </form>
+      </div>
+    </section>
+  </article>
 {% endblock %}

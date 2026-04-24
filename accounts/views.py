@@ -52,7 +52,8 @@ def _registration_options(user_handle, username):
 def _verify_registration(data, challenge):
     resp = data["response"]
     transports = [
-        AuthenticatorTransport(t) for t in resp.get("transports", [])
+        AuthenticatorTransport(t)
+        for t in resp.get("transports", [])
         if t in AuthenticatorTransport._value2member_map_
     ]
     credential = RegistrationCredential(
@@ -97,7 +98,9 @@ def register_username(request):
         return JsonResponse({"error": "Username is required."}, status=400)
     if not _USERNAME_RE.match(username):
         return JsonResponse(
-            {"error": "Username must be 3–50 characters and contain only letters, numbers, _ or -."},
+            {
+                "error": "Username must be 3–50 characters and contain only letters, numbers, _ or -."
+            },
             status=400,
         )
     if User.objects.filter(username=username).exists():
@@ -112,7 +115,9 @@ def register_begin(request):
     """Begin passkey registration for a new user (username stored in session)."""
     username = request.session.get("reg_username", "")
     if not username:
-        return JsonResponse({"error": "No username in session. Please start over."}, status=400)
+        return JsonResponse(
+            {"error": "No username in session. Please start over."}, status=400
+        )
 
     user_handle = base64.urlsafe_b64encode(username.encode()).rstrip(b"=")
     options = _registration_options(user_handle, username)
@@ -126,7 +131,9 @@ def register_complete(request):
     username = request.session.get("reg_username", "")
 
     if not challenge_b64 or not username:
-        return JsonResponse({"error": "Registration session expired. Please try again."}, status=400)
+        return JsonResponse(
+            {"error": "Registration session expired. Please try again."}, status=400
+        )
 
     if User.objects.filter(username=username).exists():
         return JsonResponse({"error": "That username is already taken."}, status=400)
@@ -181,7 +188,9 @@ def login_begin(request):
 def login_complete(request):
     challenge_b64 = request.session.get("auth_challenge", "")
     if not challenge_b64:
-        return JsonResponse({"error": "Authentication session expired. Please try again."}, status=400)
+        return JsonResponse(
+            {"error": "Authentication session expired. Please try again."}, status=400
+        )
 
     try:
         challenge = base64.b64decode(challenge_b64)
@@ -195,7 +204,9 @@ def login_complete(request):
                 client_data_json=base64url_to_bytes(resp["clientDataJSON"]),
                 authenticator_data=base64url_to_bytes(resp["authenticatorData"]),
                 signature=base64url_to_bytes(resp["signature"]),
-                user_handle=base64url_to_bytes(resp["userHandle"]) if resp.get("userHandle") else None,
+                user_handle=base64url_to_bytes(resp["userHandle"])
+                if resp.get("userHandle")
+                else None,
             ),
         )
 
@@ -229,7 +240,9 @@ def login_complete(request):
     login(request, stored.user, backend="accounts.backends.PasskeyBackend")
 
     next_url = data.get("next", "").strip()
-    if not url_has_allowed_host_and_scheme(next_url, allowed_hosts={request.get_host()}):
+    if not url_has_allowed_host_and_scheme(
+        next_url, allowed_hosts={request.get_host()}
+    ):
         next_url = "/"
 
     return JsonResponse({"status": "ok", "redirect_url": next_url or "/"})
@@ -258,7 +271,9 @@ def passkey_add_begin(request):
     user = request.user
     user_handle = base64.urlsafe_b64encode(user.username.encode()).rstrip(b"=")
     options = _registration_options(user_handle, user.username)
-    request.session["add_passkey_challenge"] = base64.b64encode(options.challenge).decode()
+    request.session["add_passkey_challenge"] = base64.b64encode(
+        options.challenge
+    ).decode()
     return JsonResponse(json.loads(options_to_json(options)))
 
 
@@ -311,7 +326,10 @@ def settings_view(request, handle: str):
                     request,
                     "Username must be 3–50 characters and contain only letters, numbers, _ or -.",
                 )
-            elif new_username != user.username and User.objects.filter(username=new_username).exists():
+            elif (
+                new_username != user.username
+                and User.objects.filter(username=new_username).exists()
+            ):
                 messages.error(request, "That username is already taken.")
             else:
                 user.username = new_username

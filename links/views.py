@@ -5,7 +5,6 @@ from django.core.paginator import Paginator
 from django.db.models import F
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
-from django.views.decorators.http import require_POST
 
 from accounts.models import User
 
@@ -24,7 +23,6 @@ def index(request):
         return redirect("login")
     handle = request.user.handle
     return redirect("user_bookmark_list", handle=handle)
-
 
 
 @login_required
@@ -84,7 +82,9 @@ def bookmark_import(request, handle: str):
         try:
             content = uploaded.read().decode("utf-8", errors="replace")
         except Exception:
-            return render(request, "links/import.html", {"error": "Could not read the file."})
+            return render(
+                request, "links/import.html", {"error": "Could not read the file."}
+            )
 
         if uploaded.name.lower().endswith(".json"):
             created, skipped = import_pinboard_json(content, request.user)
@@ -116,6 +116,7 @@ def bookmark_export(request, handle: str):
     return response
 
 
+@login_required
 def user_bookmark_list(request, handle: str):
     try:
         owner = User.objects.get(username=handle)

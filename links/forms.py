@@ -15,9 +15,7 @@ class TagsField(forms.CharField):
     def to_python(self, value):
         if not value:
             return []
-        return sorted(
-            {t.lower().strip() for t in value.split() if t.strip()}
-        )
+        return sorted({t.lower().strip() for t in value.split() if t.strip()})
 
 
 class BookmarkForm(forms.ModelForm):

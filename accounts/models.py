@@ -85,7 +85,9 @@ class WebAuthnCredential(models.Model):
 class APIToken(models.Model):
     """API authentication token.  Presented as ``<user_id>:<token>``."""
 
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="api_token")
+    user = models.OneToOneField(
+        User, on_delete=models.CASCADE, related_name="api_token"
+    )
     token = models.CharField(max_length=64, unique=True)
     created_at = models.DateTimeField(auto_now_add=True)
 

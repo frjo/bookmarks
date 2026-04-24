@@ -14,7 +14,6 @@ from html.parser import HTMLParser
 
 from django.utils import timezone
 
-
 # ---------------------------------------------------------------------------
 # Netscape HTML parser
 # ---------------------------------------------------------------------------

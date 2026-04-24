@@ -21,12 +21,21 @@ class UserAdmin(BaseUserAdmin):
 
     fieldsets = (
         (None, {"fields": ("id", "username")}),
-        ("Permissions", {"fields": ("is_active", "is_staff", "is_superuser", "groups", "user_permissions")}),
+        (
+            "Permissions",
+            {
+                "fields": (
+                    "is_active",
+                    "is_staff",
+                    "is_superuser",
+                    "groups",
+                    "user_permissions",
+                )
+            },
+        ),
         ("Dates", {"fields": ("created_at", "last_login")}),
     )
-    add_fieldsets = (
-        (None, {"classes": ("wide",), "fields": ("username",)}),
-    )
+    add_fieldsets = ((None, {"classes": ("wide",), "fields": ("username",)}),)
     filter_horizontal = ("groups", "user_permissions")
 
 
