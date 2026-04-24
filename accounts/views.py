@@ -323,7 +323,7 @@ def passkey_add_complete(request):
 
 @login_required
 @ratelimit(key="user", rate=settings.DEFAULT_RATE_LIMIT)
-def settings_view(request):
+def settings_view(request, slug: str = ""):
     user = request.user
     api_token = APIToken.objects.filter(user=user).first()
     credentials = user.credentials.order_by("created_at")

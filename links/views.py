@@ -25,7 +25,7 @@ def index(request):
 
 @login_required
 @ratelimit(key="user", rate=settings.DEFAULT_RATE_LIMIT)
-def bookmark_add(request):
+def bookmark_add(request, slug: str = ""):
     if request.method == "POST":
         form = BookmarkForm(request.POST)
         if form.is_valid():
@@ -44,7 +44,7 @@ def bookmark_add(request):
 
 @login_required
 @ratelimit(key="user", rate=settings.DEFAULT_RATE_LIMIT)
-def bookmark_edit(request, pk):
+def bookmark_edit(request, slug: str = "", *, pk):
     bookmark = get_object_or_404(Bookmark, pk=pk, user=request.user)
     if request.method == "POST":
         form = BookmarkForm(request.POST, instance=bookmark)
@@ -62,7 +62,7 @@ def bookmark_edit(request, pk):
 
 @login_required
 @ratelimit(key="user", rate=settings.DEFAULT_RATE_LIMIT)
-def bookmark_delete(request, pk):
+def bookmark_delete(request, slug: str = "", *, pk):
     bookmark = get_object_or_404(Bookmark, pk=pk, user=request.user)
     if request.method == "POST":
         bookmark.delete()
@@ -72,7 +72,7 @@ def bookmark_delete(request, pk):
 
 @login_required
 @ratelimit(key="user", rate="10/h")
-def bookmark_import(request):
+def bookmark_import(request, slug: str = ""):
     if request.method == "POST":
         uploaded = request.FILES.get("file")
         if not uploaded:
@@ -100,7 +100,7 @@ def bookmark_import(request):
 
 @login_required
 @ratelimit(key="user", rate="20/h")
-def bookmark_export(request):
+def bookmark_export(request, slug: str = ""):
     fmt = request.GET.get("format", "html")
     bookmarks = Bookmark.objects.filter(user=request.user).order_by("-created_at")
 
@@ -117,7 +117,7 @@ def bookmark_export(request):
 
 
 @login_required
-def user_bookmark_list(request):
+def user_bookmark_list(request, slug: str = ""):
     user = request.user
     tag = request.GET.get("tag", "").strip()
     query = request.GET.get("q", "").strip()

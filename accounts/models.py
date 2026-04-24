@@ -55,10 +55,6 @@ class User(AbstractBaseUser, PermissionsMixin):
         db_table = "accounts_user"
 
     @property
-    def handle(self) -> str:
-        return self.username or self.id
-
-    @property
     def slug(self) -> str:
         """Return a URL-safe slug from a username for use in URL paths."""
         return slugify(self.username) if self.username else self.id

@@ -7,5 +7,6 @@ urlpatterns = [
     path("api/v1/", include("api.v1.urls")),
     path("api/v2/", include("api.v2.urls")),
     path("", include("links.urls")),
+    path("my/", include("links.user_urls")),
     path("<str:slug>/", include("links.user_urls")),
 ]
