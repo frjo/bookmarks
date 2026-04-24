@@ -6,6 +6,10 @@ dist/
 wheels/
 *.egg-info
 
+# Django
+static/
+
+
 # Environments
 .env
 .venv

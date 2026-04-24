@@ -45,7 +45,7 @@
 			"quoteStyle": "double",
 			"semicolons": "always"
 		},
-		"globals": ["htmx"]
+		"globals": ["Alpine", "htmx"]
 	},
 	"assist": {
 		"enabled": true,
