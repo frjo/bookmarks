@@ -13,6 +13,7 @@
   <link rel="manifest" href="{% static 'favicon/site.webmanifest' %}">
   <link rel="stylesheet" href="{% static 'css/styles.css' %}">
   <script defer src="{% static 'libs/alpine.min.js' %}"></script>
+  <script defer src="{% static 'js/passkeys.js' %}"></script>
   {% htmx_script %}
 </head>
 <body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
@@ -62,5 +63,7 @@
   <footer>
     <p>Bookmarks</p>
   </footer>
+
+  {% block extra_scripts %}{% endblock %}
 </body>
 </html>

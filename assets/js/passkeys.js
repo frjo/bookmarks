@@ -11,9 +11,9 @@
  * as roaming authenticators (security keys) and cross-device auth (QR code).
  */
 
-window.hypha = window.hypha || {};
+window.bookmarks = window.bookmarks || {};
 
-window.hypha.passkeys = (function () {
+window.bookmarks.passkeys = (function () {
   let _conditionalAbortController = null;
   function getCsrfToken() {
     const hxheaders = document.body.getAttribute("hx-headers") || "{}";

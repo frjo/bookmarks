@@ -7,9 +7,21 @@
 
   <p>Use a passkey saved on this device to sign in.</p>
 
-  <p role="status" id="status-msg" aria-live="polite" hidden></p>
+  {# Username input enables conditional mediation (passkey autofill in browser UI) #}
+  <input type="text" name="username" autocomplete="username webauthn" hidden aria-hidden="true">
 
-  <button id="login-btn" type="button">Sign in with passkey</button>
+  <p role="alert" id="passkey-auth-error" hidden></p>
+
+  <div data-passkey-ui hidden>
+    <button
+      id="btn-passkey-login"
+      type="button"
+      data-begin-url="{% url 'login_begin' %}"
+      data-complete-url="{% url 'login_complete' %}"
+      data-next-url=""
+      onclick="window.bookmarks.passkeys.authenticate()"
+    >Sign in with passkey</button>
+  </div>
 
   <p>Don't have an account yet? <a href="{% url 'register' %}">Register</a></p>
 </article>
@@ -17,69 +29,8 @@
 
 {% block extra_scripts %}
 <script>
-{% include "accounts/_webauthn_utils.html" %}
-
-document.getElementById('login-btn').addEventListener('click', async () => {
-  const statusEl = document.getElementById('status-msg');
-  const btn = document.getElementById('login-btn');
-
-  setStatus(statusEl, '');
-  btn.disabled = true;
-
-  try {
-    // 1. Fetch authentication options (empty allowCredentials = discoverable).
-    const beginResp = await fetch('{% url "login_begin" %}', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCsrf() },
-      body: '{}',
-    });
-    const options = await beginResp.json();
-    if (!beginResp.ok) throw new Error(options.error || 'Could not begin authentication.');
-
-    // 2. Decode base64url fields.
-    options.challenge = b64urlToBuffer(options.challenge);
-    if (options.allowCredentials) {
-      options.allowCredentials = options.allowCredentials.map(c => ({
-        ...c, id: b64urlToBuffer(c.id),
-      }));
-    }
-
-    // 3. Prompt the user to select a passkey.
-    const credential = await navigator.credentials.get({ publicKey: options });
-
-    // 4. Encode the assertion for the server.
-    const payload = {
-      id: credential.id,
-      rawId: bufferToB64url(credential.rawId),
-      type: credential.type,
-      response: {
-        clientDataJSON: bufferToB64url(credential.response.clientDataJSON),
-        authenticatorData: bufferToB64url(credential.response.authenticatorData),
-        signature: bufferToB64url(credential.response.signature),
-        userHandle: credential.response.userHandle
-          ? bufferToB64url(credential.response.userHandle)
-          : null,
-      },
-    };
-
-    // 5. Complete authentication.
-    const completeResp = await fetch('{% url "login_complete" %}', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCsrf() },
-      body: JSON.stringify(payload),
-    });
-    const result = await completeResp.json();
-    if (!completeResp.ok) throw new Error(result.error || 'Authentication failed.');
-
-    window.location.href = result.redirect || '/';
-  } catch (err) {
-    if (err.name === 'NotAllowedError') {
-      setStatus(statusEl, 'Sign-in was cancelled or timed out.');
-    } else {
-      setStatus(statusEl, err.message || 'Sign-in failed. Please try again.');
-    }
-    btn.disabled = false;
-  }
-});
+  document.addEventListener("DOMContentLoaded", function () {
+    window.bookmarks?.passkeys?.initUI();
+  });
 </script>
 {% endblock %}

@@ -64,7 +64,7 @@
       <ul>
         {% for cred in credentials %}
           <li>
-            Passkey {{ forloop.counter }} —
+            {% if cred.name %}{{ cred.name }}{% else %}Passkey {{ forloop.counter }}{% endif %} —
             added <time datetime="{{ cred.created_at|date:"Y-m-d" }}">{{ cred.created_at|date:"j N Y" }}</time>{% if cred.last_used_at %},
             last used <time datetime="{{ cred.last_used_at|date:"Y-m-d" }}">{{ cred.last_used_at|date:"j N Y" }}</time>{% endif %}
           </li>
@@ -73,6 +73,26 @@
     {% else %}
       <p>No passkeys found.</p>
     {% endif %}
+
+    <div data-passkey-ui hidden>
+      <h3>Add a passkey</h3>
+      <form
+        id="add-passkey-form"
+        data-begin-url="{% url 'passkey_add_begin' %}"
+        data-complete-url="{% url 'passkey_add_complete' %}"
+        data-error-server="Could not begin passkey registration."
+        data-error-register="Passkey registration failed."
+        data-error-duplicate="A passkey for this authenticator is already registered."
+        onsubmit="event.preventDefault(); window.bookmarks.passkeys.register(this)"
+      >
+        <div>
+          <label for="passkey-name">Passkey name (optional)</label>
+          <input type="text" id="passkey-name" name="name" maxlength="100" autocomplete="off" placeholder="e.g. MacBook Touch ID">
+        </div>
+        <p role="alert" id="passkey-error" hidden></p>
+        <button type="submit">Add passkey</button>
+      </form>
+    </div>
   </section>
 </article>
 {% endblock %}
