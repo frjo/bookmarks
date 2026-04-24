@@ -2,6 +2,7 @@ import base64
 import json
 import secrets
 
+import nh3
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import login, logout
@@ -93,7 +94,7 @@ def register_username(request):
     except (json.JSONDecodeError, ValueError):
         return JsonResponse({"error": "Invalid request body."}, status=400)
 
-    username = body.get("username", "").strip()
+    username = nh3.clean(body.get("username", "").strip(), tags=set())
     if username:
         if not (3 <= len(username) <= 50):
             return JsonResponse(
@@ -159,7 +160,7 @@ def register_complete(request):
         public_key=bytes(verification.credential_public_key),
         sign_count=verification.sign_count,
         transports=[],
-        name=data.get("name", "").strip(),
+        name=nh3.clean(data.get("name", "").strip(), tags=set()),
     )
 
     request.session.pop("reg_challenge", None)
@@ -309,7 +310,7 @@ def passkey_add_complete(request):
         public_key=bytes(verification.credential_public_key),
         sign_count=verification.sign_count,
         transports=[],
-        name=data.get("name", "").strip(),
+        name=nh3.clean(data.get("name", "").strip(), tags=set()),
     )
 
     request.session.pop("add_passkey_challenge", None)
@@ -332,7 +333,9 @@ def settings_view(request, slug: str = ""):
         action = request.POST.get("action")
 
         if action == "update_username":
-            new_username = request.POST.get("username", "").strip()
+            new_username = nh3.clean(
+                request.POST.get("username", "").strip(), tags=set()
+            )
             if not (3 <= len(new_username) <= 50):
                 messages.error(
                     request,

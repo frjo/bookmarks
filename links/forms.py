@@ -13,9 +13,15 @@ class TagsField(forms.CharField):
         return value or ""
 
     def to_python(self, value):
-        if not value:
-            return []
-        return sorted({t.lower().strip() for t in value.split() if t.strip()})
+        if value not in self.empty_values:
+            value = sorted(
+                {
+                    nh3.clean(t.lower().strip(), tags=set())
+                    for t in value.split()
+                    if t.strip()
+                }
+            )
+        return value
 
 
 class BookmarkForm(forms.ModelForm):

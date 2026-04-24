@@ -29,6 +29,7 @@ import datetime
 import hashlib
 from functools import wraps
 
+import nh3
 from django.conf import settings
 from django.db.models import Count
 from django.http import JsonResponse
@@ -291,10 +292,16 @@ def posts_add(request):
     if not url:
         return _error("missing_url", "url is required")
 
-    title = params.get("description", "").strip()
-    description = params.get("extended", "").strip()
+    title = nh3.clean(params.get("description", "").strip(), tags=set())
+    description = nh3.clean(params.get("extended", "").strip(), tags=set())
     tags_str = params.get("tags", "")
-    tags = sorted({t.lower().strip() for t in tags_str.split() if t.strip()})
+    tags = sorted(
+        {
+            nh3.clean(t.lower().strip(), tags=set())
+            for t in tags_str.split()
+            if t.strip()
+        }
+    )
     replace = params.get("replace", "yes").lower() not in ("no", "0")
 
     # Accept both yes/no and 1/0 for boolean params
@@ -423,7 +430,7 @@ def tags_rename(request):
     user = request.api_user
     params = _params(request)
     old = params.get("old", "").strip()
-    new = params.get("new", "").strip().lower()
+    new = nh3.clean(params.get("new", "").strip().lower(), tags=set())
     if not old or not new:
         return _error("missing_params", "old and new are required")
 

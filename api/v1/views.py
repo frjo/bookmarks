@@ -32,6 +32,7 @@ import hmac
 from functools import wraps
 from xml.etree.ElementTree import Element, SubElement, tostring
 
+import nh3
 from django.conf import settings
 from django.db.models import Count
 from django.http import HttpResponse, JsonResponse
@@ -190,10 +191,16 @@ def posts_add(request):
     if not url:
         return _result_error(request, "url is required")
 
-    title = params.get("description", "").strip()
-    description = params.get("extended", "").strip()
+    title = nh3.clean(params.get("description", "").strip(), tags=set())
+    description = nh3.clean(params.get("extended", "").strip(), tags=set())
     tags_str = params.get("tags", "")
-    tags = sorted({t.lower().strip() for t in tags_str.split() if t.strip()})
+    tags = sorted(
+        {
+            nh3.clean(t.lower().strip(), tags=set())
+            for t in tags_str.split()
+            if t.strip()
+        }
+    )
     replace = params.get("replace", "yes").lower() != "no"
     shared = params.get("shared", "yes").lower() != "no"
     toread = params.get("toread", "no").lower() == "yes"
@@ -551,7 +558,7 @@ def tags_rename(request):
     user = request.api_user
     params = request.GET if request.method == "GET" else request.POST
     old = params.get("old", "").strip()
-    new = params.get("new", "").strip().lower()
+    new = nh3.clean(params.get("new", "").strip().lower(), tags=set())
     if not old or not new:
         return _result_error(request, "old and new are required")
 

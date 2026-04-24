@@ -12,6 +12,7 @@ import html as html_module
 import json
 from html.parser import HTMLParser
 
+import nh3
 from django.utils import timezone
 
 # ---------------------------------------------------------------------------
@@ -122,13 +123,14 @@ def import_netscape(content: str, user) -> tuple[int, int]:
         if not url:
             skipped += 1
             continue
+        tags = [nh3.clean(t, tags=set()) for t in item["tags"] if t]
         _, was_created = Bookmark.objects.get_or_create(
             user=user,
             url=url,
             defaults={
-                "title": item["title"][:500],
-                "description": item["description"],
-                "tags": item["tags"],
+                "title": nh3.clean(item["title"], tags=set())[:500],
+                "description": nh3.clean(item["description"], tags=set()),
+                "tags": tags,
                 "created_at": _parse_add_date(item["add_date"]),
             },
         )
@@ -158,13 +160,17 @@ def import_pinboard_json(content: str, user) -> tuple[int, int]:
             skipped += 1
             continue
         tags_str = item.get("tags", "")
-        tags = [t.strip().lower() for t in tags_str.split() if t.strip()]
+        tags = [
+            nh3.clean(t.strip().lower(), tags=set())
+            for t in tags_str.split()
+            if t.strip()
+        ]
         _, was_created = Bookmark.objects.get_or_create(
             user=user,
             url=url,
             defaults={
-                "title": item.get("description", url)[:500],
-                "description": item.get("extended", ""),
+                "title": nh3.clean(item.get("description", url), tags=set())[:500],
+                "description": nh3.clean(item.get("extended", ""), tags=set()),
                 "tags": tags,
                 "created_at": _parse_pinboard_time(item.get("time", "")),
             },
