@@ -1,4 +1,4 @@
-"""Pinboard-compatible JSON API (v1 subset).
+"""Pinboard-compatible JSON API (v2 subset).
 
 Authentication
 --------------
@@ -7,25 +7,24 @@ or POST parameter.
 
 Endpoints
 ---------
-GET  /api/v1/posts/get         Return bookmarks (filter by URL or tag/date).
-GET  /api/v1/posts/recent      Most-recent bookmarks.
-GET  /api/v1/posts/all         All bookmarks with optional filters.
-GET  /api/v1/posts/add         Add or update a bookmark.
-GET  /api/v1/posts/delete      Delete a bookmark.
-GET  /api/v1/posts/dates       Number of bookmarks per date.
-GET  /api/v1/tags/get          All tags with counts.
-GET  /api/v1/tags/rename       Rename a tag.
-GET  /api/v1/tags/delete       Delete a tag.
-GET  /api/v1/user/api_token/   Return current token.
+GET  /api/v2/posts/get         Return bookmarks (filter by URL or tag/date).
+GET  /api/v2/posts/recent      Most-recent bookmarks.
+GET  /api/v2/posts/all         All bookmarks with optional filters.
+GET  /api/v2/posts/add         Add or update a bookmark.
+GET  /api/v2/posts/delete      Delete a bookmark.
+GET  /api/v2/posts/dates       Number of bookmarks per date.
+GET  /api/v2/tags/get          All tags with counts.
+GET  /api/v2/tags/rename       Rename a tag.
+GET  /api/v2/tags/delete       Delete a tag.
+GET  /api/v2/user/api_token/   Return current token.
 
 All methods accept both GET and POST.
 """
 
 import datetime
-import json
 from functools import wraps
 
-from django.db.models import Count, Q
+from django.db.models import Count
 from django.http import JsonResponse
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
