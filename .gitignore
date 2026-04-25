@@ -27,3 +27,7 @@ npm-debug.log
 *.stTheme.cache
 *.sublime-workspace
 *.sublime-project
+
+# Bookmarks built styles
+assets/css/styles.css
+assets/css/styles.css.map

@@ -16,51 +16,60 @@
   <link rel="stylesheet" href="{% static 'css/styles.css' %}">
   <link rel="stylesheet" href="{% static 'css/print.css' %}" media="print">
   <script defer src="{% static 'libs/alpine.min.js' %}"></script>
+  <script type="module" src="{% static 'libs/github-relative-time-element.min.js' %}"></script>
   <script defer src="{% static 'js/passkeys.js' %}"></script>
   {% htmx_script %}
 </head>
+
 <body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
-  <header>
-    <a href="/" title="Home" rel="home"><img alt="Home" src="{% static 'favicon/favicon.svg' %}" width="80" height="80"></a>
+  <div class="page layout__page">
+    <header class="header layout__header">
+      <a href="{% url 'index' %}" title="Home" rel="home" class="header__logo"><img alt="Home" src="{% static 'favicon/favicon.svg' %}" width="64" height="64" class="header__logo-image"></a>
 
-    <nav aria-label="Main navigation">
       {% if user.is_authenticated %}
-        <a href="{% url 'user_bookmark_list' slug=user.slug %}">Bookmarks</a>
-        <span aria-hidden="true">|</span>
-        <a href="{% url 'bookmark_add' slug=user.slug %}">Add</a>
-        <span aria-hidden="true">|</span>
-        <a href="{% url 'bookmark_import' slug=user.slug %}">Import</a>
-        <span aria-hidden="true">|</span>
-        <a href="{% url 'bookmark_export' slug=user.slug %}">Export HTML</a>
-        <span aria-hidden="true">|</span>
-        <a href="{% url 'bookmark_export' slug=user.slug %}?format=json">Export JSON</a>
-        <span aria-hidden="true">|</span>
-        <a href="{% url 'settings' slug=user.slug %}">Settings ({{ user.username }})</a>
-        <span aria-hidden="true">|</span>
-        <form method="post" action="{% url 'logout' %}" style="display:inline">
-          {% csrf_token %}
-          <button type="submit">Log out</button>
-        </form>
+      <div class="region header__region">
+        <nav class="secondary-menu" aria-label="Secondary navigation">
+          <ul class="flex-inline mx--0">
+            <li><a href="{% url 'bookmark_import' slug=user.slug %}">Import</a></li>
+            <li><a href="{% url 'bookmark_export' slug=user.slug %}">Export HTML</a></li>
+            <li><a href="{% url 'bookmark_export' slug=user.slug %}?format=json">Export JSON</a></li>
+            <li><a href="{% url 'settings' slug=user.slug %}">Settings ({{ user.username }})</a></li>
+            <li><form method="post" action="{% url 'logout' %}">
+              {% csrf_token %}
+              <button type="submit">Log out</button>
+            </form></li>
+          </ul>
+        </nav>
+      </div>
       {% endif %}
-    </nav>
-  </header>
+    </header>
 
-  <main id="main-content">
-    {% if messages %}
-      <ul role="list" aria-label="Notifications">
-        {% for message in messages %}
-          <li role="status">{{ message }}</li>
-        {% endfor %}
-      </ul>
-    {% endif %}
+      {% if user.is_authenticated %}
+      <nav class="main-menu mx--xs layout__navigation" aria-label="Main navigation">
+        <ul class="flex-inline mx--0">
+          <li><a href="{% url 'bookmark_list' slug=user.slug %}">Your bookmarks</a></li>
+          <li><a href="{% url 'bookmark_add' slug=user.slug %}">Add bookmark</a></li>
+          <li>{% block search %}{% endblock %}</li>
+        </ul>
+      </nav>
+      {% endif %}
 
-    {% block content %}{% endblock %}
-  </main>
+    <main class="main layout__main">
+      {% if messages %}
+        <ul aria-label="Notifications">
+          {% for message in messages %}
+            <li role="status">{{ message }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
 
-  <footer>
-    <p>xdeb.net Bookmarks</p>
-  </footer>
+      {% block content %}{% endblock %}
+    </main>
 
+    <footer class="footer layout__footer mt--l">
+      <p>xdeb.net Bookmarks</p>
+    </footer>
+  </div>
   {% block extra_scripts %}{% endblock %}
 </body>
 </html>

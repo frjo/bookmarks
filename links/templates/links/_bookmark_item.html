@@ -1,7 +1,7 @@
 <li>
   <article aria-labelledby="bm-title-{{ bookmark.id }}">
     <h2 id="bm-title-{{ bookmark.id }}">
-      <a href="{{ bookmark.url }}" rel="noopener noreferrer" target="_blank">{{ bookmark.title|default:bookmark.url }}</a>
+      <a href="{{ bookmark.url }}" rel="noopener noreferrer">{{ bookmark.title|default:bookmark.url }}</a>
     </h2>
 
     {% if bookmark.description %}
@@ -10,7 +10,7 @@
 
     <footer>
       {% if bookmark.tags %}
-        <ul aria-label="Tags" role="list">
+        <ul class="flex-inline" aria-label="Tags">
           {% for tag in bookmark.tags %}
             <li>
               <a
@@ -25,14 +25,18 @@
         </ul>
       {% endif %}
 
-      <time datetime="{{ bookmark.created_at|date:"Y-m-d" }}" title="{{ bookmark.created_at|date:"SHORT_DATETIME_FORMAT" }}">
-        {{ bookmark.created_at|date:"DATE_FORMAT" }}
-      </time>
+      <div class="flex-inline">
+        <relative-time datetime="{{ bookmark.created_at|date:'c' }}">
+          {{ bookmark.created_at|date:"SHORT_DATETIME_FORMAT" }}
+        </relative-time>
 
-      <nav aria-label="Actions for {{ bookmark.title|default:bookmark.url }}">
-        <a href="{% url 'bookmark_edit' slug=user.slug pk=bookmark.pk %}">Edit</a>
-        <a href="{% url 'bookmark_delete' slug=user.slug pk=bookmark.pk %}">Delete</a>
-      </nav>
+        <nav aria-label="Actions for {{ bookmark.title|default:bookmark.url }}">
+          <ul class="flex-inline" aria-label="Actions">
+            <li><a href="{% url 'bookmark_edit' slug=user.slug pk=bookmark.pk %}">Edit</a></li>
+            <li><a href="{% url 'bookmark_delete' slug=user.slug pk=bookmark.pk %}">Delete</a></li>
+          </ul>
+        </nav>
+      </div>
     </footer>
   </article>
 </li>

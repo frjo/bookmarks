@@ -1,54 +1,66 @@
-<section id="bookmark-list" aria-label="Bookmark list" aria-live="polite">
-  {% if page_obj.object_list %}
-    <p>
-      {% if query or tag %}
-        {{ total }} result{{ total|pluralize }} found.
-      {% else %}
-        {{ total }} bookmark{{ total|pluralize }}.
-      {% endif %}
-    </p>
-
-    <ol reversed start="{{ page_obj.end_index }}">
-      {% for bookmark in page_obj %}
-        {% include "links/_bookmark_item.html" %}
-      {% endfor %}
-    </ol>
-
-    {% if page_obj.has_previous or page_obj.has_next %}
-      <nav aria-label="Pagination">
-        {% if page_obj.has_previous %}
-          <a
-            href="?q={{ query }}&tag={{ tag }}&page={{ page_obj.previous_page_number }}"
-            hx-get="?q={{ query }}&tag={{ tag }}&page={{ page_obj.previous_page_number }}"
-            hx-target="#bookmark-list"
-            hx-push-url="true"
-            rel="prev"
-          >← Newer</a>
-        {% endif %}
-
-        <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
-
-        {% if page_obj.has_next %}
-          <a
-            href="?q={{ query }}&tag={{ tag }}&page={{ page_obj.next_page_number }}"
-            hx-get="?q={{ query }}&tag={{ tag }}&page={{ page_obj.next_page_number }}"
-            hx-target="#bookmark-list"
-            hx-push-url="true"
-            rel="next"
-          >Older →</a>
-        {% endif %}
-      </nav>
+<article id="bookmark-list">
+  <h1>
+    {% if tag %}
+      {{ user }}'s bookmarks tagged <em>{{ tag }}</em>
+    {% elif query %}
+      Search results for <em>{{ query }}</em> in {{ user }}'s bookmarks
+    {% else %}
+      {{ user }}'s bookmarks
     {% endif %}
+  </h1>
 
-  {% else %}
-    <p>
-      {% if query %}
-        No bookmarks match your search.
-      {% elif tag %}
-        No bookmarks with this tag.
-      {% else %}
-        You have no bookmarks yet. <a href="{% url 'bookmark_add' slug=user.slug %}">Add your first one</a>.
+  <section aria-label="Bookmark list" aria-live="polite">
+    {% if page_obj.object_list %}
+      <p>
+        {% if query or tag %}
+          {{ total }} result{{ total|pluralize }} found. <a href="{{ request.path }}">Clear</a>
+        {% else %}
+          {{ total }} bookmark{{ total|pluralize }}.
+        {% endif %}
+      </p>
+
+      <ol reversed start="{{ page_obj.end_index }}">
+        {% for bookmark in page_obj %}
+          {% include "links/_bookmark_item.html" %}
+        {% endfor %}
+      </ol>
+
+      {% if page_obj.has_previous or page_obj.has_next %}
+        <nav aria-label="Pagination">
+          {% if page_obj.has_previous %}
+            <a
+              href="?q={{ query }}&tag={{ tag }}&page={{ page_obj.previous_page_number }}"
+              hx-get="?q={{ query }}&tag={{ tag }}&page={{ page_obj.previous_page_number }}"
+              hx-target="#bookmark-list"
+              hx-push-url="true"
+              rel="prev"
+            >← Newer</a>
+          {% endif %}
+
+          <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+
+          {% if page_obj.has_next %}
+            <a
+              href="?q={{ query }}&tag={{ tag }}&page={{ page_obj.next_page_number }}"
+              hx-get="?q={{ query }}&tag={{ tag }}&page={{ page_obj.next_page_number }}"
+              hx-target="#bookmark-list"
+              hx-push-url="true"
+              rel="next"
+            >Older →</a>
+          {% endif %}
+        </nav>
       {% endif %}
-    </p>
-  {% endif %}
-</section>
+
+    {% else %}
+      <p>
+        {% if query %}
+          No bookmarks match your search.
+        {% elif tag %}
+          No bookmarks with this tag.
+        {% else %}
+          You have no bookmarks yet. <a href="{% url 'bookmark_add' slug=user.slug %}">Add your first one</a>.
+        {% endif %}
+      </p>
+    {% endif %}
+  </section>
+</article>

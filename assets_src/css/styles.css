@@ -38,3 +38,4 @@
 @import './components/_tags.css' layer(components);
 @import './components/_visually-hidden.css' layer(components);
 @import './components/_wrap.css' layer(components);
+@import './_custom.css';
