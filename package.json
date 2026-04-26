@@ -15,7 +15,7 @@
     "watch": "npm-run-all --print-label --parallel watch:*",
     "build:css": "npx lightningcss-cli --minify --bundle assets_src/css/styles.css --output-file assets/css/styles.css",
     "build:collectstatic": "npm run collectstatic",
-    "dev:build:css": "npx lightningcss-cli --sourcemap --bundle assets_src/css/styles.css --output-file assets/css/styles.css",
+    "dev:build:css": "npx lightningcss-cli --bundle assets_src/css/styles.css --output-file assets/css/styles.css",
     "watch:css": "nodemon --exec \"npm run dev:build:css\" --watch ./assets_src/css --ext css",
     "watch:collectstatic": "nodemon --exec \"npm run collectstatic\" --watch ./assets/css --watch ./assets/js --ext css,js",
     "collectstatic": "uv run python manage.py collectstatic --no-post-process --noinput --verbosity 0",

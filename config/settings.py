@@ -66,7 +66,7 @@ WEBAUTHN_ORIGIN = env.str("WEBAUTHN_ORIGIN", "http://localhost:8000")
 # Rate-Limit configuration
 # ---------------------------------------------------------------------------
 DEFAULT_RATE_LIMIT = env.str("DEFAULT_RATE_LIMIT", "5/m")
-LOGIN_RATE_LIMIT = env.str("LOGIN_RATE_LIMIT", "10/m")
+STRICT_RATE_LIMIT = env.str("STRICT_RATE_LIMIT", "10/h")
 
 # ---------------------------------------------------------------------------
 # Sessions

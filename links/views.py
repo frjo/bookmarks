@@ -71,7 +71,7 @@ def bookmark_delete(request, slug: str = "", *, pk):
 
 
 @login_required
-@ratelimit(key="user", rate="10/h")
+@ratelimit(key="user", rate=settings.STRICT_RATE_LIMIT)
 def bookmark_import(request, slug: str = ""):
     if request.method == "POST":
         uploaded = request.FILES.get("file")
@@ -99,7 +99,7 @@ def bookmark_import(request, slug: str = ""):
 
 
 @login_required
-@ratelimit(key="user", rate="20/h")
+@ratelimit(key="user", rate=settings.STRICT_RATE_LIMIT)
 def bookmark_export(request, slug: str = ""):
     fmt = request.GET.get("format", "html")
     bookmarks = Bookmark.objects.filter(user=request.user).order_by("-created_at")

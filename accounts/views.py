@@ -86,7 +86,7 @@ def register(request):
 
 
 @require_POST
-@ratelimit(key="ip", rate=settings.LOGIN_RATE_LIMIT)
+@ratelimit(key="ip", rate=settings.DEFAULT_RATE_LIMIT)
 def register_username(request):
     """Validate and store a chosen username in the session (optional)."""
     try:
@@ -111,7 +111,7 @@ def register_username(request):
 
 
 @require_POST
-@ratelimit(key="ip", rate=settings.LOGIN_RATE_LIMIT)
+@ratelimit(key="ip", rate=settings.DEFAULT_RATE_LIMIT)
 def register_begin(request):
     """Begin passkey registration for a new user (username may be absent)."""
     if "reg_username" not in request.session:
@@ -133,7 +133,7 @@ def register_begin(request):
 
 
 @require_POST
-@ratelimit(key="ip", rate=settings.LOGIN_RATE_LIMIT)
+@ratelimit(key="ip", rate=settings.DEFAULT_RATE_LIMIT)
 def register_complete(request):
     challenge_b64 = request.session.get("reg_challenge", "")
     username = request.session.get("reg_username", "") or None
@@ -183,7 +183,7 @@ def login_view(request):
 
 
 @require_POST
-@ratelimit(key="ip", rate=settings.LOGIN_RATE_LIMIT)
+@ratelimit(key="ip", rate=settings.DEFAULT_RATE_LIMIT)
 def login_begin(request):
     options = generate_authentication_options(
         rp_id=settings.WEBAUTHN_RP_ID,
@@ -194,7 +194,7 @@ def login_begin(request):
 
 
 @require_POST
-@ratelimit(key="ip", rate=settings.LOGIN_RATE_LIMIT)
+@ratelimit(key="ip", rate=settings.DEFAULT_RATE_LIMIT)
 def login_complete(request):
     challenge_b64 = request.session.get("auth_challenge", "")
     if not challenge_b64:
