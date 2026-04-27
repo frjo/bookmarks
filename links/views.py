@@ -45,7 +45,7 @@ def _htmx_list_response(request):
 
 
 @login_required
-@ratelimit(key="user", rate=settings.DEFAULT_RATE_LIMIT)
+@ratelimit(key="user", rate=settings.LAX_RATE_LIMIT)
 def bookmark_add(request, slug: str = ""):
     if request.method == "POST":
         form = BookmarkForm(request.POST)
@@ -76,7 +76,7 @@ def bookmark_add(request, slug: str = ""):
 
 
 @login_required
-@ratelimit(key="user", rate=settings.DEFAULT_RATE_LIMIT)
+@ratelimit(key="user", rate=settings.LAX_RATE_LIMIT)
 def bookmark_edit(request, slug: str = "", *, pk):
     bookmark = get_object_or_404(Bookmark, pk=pk, user=request.user)
     if request.method == "POST":
@@ -107,7 +107,7 @@ def bookmark_edit(request, slug: str = "", *, pk):
 
 
 @login_required
-@ratelimit(key="user", rate=settings.DEFAULT_RATE_LIMIT)
+@ratelimit(key="user", rate=settings.LAX_RATE_LIMIT)
 def bookmark_delete(request, slug: str = "", *, pk):
     bookmark = get_object_or_404(Bookmark, pk=pk, user=request.user)
     if request.method == "POST":
@@ -116,13 +116,16 @@ def bookmark_delete(request, slug: str = "", *, pk):
             return _htmx_list_response(request)
         return redirect("bookmark_list", slug=request.user.slug)
     if request.htmx:
+        if request.GET.get("cancel"):
+            return render(
+                request,
+                "links/_delete_link.html",
+                {"bookmark": bookmark, "user": request.user},
+            )
         return render(
             request,
-            "links/_modal_confirm_delete.html",
-            {
-                "bookmark": bookmark,
-                "form_url": request.path,
-            },
+            "links/_delete_confirm_inline.html",
+            {"bookmark": bookmark, "user": request.user},
         )
     return render(request, "links/confirm_delete.html", {"bookmark": bookmark})
 
@@ -174,6 +177,7 @@ def bookmark_export(request, slug: str = ""):
 
 
 @login_required
+@ratelimit(key="user", rate=settings.LAX_RATE_LIMIT)
 def bookmark_list(request, slug: str = ""):
     user = request.user
     tag = request.GET.get("tag", "").strip()

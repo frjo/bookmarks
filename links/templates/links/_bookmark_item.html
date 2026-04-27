@@ -37,12 +37,7 @@
             hx-target="#bookmarks-modal"
             hx-swap="innerHTML"
           >edit</a></li>
-          <li><a
-            href="{% url 'bookmark_delete' slug=user.slug pk=bookmark.pk %}"
-            hx-get="{% url 'bookmark_delete' slug=user.slug pk=bookmark.pk %}"
-            hx-target="#bookmarks-modal"
-            hx-swap="innerHTML"
-          >delete</a></li>
+          {% include "links/_delete_link.html" with user=user bookmark=bookmark %}
         </ul>
       </div>
     </footer>

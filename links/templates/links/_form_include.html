@@ -1,0 +1,72 @@
+{% csrf_token %}
+
+{% if form.non_field_errors %}
+  <ul aria-label="Form errors">
+    {% for error in form.non_field_errors %}
+      <li role="alert">{{ error }}</li>
+    {% endfor %}
+  </ul>
+{% endif %}
+
+<div>
+  <label for="{{ form.url.id_for_label }}">URL</label>
+  <input
+    type="url"
+    id="{{ form.url.id_for_label }}"
+    name="{{ form.url.html_name }}"
+    value="{{ form.url.value|default:'' }}"
+    required
+    autocomplete="url"
+    {% if form.url.errors %}aria-describedby="{{ form.url.html_name }}-error"{% endif %}
+  >
+  {% if form.url.errors %}
+    <p id="{{ form.url.html_name }}-error" role="alert">{{ form.url.errors|join:', ' }}</p>
+  {% endif %}
+</div>
+
+<div>
+  <label for="{{ form.title.id_for_label }}">Title</label>
+  <input
+    type="text"
+    id="{{ form.title.id_for_label }}"
+    name="{{ form.title.html_name }}"
+    value="{{ form.title.value|default:'' }}"
+    required
+    maxlength="500"
+    {% if form.title.errors %}aria-describedby="{{ form.title.html_name }}-error"{% endif %}
+  >
+  {% if form.title.errors %}
+    <p id="{{ form.title.html_name }}-error" role="alert">{{ form.title.errors|join:', ' }}</p>
+  {% endif %}
+</div>
+
+<div>
+  <label for="{{ form.description.id_for_label }}">Description</label>
+  <textarea
+    id="{{ form.description.id_for_label }}"
+    name="{{ form.description.html_name }}"
+    rows="6"
+    {% if form.description.errors %}aria-describedby="{{ form.description.html_name }}-error"{% endif %}
+  >{{ form.description.value|default:'' }}</textarea>
+  {% if form.description.errors %}
+    <p id="{{ form.description.html_name }}-error" role="alert">{{ form.description.errors|join:', ' }}</p>
+  {% endif %}
+</div>
+
+<div>
+  <label for="{{ form.tags.id_for_label }}">Tags</label>
+  <input
+    type="text"
+    id="{{ form.tags.id_for_label }}"
+    name="{{ form.tags.html_name }}"
+    value="{{ form.tags.value|default:'' }}"
+    autocomplete="off"
+    spellcheck="false"
+    aria-describedby="{{ form.tags.html_name }}-hint"
+    {% if form.tags.errors %}aria-describedby="{{ form.tags.html_name }}-error"{% endif %}
+  >
+  <p id="{{ form.tags.html_name }}-hint" class="help-text meta">{{ form.tags.help_text }}</p>
+  {% if form.tags.errors %}
+    <p id="{{ form.tags.html_name }}-error" role="alert">{{ form.tags.errors|join:', ' }}</p>
+  {% endif %}
+</div>
