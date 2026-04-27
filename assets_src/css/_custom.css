@@ -15,6 +15,11 @@ a {
   text-decoration: none;
 }
 
+label {
+  font-size: var(--fs-s);
+  font-family: var(--ff-alt);
+}
+
 .header__site-name {
   font-size: var(--fs-xl);
   letter-spacing: -.01em;
@@ -56,11 +61,6 @@ a {
 
   &::backdrop {
     background-color: var(--color-black-60);
-  }
-
-  label {
-    font-size: var(--fs-s);
-    font-family: var(--ff-alt);
   }
 }
 

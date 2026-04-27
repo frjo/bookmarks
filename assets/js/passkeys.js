@@ -21,12 +21,6 @@ window.bookmarks.passkeys = (() => {
     return headers["X-CSRFToken"] || "";
   }
 
-  function getRememberMe() {
-    const el =
-      document.getElementById("id_auth-remember_me") || document.getElementById("id_remember_me");
-    return el ? el.checked : false;
-  }
-
   function jsonPost(url, body) {
     return fetch(url, {
       method: "POST",
@@ -52,6 +46,8 @@ window.bookmarks.passkeys = (() => {
 
     if (webAuthnAvailable) {
       document.querySelectorAll("[data-passkey-ui]").forEach((el) => el.removeAttribute("hidden"));
+    } else {
+      document.getElementById("no-passkey-msg").removeAttribute("hidden");
     }
 
     if (conditionalOk) {
@@ -154,7 +150,6 @@ window.bookmarks.passkeys = (() => {
       const completeResp = await jsonPost(completeUrl, {
         ...credential.toJSON(),
         next: nextUrl,
-        remember_me: getRememberMe(),
       });
       if (!completeResp.ok) {
         const err = await completeResp.json();
@@ -208,7 +203,6 @@ window.bookmarks.passkeys = (() => {
       const completeResp = await jsonPost(completeUrl, {
         ...credential.toJSON(),
         next: nextUrl,
-        remember_me: getRememberMe(),
       });
       if (!completeResp.ok) return;
       const data = await completeResp.json();
@@ -222,5 +216,37 @@ window.bookmarks.passkeys = (() => {
     }
   }
 
-  return { initUI, register, authenticate };
+  /**
+   * Wire up the registration page form submit handler.
+   * Expects the form to have data-username-url for the username-validation step.
+   */
+  function initRegisterForm() {
+    const form = document.getElementById("register-form");
+    if (!form) return;
+
+    form.addEventListener("submit", async (evt) => {
+      evt.preventDefault();
+      const username = form.querySelector("[name=username]").value.trim();
+      const errorEl = document.getElementById("passkey-error");
+
+      if (errorEl) errorEl.hidden = true;
+
+      const usernameUrl = form.dataset.usernameUrl;
+      if (usernameUrl) {
+        const resp = await jsonPost(usernameUrl, { username });
+        if (!resp.ok) {
+          const err = await resp.json();
+          if (errorEl) {
+            errorEl.textContent = err.error || "Could not validate username.";
+            errorEl.hidden = false;
+          }
+          return;
+        }
+      }
+
+      register(form);
+    });
+  }
+
+  return { initUI, initRegisterForm, register, authenticate };
 })();
