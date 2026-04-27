@@ -31,8 +31,18 @@
         </relative-time>
 
         <ul class="flex-inline flex-inline--center actions" aria-label="Actions">
-          <li><a href="{% url 'bookmark_edit' slug=user.slug pk=bookmark.pk %}">edit</a></li>
-          <li><a href="{% url 'bookmark_delete' slug=user.slug pk=bookmark.pk %}">delete</a></li>
+          <li><a
+            href="{% url 'bookmark_edit' slug=user.slug pk=bookmark.pk %}"
+            hx-get="{% url 'bookmark_edit' slug=user.slug pk=bookmark.pk %}"
+            hx-target="#bookmarks-modal"
+            hx-swap="innerHTML"
+          >edit</a></li>
+          <li><a
+            href="{% url 'bookmark_delete' slug=user.slug pk=bookmark.pk %}"
+            hx-get="{% url 'bookmark_delete' slug=user.slug pk=bookmark.pk %}"
+            hx-target="#bookmarks-modal"
+            hx-swap="innerHTML"
+          >delete</a></li>
         </ul>
       </div>
     </footer>

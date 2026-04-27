@@ -30,3 +30,23 @@
 {% block sidebar %}
   {% include "links/_sidebar_partial.html" %}
 {% endblock %}
+
+{% block modal %}<dialog id="bookmarks-modal" class="bookmarks__modal"></dialog>{% endblock %}
+
+{% block extra_scripts %}
+  <script>
+    (function () {
+      const bookmarksModal = document.getElementById('bookmarks-modal');
+      if (!bookmarksModal) return;
+      bookmarksModal.addEventListener('htmx:afterSwap', function () {
+        this.showModal();
+      });
+      document.body.addEventListener('closeBookmarksModal', function () {
+        bookmarksModal.close();
+      });
+      bookmarksModal.addEventListener('click', function (e) {
+        if (e.target === bookmarksModal) bookmarksModal.close();
+      });
+    }());
+  </script>
+{% endblock %}

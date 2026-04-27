@@ -25,6 +25,25 @@ def index(request):
     return redirect("bookmark_list", slug=request.user.slug)
 
 
+def _htmx_list_response(request):
+    user = request.user
+    qs = Bookmark.objects.filter(user=user)
+    paginator = Paginator(qs, settings.BOOKMARKS_PER_PAGE)
+    page_obj = paginator.get_page(1)
+    context = {
+        "user": user,
+        "page_obj": page_obj,
+        "query": "",
+        "tag": "",
+        "total": paginator.count,
+    }
+    response = render(request, "links/_list_partial.html", context)
+    response["HX-Retarget"] = "#bookmarks"
+    response["HX-Reswap"] = "outerHTML"
+    response["HX-Trigger"] = "closeBookmarksModal"
+    return response
+
+
 @login_required
 @ratelimit(key="user", rate=settings.DEFAULT_RATE_LIMIT)
 def bookmark_add(request, slug: str = ""):
@@ -34,6 +53,8 @@ def bookmark_add(request, slug: str = ""):
             bookmark = form.save(commit=False)
             bookmark.user = request.user
             bookmark.save()
+            if request.htmx:
+                return _htmx_list_response(request)
             return redirect("bookmark_list", slug=request.user.slug)
     else:
         initial = {
@@ -41,6 +62,16 @@ def bookmark_add(request, slug: str = ""):
             "title": request.GET.get("title", ""),
         }
         form = BookmarkForm(initial=initial)
+    if request.htmx:
+        return render(
+            request,
+            "links/_modal_form.html",
+            {
+                "form": form,
+                "action": "Add bookmark",
+                "form_url": request.path,
+            },
+        )
     return render(request, "links/form.html", {"form": form, "action": "Add bookmark"})
 
 
@@ -52,9 +83,22 @@ def bookmark_edit(request, slug: str = "", *, pk):
         form = BookmarkForm(request.POST, instance=bookmark)
         if form.is_valid():
             form.save()
+            if request.htmx:
+                return _htmx_list_response(request)
             return redirect("bookmark_list", slug=request.user.slug)
     else:
         form = BookmarkForm(instance=bookmark)
+    if request.htmx:
+        return render(
+            request,
+            "links/_modal_form.html",
+            {
+                "form": form,
+                "action": "Edit bookmark",
+                "bookmark": bookmark,
+                "form_url": request.path,
+            },
+        )
     return render(
         request,
         "links/form.html",
@@ -68,7 +112,18 @@ def bookmark_delete(request, slug: str = "", *, pk):
     bookmark = get_object_or_404(Bookmark, pk=pk, user=request.user)
     if request.method == "POST":
         bookmark.delete()
+        if request.htmx:
+            return _htmx_list_response(request)
         return redirect("bookmark_list", slug=request.user.slug)
+    if request.htmx:
+        return render(
+            request,
+            "links/_modal_confirm_delete.html",
+            {
+                "bookmark": bookmark,
+                "form_url": request.path,
+            },
+        )
     return render(request, "links/confirm_delete.html", {"bookmark": bookmark})
 
 

@@ -53,7 +53,7 @@
         <textarea
           id="{{ form.description.id_for_label }}"
           name="{{ form.description.html_name }}"
-          rows="4"
+          rows="6"
           {% if form.description.errors %}aria-describedby="{{ form.description.html_name }}-error"{% endif %}
         >{{ form.description.value|default:'' }}</textarea>
         {% if form.description.errors %}
@@ -73,7 +73,7 @@
           aria-describedby="{{ form.tags.html_name }}-hint"
           {% if form.tags.errors %}aria-describedby="{{ form.tags.html_name }}-error"{% endif %}
         >
-        <p id="{{ form.tags.html_name }}-hint">Space-separated. Lowercase, no special characters.</p>
+        <p id="{{ form.tags.html_name }}-hint" class="help-text meta">{{ form.tags.help_text }}</p>
         {% if form.tags.errors %}
           <p id="{{ form.tags.html_name }}-error" role="alert">{{ form.tags.errors|join:', ' }}</p>
         {% endif %}

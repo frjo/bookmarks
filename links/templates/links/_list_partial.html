@@ -52,7 +52,12 @@
       {% elif tag %}
         No bookmarks with this tag.
       {% else %}
-        You have no bookmarks yet. <a href="{% url 'bookmark_add' slug=user.slug %}">Add your first one</a>.
+        You have no bookmarks yet. <a
+          href="{% url 'bookmark_add' slug=user.slug %}"
+          hx-get="{% url 'bookmark_add' slug=user.slug %}"
+          hx-target="#bookmarks-modal"
+          hx-swap="innerHTML"
+        >Add your first one</a>.
       {% endif %}
     </p>
   {% endif %}

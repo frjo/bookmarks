@@ -16,7 +16,6 @@
   /* Improve usability and consistency of cursor style between image-type `input` and others. */
   cursor: pointer;
   color: var(--color-button-text);
-  text-shadow: var(--color-button) 0 1px 0;
   background: linear-gradient(var(--color-button), var(--color-button-hover));
   border: 1px solid var(--color-button-hover);
   border-radius: var(--radius-s);
