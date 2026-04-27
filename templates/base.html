@@ -52,13 +52,7 @@
       <nav class="main-menu mx--xs layout__navigation" aria-label="Main navigation">
         <ul class="flex-inline mx--0">
           <li><a href="{% url 'bookmark_list' slug=user.slug %}">All bookmarks</a></li>
-          <li><a
-            href="{% url 'bookmark_add' slug=user.slug %}"
-            hx-get="{% url 'bookmark_add' slug=user.slug %}"
-            hx-target="#bookmarks-modal"
-            hx-swap="innerHTML"
-          >Add bookmark</a></li>
-          <li>{% block search %}{% endblock %}</li>
+          {% block menu_extra %}{% endblock %}
         </ul>
       </nav>
       {% endif %}

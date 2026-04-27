@@ -199,6 +199,23 @@ def bookmark_list(request, slug: str = ""):
     paginator = Paginator(qs, settings.BOOKMARKS_PER_PAGE)
     page_obj = paginator.get_page(request.GET.get("page", 1))
 
+    context = {
+        "user": user,
+        "page_obj": page_obj,
+        "query": query,
+        "tag": tag,
+        "total": paginator.count,
+    }
+
+    if request.htmx:
+        return render(request, "links/_list_partial.html", context)
+    return render(request, "links/list.html", context)
+
+
+@login_required
+@ratelimit(key="user", rate=settings.LAX_RATE_LIMIT)
+def bookmark_tags(request, slug: str = ""):
+    user = request.user
     all_tags = sorted(
         set(
             chain.from_iterable(
@@ -206,16 +223,4 @@ def bookmark_list(request, slug: str = ""):
             )
         )
     )
-
-    context = {
-        "user": user,
-        "page_obj": page_obj,
-        "query": query,
-        "tag": tag,
-        "total": paginator.count,
-        "all_tags": all_tags,
-    }
-
-    if request.htmx:
-        return render(request, "links/_list_partial.html", context)
-    return render(request, "links/list.html", context)
+    return render(request, "links/_sidebar_partial.html", {"all_tags": all_tags})

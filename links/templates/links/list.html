@@ -3,8 +3,14 @@
 
 {% block page_class %}layout__sidebar-second{% endblock %}
 
-{% block search %}
-  <form role="search" method="get" class="mx--0">
+{% block menu_extra %}
+  <li><a
+    href="{% url 'bookmark_add' slug=user.slug %}"
+    hx-get="{% url 'bookmark_add' slug=user.slug %}"
+    hx-target="#bookmarks-modal"
+    hx-swap="innerHTML"
+  >Add bookmark</a></li>
+  <li><form role="search" method="get" class="mx--0">
     <label for="search-input" class="visually-hidden">Search bookmarks</label>
     <input
       type="search"
@@ -19,16 +25,15 @@
       hx-push-url="true"
       class="mx--0"
     >
-  </form>
+  </form></li>
 {% endblock %}
-
 
 {% block content %}
   {% include "links/_list_partial.html" %}
 {% endblock %}
 
 {% block sidebar %}
-  {% include "links/_sidebar_partial.html" %}
+  <div id="tags" hx-get="{% url 'bookmark_tags' slug=user.slug %}" hx-trigger="load" hx-swap="outerHTML"></div>
 {% endblock %}
 
 {% block modal %}<dialog id="bookmarks-modal" class="bookmarks__modal"></dialog>{% endblock %}
