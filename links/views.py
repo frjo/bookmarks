@@ -1,3 +1,5 @@
+from itertools import chain
+
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.postgres.search import SearchQuery, SearchRank
@@ -137,12 +139,21 @@ def bookmark_list(request, slug: str = ""):
     paginator = Paginator(qs, settings.BOOKMARKS_PER_PAGE)
     page_obj = paginator.get_page(request.GET.get("page", 1))
 
+    all_tags = sorted(
+        set(
+            chain.from_iterable(
+                Bookmark.objects.filter(user=user).values_list("tags", flat=True)
+            )
+        )
+    )
+
     context = {
         "user": user,
         "page_obj": page_obj,
         "query": query,
         "tag": tag,
         "total": paginator.count,
+        "all_tags": all_tags,
     }
 
     if request.htmx:

@@ -1,5 +1,5 @@
 <li>
-  <article class="bookmark">
+  <article class="bookmarks__item">
     <h2 id="bm-{{ bookmark.id }}">
       <a href="{{ bookmark.url }}" rel="noopener noreferrer">{{ bookmark.title|default:bookmark.url }}</a>
     </h2>
@@ -16,7 +16,7 @@
               <a
                 href="?tag={{ tag }}"
                 hx-get="?tag={{ tag }}"
-                hx-target="#bookmark-list"
+                hx-target="#bookmarks"
                 hx-push-url="true"
                 rel="tag"
               >{{ tag }}</a>

@@ -318,13 +318,13 @@ def passkey_add_complete(request):
 
 
 # ---------------------------------------------------------------------------
-# Settings
+# Account
 # ---------------------------------------------------------------------------
 
 
 @login_required
 @ratelimit(key="user", rate=settings.DEFAULT_RATE_LIMIT)
-def settings_view(request, slug: str = ""):
+def account_view(request, slug: str = ""):
     user = request.user
     api_token = APIToken.objects.filter(user=user).first()
     credentials = user.credentials.order_by("created_at")
@@ -359,10 +359,10 @@ def settings_view(request, slug: str = ""):
             )
             messages.success(request, "API token regenerated.")
 
-        return redirect("settings", slug=user.slug)
+        return redirect("account", slug=user.slug)
 
     return render(
         request,
-        "accounts/settings.html",
+        "accounts/account.html",
         {"api_token": api_token, "credentials": credentials},
     )

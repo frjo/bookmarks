@@ -11,5 +11,5 @@ urlpatterns = [
     path("<str:pk>/delete/", views.bookmark_delete, name="bookmark_delete"),
     path("import/", views.bookmark_import, name="bookmark_import"),
     path("export/", views.bookmark_export, name="bookmark_export"),
-    path("settings/", accounts_views.settings_view, name="settings"),
+    path("account/", accounts_views.account_view, name="account"),
 ]
