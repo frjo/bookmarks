@@ -23,9 +23,13 @@
 </head>
 
 <body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
-  <div class="page layout__page">
+  <div class="page layout__page {% block page_class %}{% endblock %}">
     <header class="header layout__header">
       <a href="{% url 'index' %}" title="Home" rel="home" class="header__logo"><img alt="Home" src="{% static 'favicon/favicon.svg' %}" width="64" height="64" class="header__logo-image"></a>
+
+      <span class="header__site-name">
+      <a href="{% url 'index' %}" title="Home" class="header__site-link" rel="home"><span>Bookmarks</span></a>
+      </span>
 
       {% if user.is_authenticated %}
       <div class="region header__region">
@@ -37,7 +41,7 @@
             <li><a href="{% url 'settings' slug=user.slug %}">Settings ({{ user.username }})</a></li>
             <li><form method="post" action="{% url 'logout' %}">
               {% csrf_token %}
-              <button type="submit">Log out</button>
+              <button class="button button--small" type="submit">Log out</button>
             </form></li>
           </ul>
         </nav>
@@ -66,6 +70,8 @@
 
       {% block content %}{% endblock %}
     </main>
+
+    {% block sidebar %}{% endblock %}
 
     <footer class="footer layout__footer mt--l">
       <p>xdeb.net Bookmarks</p>

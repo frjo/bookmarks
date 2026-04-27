@@ -1,5 +1,7 @@
 {% extends "base.html" %}
-{% block title %}{{ user }}'s Bookmarks{% endblock %}
+{% block title %}{{ user }} bookmarks{% endblock %}
+
+{% block page_class %}layout__sidebar-second{% endblock %}
 
 {% block search %}
   <form role="search" method="get" class="mx--0">
@@ -23,4 +25,8 @@
 
 {% block content %}
   {% include "links/_list_partial.html" %}
+{% endblock %}
+
+{% block sidebar %}
+  {% include "links/_sidebar_partial.html" %}
 {% endblock %}

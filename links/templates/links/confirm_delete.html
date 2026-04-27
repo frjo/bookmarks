@@ -2,7 +2,7 @@
 {% block title %}Delete bookmark — Bookmarks{% endblock %}
 
 {% block content %}
-  <article>
+  <section>
     <h1>Delete bookmark</h1>
 
     <p>Are you sure you want to delete this bookmark?</p>
@@ -12,10 +12,10 @@
       <p><a href="{{ bookmark.url }}" rel="noopener noreferrer" target="_blank">{{ bookmark.url }}</a></p>
     </blockquote>
 
-    <form method="post">
+    <form method="post" class="flex-inline">
       {% csrf_token %}
       <button type="submit">Yes, delete</button>
-      <a href="{% url 'bookmark_list' slug=user.slug %}">Cancel</a>
+      <a class="button button--outline" href="{% url 'bookmark_list' slug=user.slug %}">Cancel</a>
     </form>
-  </article>
+  </section>
 {% endblock %}

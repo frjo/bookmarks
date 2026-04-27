@@ -2,7 +2,7 @@
 {% block title %}{{ action }} — Bookmarks{% endblock %}
 
 {% block content %}
-  <article>
+  <section>
     <h1>{{ action }}</h1>
 
     <form method="post" novalidate>
@@ -79,8 +79,10 @@
         {% endif %}
       </div>
 
-      <button type="submit">{{ action }}</button>
-      <a href="{% url 'bookmark_list' slug=user.slug %}">Cancel</a>
+      <div class="flex-inline">
+        <button type="submit">Submit</button>
+        <a class="button button--outline" href="{% url 'bookmark_list' slug=user.slug %}">Cancel</a>
+      </div>
     </form>
-  </article>
+  </section>
 {% endblock %}

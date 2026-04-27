@@ -3,4 +3,49 @@
 :root {
   --max-content-width: 999px;
   --base-font-size: 16;
+
+  /* Brand colours. */
+  --color-brand: oklch(0.4958 0.2838 263.94);
+  --color-brand-alt: oklch(0.5788 0.2316 259.64);
+  --color-brand-light: var(--color-grey-300);
+  --color-brand-dark: var(--color-grey-700);
+}
+
+a {
+  text-decoration: none;
+}
+
+.header__site-name {
+  font-size: var(--fs-xl);
+  letter-spacing: -.01em;
+}
+
+.bookmark-list {
+  h1 {
+    font-size: var(--fs-l);
+  }
+}
+
+.bookmark {
+  h2 {
+    font-size: var(--fs-m);
+    letter-spacing: normal;
+  }
+
+  p {
+    margin-block: 0 var(--spacing-s);
+  }
+}
+
+.actions {
+  a {
+    --color-link: var(--color-text-meta);
+    --color-link-visited: var(--color-text-meta);
+  }
+}
+
+.pager {
+  margin-block: var(--spacing-m);
+  justify-content: center;
+  font-family: var(--ff-alt);
 }

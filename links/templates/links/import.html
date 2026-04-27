@@ -2,7 +2,7 @@
 {% block title %}Import bookmarks — Bookmarks{% endblock %}
 
 {% block content %}
-  <article>
+  <section>
     <h1>Import bookmarks</h1>
 
     {% if done %}
@@ -36,5 +36,5 @@
         <a href="{% url 'bookmark_list' slug=user.slug %}">Cancel</a>
       </form>
     {% endif %}
-  </article>
+  </section>
 {% endblock %}
