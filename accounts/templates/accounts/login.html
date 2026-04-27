@@ -10,7 +10,7 @@
   {# Username input enables conditional mediation (passkey autofill in browser UI) #}
     <input type="text" name="username" autocomplete="username webauthn" hidden aria-hidden="true">
 
-    <p role="alert" id="passkey-auth-error" hidden></p>
+    <p class="form-error" role="alert" id="passkey-auth-error" hidden></p>
 
     <div data-passkey-ui hidden>
       <button

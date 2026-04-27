@@ -14,7 +14,7 @@
       <p><a href="{% url 'bookmark_list' slug=user.slug %}">View your bookmarks</a></p>
     {% else %}
       {% if error %}
-        <p role="alert">{{ error }}</p>
+        <p class="form-error" role="alert">{{ error }}</p>
       {% endif %}
 
       <p>

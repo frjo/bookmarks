@@ -3,7 +3,7 @@
 {% if form.non_field_errors %}
   <ul aria-label="Form errors">
     {% for error in form.non_field_errors %}
-      <li role="alert">{{ error }}</li>
+      <li class="form-error" role="alert">{{ error }}</li>
     {% endfor %}
   </ul>
 {% endif %}
@@ -17,10 +17,11 @@
     value="{{ form.url.value|default:'' }}"
     required
     autocomplete="url"
+    maxlength="{{ form.url.field.max_length }}"
     {% if form.url.errors %}aria-describedby="{{ form.url.html_name }}-error"{% endif %}
   >
   {% if form.url.errors %}
-    <p id="{{ form.url.html_name }}-error" role="alert">{{ form.url.errors|join:', ' }}</p>
+    <p id="{{ form.url.html_name }}-error" class="form-error" role="alert">{{ form.url.errors|join:', ' }}</p>
   {% endif %}
 </div>
 
@@ -32,11 +33,11 @@
     name="{{ form.title.html_name }}"
     value="{{ form.title.value|default:'' }}"
     required
-    maxlength="500"
+    maxlength="{{ form.title.field.max_length }}"
     {% if form.title.errors %}aria-describedby="{{ form.title.html_name }}-error"{% endif %}
   >
   {% if form.title.errors %}
-    <p id="{{ form.title.html_name }}-error" role="alert">{{ form.title.errors|join:', ' }}</p>
+    <p id="{{ form.title.html_name }}-error" class="form-error" role="alert">{{ form.title.errors|join:', ' }}</p>
   {% endif %}
 </div>
 
@@ -46,10 +47,11 @@
     id="{{ form.description.id_for_label }}"
     name="{{ form.description.html_name }}"
     rows="6"
+    maxlength="{{ form.description.field.max_length }}"
     {% if form.description.errors %}aria-describedby="{{ form.description.html_name }}-error"{% endif %}
   >{{ form.description.value|default:'' }}</textarea>
   {% if form.description.errors %}
-    <p id="{{ form.description.html_name }}-error" role="alert">{{ form.description.errors|join:', ' }}</p>
+    <p id="{{ form.description.html_name }}-error" class="form-error" role="alert">{{ form.description.errors|join:', ' }}</p>
   {% endif %}
 </div>
 
@@ -67,6 +69,6 @@
   >
   <p id="{{ form.tags.html_name }}-hint" class="help-text meta">{{ form.tags.help_text }}</p>
   {% if form.tags.errors %}
-    <p id="{{ form.tags.html_name }}-error" role="alert">{{ form.tags.errors|join:', ' }}</p>
+    <p id="{{ form.tags.html_name }}-error" class="form-error" role="alert">{{ form.tags.errors|join:', ' }}</p>
   {% endif %}
 </div>
