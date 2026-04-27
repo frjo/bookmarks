@@ -44,9 +44,6 @@
       document.body.addEventListener('closeBookmarksModal', function () {
         bookmarksModal.close();
       });
-      bookmarksModal.addEventListener('click', function (e) {
-        if (e.target === bookmarksModal) bookmarksModal.close();
-      });
     }());
   </script>
 {% endblock %}
