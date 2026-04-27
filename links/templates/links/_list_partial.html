@@ -2,14 +2,14 @@
   <header class="flex-inline flex-inline--baseline">
     <h1>
       {% if tag %}
-        {{ user }} bookmarks tagged <em>{{ tag }}</em>
+        Showing bookmarks tagged <em>{{ tag }}</em>
       {% elif query %}
-        Search results for <em>{{ query }}</em> in {{ user }} bookmarks
+        Searched for <em>{{ query }}</em> in your bookmarks
       {% else %}
-        {{ user }} – {{ total }} bookmarks
+        {{ user }} bookmarks
       {% endif %}
     </h1>
-    {% if query or tag %}<a class="button button--outline button--small" href="{{ request.path }}">Clear</a>{% endif %}
+    <span>Found {{ total }} results.</span>
   </header>
 
   {% if page_obj.object_list %}

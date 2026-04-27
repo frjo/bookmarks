@@ -52,7 +52,7 @@
       {% if user.is_authenticated %}
       <nav class="main-menu mx--xs layout__navigation" aria-label="Main navigation">
         <ul class="flex-inline mx--0">
-          <li><a href="{% url 'bookmark_list' slug=user.slug %}">Your bookmarks</a></li>
+          <li><a href="{% url 'bookmark_list' slug=user.slug %}">All bookmarks</a></li>
           <li><a href="{% url 'bookmark_add' slug=user.slug %}">Add bookmark</a></li>
           <li>{% block search %}{% endblock %}</li>
         </ul>
