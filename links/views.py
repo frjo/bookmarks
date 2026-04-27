@@ -40,7 +40,7 @@ def _htmx_list_response(request):
     response = render(request, "links/_list_partial.html", context)
     response["HX-Retarget"] = "#bookmarks"
     response["HX-Reswap"] = "outerHTML"
-    response["HX-Trigger"] = "closeBookmarksModal"
+    response["HX-Trigger"] = "closeBookmarksModal, refreshTags"
     return response
 
 
@@ -223,4 +223,6 @@ def bookmark_tags(request, slug: str = ""):
             )
         )
     )
-    return render(request, "links/_sidebar_partial.html", {"all_tags": all_tags})
+    return render(
+        request, "links/_sidebar_partial.html", {"all_tags": all_tags, "user": user}
+    )

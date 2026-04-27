@@ -1,4 +1,10 @@
-<aside class="sidebar layout__second-sidebar">
+<aside
+  id="tags"
+  class="sidebar layout__second-sidebar"
+  hx-get="{% url 'bookmark_tags' slug=user.slug %}"
+  hx-trigger="refreshTags from:body"
+  hx-swap="outerHTML"
+>
   {% if all_tags %}
     <nav class="tag-list">
       <h2>Tags</h2>
