@@ -15,9 +15,9 @@ class Bookmark(models.Model):
         editable=False,
     )
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="bookmarks")
-    url = models.URLField(max_length=2000)
+    url = models.URLField(max_length=500)
     title = models.CharField(max_length=500)
-    description = models.TextField(blank=True)
+    description = models.TextField(blank=True, max_length=2000)
     tags = ArrayField(models.CharField(max_length=100), blank=True, default=list)
     shared = models.BooleanField(default=True)
     toread = models.BooleanField(default=False)

@@ -5,7 +5,7 @@
     </h2>
 
     {% if bookmark.description %}
-      <p>{{ bookmark.description }}</p>
+      {{ bookmark.description|linebreaks }}
     {% endif %}
 
     <footer class="meta">

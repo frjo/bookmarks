@@ -38,7 +38,7 @@ a {
   }
 
   p {
-    margin-block: 0 var(--spacing-s);
+    margin-block: 0 var(--spacing-xs);
   }
 }
 

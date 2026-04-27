@@ -32,7 +32,7 @@ class Migration(migrations.Migration):
                         serialize=False,
                     ),
                 ),
-                ("url", models.URLField(max_length=2000)),
+                ("url", models.URLField(max_length=500)),
                 ("title", models.CharField(max_length=500)),
                 ("description", models.TextField(blank=True)),
                 (
