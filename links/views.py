@@ -107,10 +107,11 @@ def bookmark_edit(request, slug: str = "", *, pk):
 
 
 @login_required
-@ratelimit(key="user", rate=settings.LAX_RATE_LIMIT)
+@ratelimit(key="user", rate=settings.LAX_RATE_LIMIT, block=False)
 def bookmark_delete(request, slug: str = "", *, pk):
     bookmark = get_object_or_404(Bookmark, pk=pk, user=request.user)
-    if request.method == "POST":
+    is_limited = getattr(request, "limited", False)
+    if request.method == "POST" and not is_limited:
         bookmark.delete()
         if request.htmx:
             return _htmx_list_response(request)
