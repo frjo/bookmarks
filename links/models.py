@@ -51,6 +51,10 @@ class Bookmark(models.Model):
             models.Index(
                 fields=["user", "-created_at"], name="links_bookmark_user_date_idx"
             ),
+            models.Index(fields=["user", "url"], name="links_bookmark_user_url_idx"),
+            models.Index(
+                fields=["user", "-updated_at"], name="links_bm_user_updated_idx"
+            ),
         ]
 
     def __str__(self) -> str:
