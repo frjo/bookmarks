@@ -8,7 +8,7 @@
   </ul>
 {% endif %}
 
-<div>
+<div x-data="{ urlValid: false }">
   <label for="{{ form.url.id_for_label }}">URL</label>
   <input
     type="url"
@@ -19,40 +19,57 @@
     autocomplete="url"
     maxlength="{{ form.url.field.max_length }}"
     {% if form.url.errors %}aria-describedby="{{ form.url.html_name }}-error"{% endif %}
+    @input="urlValid = $el.validity.valid"
+    @change="urlValid = $el.validity.valid"
   >
   {% if form.url.errors %}
     <p id="{{ form.url.html_name }}-error" class="form-error" role="alert">{{ form.url.errors|join:', ' }}</p>
   {% endif %}
-</div>
 
-<div>
-  <label for="{{ form.title.id_for_label }}">Title</label>
-  <input
-    type="text"
-    id="{{ form.title.id_for_label }}"
-    name="{{ form.title.html_name }}"
-    value="{{ form.title.value|default:'' }}"
-    required
-    maxlength="{{ form.title.field.max_length }}"
-    {% if form.title.errors %}aria-describedby="{{ form.title.html_name }}-error"{% endif %}
-  >
-  {% if form.title.errors %}
-    <p id="{{ form.title.html_name }}-error" class="form-error" role="alert">{{ form.title.errors|join:', ' }}</p>
+  {% if action == "Add bookmark" %}
+    <a
+      class="mb--s fetch-meta"
+      x-show="urlValid"
+      x-cloak
+      hx-get="{% url 'bookmark_fetch_meta' slug=user.slug %}"
+      hx-target="#fetch-target"
+      hx-swap="innerHTML"
+      hx-include="[name='url']"
+      hx-indicator="#htmx-indicator"
+    >Fetch title & description</a>
   {% endif %}
 </div>
 
-<div>
-  <label for="{{ form.description.id_for_label }}">Description</label>
-  <textarea
-    id="{{ form.description.id_for_label }}"
-    name="{{ form.description.html_name }}"
-    rows="6"
-    maxlength="{{ form.description.field.max_length }}"
-    {% if form.description.errors %}aria-describedby="{{ form.description.html_name }}-error"{% endif %}
-  >{{ form.description.value|default:'' }}</textarea>
-  {% if form.description.errors %}
-    <p id="{{ form.description.html_name }}-error" class="form-error" role="alert">{{ form.description.errors|join:', ' }}</p>
-  {% endif %}
+<div id="fetch-target">
+  <div>
+    <label for="{{ form.title.id_for_label }}">Title</label>
+    <input
+      type="text"
+      id="{{ form.title.id_for_label }}"
+      name="{{ form.title.html_name }}"
+      value="{{ form.title.value|default:'' }}"
+      required
+      maxlength="{{ form.title.field.max_length }}"
+      {% if form.title.errors %}aria-describedby="{{ form.title.html_name }}-error"{% endif %}
+    >
+    {% if form.title.errors %}
+      <p id="{{ form.title.html_name }}-error" class="form-error" role="alert">{{ form.title.errors|join:', ' }}</p>
+    {% endif %}
+  </div>
+
+  <div>
+    <label for="{{ form.description.id_for_label }}">Description</label>
+    <textarea
+      id="{{ form.description.id_for_label }}"
+      name="{{ form.description.html_name }}"
+      rows="6"
+      maxlength="{{ form.description.field.max_length }}"
+      {% if form.description.errors %}aria-describedby="{{ form.description.html_name }}-error"{% endif %}
+    >{{ form.description.value|default:'' }}</textarea>
+    {% if form.description.errors %}
+      <p id="{{ form.description.html_name }}-error" class="form-error" role="alert">{{ form.description.errors|join:', ' }}</p>
+    {% endif %}
+  </div>
 </div>
 
 <div>

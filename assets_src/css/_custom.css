@@ -85,6 +85,12 @@ label {
   }
 }
 
+.tag-filter {
+  font-size: var(--fs-s);
+  font-family: var(--ff-alt);
+  width: auto;
+}
+
 .actions {
   a {
     --color-link: var(--color-text-meta);
@@ -110,13 +116,11 @@ textarea {
   }
 }
 
-.tag-filter {
-  font-size: var(--fs-s);
+.fetch-meta {
+  display: block;
   font-family: var(--ff-alt);
-  width: auto;
-  margin-block-end: 0;
+  cursor: pointer;
 }
-
 
 .form-error {
   font-family: var(--ff-headings);
