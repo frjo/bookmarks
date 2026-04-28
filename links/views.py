@@ -26,49 +26,6 @@ def index(request):
     return redirect("bookmark_list", slug=request.user.slug)
 
 
-def _build_list_context(user, query, tag, page=1):
-    qs = Bookmark.objects.filter(user=user)
-
-    if query and len(query) >= MIN_SEARCH_LENGTH:
-        search_query = SearchQuery(query)
-        qs = (
-            qs.filter(search_vector=search_query)
-            .annotate(rank=SearchRank(F("search_vector"), search_query))
-            .order_by("-rank", "-created_at")
-        )
-    elif tag:
-        qs = qs.filter(tags__contains=[tag])
-
-    paginator = Paginator(qs, settings.BOOKMARKS_PER_PAGE)
-    if not query and not tag:
-        paginator.__dict__["count"] = get_bookmark_count(user)
-
-    if query and len(query) >= MIN_SEARCH_LENGTH:
-        page_prefix = f"?q={query}&"
-    elif tag:
-        page_prefix = f"?tag={tag}&"
-    else:
-        page_prefix = "?"
-
-    return {
-        "user": user,
-        "page_obj": paginator.get_page(page),
-        "query": query,
-        "tag": tag,
-        "total": paginator.count,
-        "page_prefix": page_prefix,
-        "min_search_length": MIN_SEARCH_LENGTH,
-    }
-
-
-def _htmx_list_response(request, query="", tag=""):
-    context = _build_list_context(request.user, query, tag, page=1)
-    response = render(request, "links/_list_partial.html", context)
-    response["HX-Retarget"] = "#bookmarks"
-    response["HX-Reswap"] = "outerHTML"
-    return response
-
-
 @login_required
 @ratelimit(key="user", rate=settings.LAX_RATE_LIMIT)
 def bookmark_add(request, slug: str = ""):
@@ -99,8 +56,8 @@ def bookmark_add(request, slug: str = ""):
                     .exists()
                 )
                 if is_first:
-                    response = _htmx_list_response(request, query="", tag="")
-                    response["HX-Trigger"] = trigger
+                    response = HttpResponse("")
+                    response["HX-Refresh"] = "true"
                     return response
                 response = render(
                     request,
@@ -256,7 +213,38 @@ def bookmark_list(request, slug: str = ""):
     user = request.user
     query = request.GET.get("q", "").strip()
     tag = request.GET.get("tag", "").strip()
-    context = _build_list_context(user, query, tag, page=request.GET.get("page", 1))
+
+    qs = Bookmark.objects.filter(user=user)
+    if query and len(query) >= MIN_SEARCH_LENGTH:
+        search_query = SearchQuery(query)
+        qs = (
+            qs.filter(search_vector=search_query)
+            .annotate(rank=SearchRank(F("search_vector"), search_query))
+            .order_by("-rank", "-created_at")
+        )
+    elif tag:
+        qs = qs.filter(tags__contains=[tag])
+
+    paginator = Paginator(qs, settings.BOOKMARKS_PER_PAGE)
+    if not query and not tag:
+        paginator.__dict__["count"] = get_bookmark_count(user)
+
+    if query and len(query) >= MIN_SEARCH_LENGTH:
+        page_prefix = f"?q={query}&"
+    elif tag:
+        page_prefix = f"?tag={tag}&"
+    else:
+        page_prefix = "?"
+
+    context = {
+        "user": user,
+        "page_obj": paginator.get_page(request.GET.get("page", 1)),
+        "query": query,
+        "tag": tag,
+        "total": paginator.count,
+        "page_prefix": page_prefix,
+        "min_search_length": MIN_SEARCH_LENGTH,
+    }
 
     if request.htmx:
         return render(request, "links/_list_partial.html", context)
