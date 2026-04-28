@@ -119,7 +119,7 @@ def import_netscape(content: str, user) -> tuple[int, int]:
 
     created = skipped = 0
     for item in parser.bookmarks:
-        url = item["url"][:2000]
+        url = item["url"][:500]
         if not url:
             skipped += 1
             continue
@@ -129,7 +129,7 @@ def import_netscape(content: str, user) -> tuple[int, int]:
             url=url,
             defaults={
                 "title": nh3.clean(item["title"], tags=set())[:500],
-                "description": nh3.clean(item["description"], tags=set()),
+                "description": nh3.clean(item["description"], tags=set())[:2000],
                 "tags": tags,
                 "created_at": _parse_add_date(item["add_date"]),
             },
@@ -155,7 +155,7 @@ def import_pinboard_json(content: str, user) -> tuple[int, int]:
 
     created = skipped = 0
     for item in items:
-        url = item.get("href", "").strip()[:2000]
+        url = item.get("href", "").strip()[:500]
         if not url:
             skipped += 1
             continue
@@ -170,7 +170,7 @@ def import_pinboard_json(content: str, user) -> tuple[int, int]:
             url=url,
             defaults={
                 "title": nh3.clean(item.get("description", url), tags=set())[:500],
-                "description": nh3.clean(item.get("extended", ""), tags=set()),
+                "description": nh3.clean(item.get("extended", ""), tags=set())[:2000],
                 "tags": tags,
                 "created_at": _parse_pinboard_time(item.get("time", "")),
             },
