@@ -26,7 +26,7 @@
       </ul>
       <p>Existing bookmarks with the same URL are not duplicated.</p>
 
-      <form method="post" enctype="multipart/form-data">
+      <form method="post" enctype="multipart/form-data" onsubmit="document.getElementById('htmx-indicator').classList.add('htmx-request')">
         {% csrf_token %}
         <div>
           <label for="file">Bookmark file</label>
