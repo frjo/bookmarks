@@ -6,6 +6,7 @@ from django.utils import timezone
 from .models import Bookmark, Unnest, tags_for_user
 
 _TTL_TAGS = 300
+_TTL_COUNT = 300
 _TTL_UPDATE = 60
 _TTL_TOP_TAGS = 300
 _TTL_DATES = 600
@@ -23,8 +24,21 @@ def _top_tags_key(user):
     return f"user_top_tags:{user.pk}"
 
 
+def _count_key(user):
+    return f"bookmark_count:{user.pk}"
+
+
 def _dates_key(user, tag_param=""):
     return f"posts_dates:{user.pk}:{tag_param}"
+
+
+def get_bookmark_count(user):
+    key = _count_key(user)
+    count = cache.get(key)
+    if count is None:
+        count = Bookmark.objects.filter(user=user).count()
+        cache.set(key, count, _TTL_COUNT)
+    return count
 
 
 def get_user_tags(user):
@@ -86,12 +100,8 @@ def get_posts_dates(user, tag_param=""):
     return result
 
 
-def invalidate_user_caches(user):
-    cache.delete_many(
-        [
-            _tags_key(user),
-            _update_key(user),
-            _top_tags_key(user),
-            _dates_key(user, ""),
-        ]
-    )
+def invalidate_user_caches(user, tags_changed=True):
+    keys = [_update_key(user), _count_key(user), _dates_key(user, "")]
+    if tags_changed:
+        keys.extend([_tags_key(user), _top_tags_key(user)])
+    cache.delete_many(keys)

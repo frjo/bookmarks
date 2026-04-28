@@ -7,7 +7,7 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django_ratelimit.decorators import ratelimit
 
-from .cache import get_user_tags, invalidate_user_caches
+from .cache import get_bookmark_count, get_user_tags, invalidate_user_caches
 from .forms import BookmarkForm
 from .importexport import (
     export_json,
@@ -72,19 +72,34 @@ def bookmark_add(request, slug: str = ""):
         if form.is_valid():
             bookmark = form.save(commit=False)
             bookmark.user = request.user
-            old_tags = set(get_user_tags(request.user)) if request.htmx else set()
+            old_tags = set(get_user_tags(request.user))
             bookmark.save()
-            invalidate_user_caches(request.user)
+            tags_changed = bool(set(bookmark.tags) - old_tags)
+            invalidate_user_caches(request.user, tags_changed=tags_changed)
             if request.htmx:
                 tag = request.GET.get("tag", "").strip()
                 query = request.GET.get("q", "").strip()
-                response = _htmx_list_response(request, query=query, tag=tag)
-                tags_changed = bool(set(bookmark.tags) - old_tags)
                 trigger = (
                     "closeBookmarksModal, refreshTags"
                     if tags_changed
                     else "closeBookmarksModal"
                 )
+                if tag or query:
+                    response = HttpResponse("")
+                    response["HX-Trigger"] = trigger
+                    return response
+                is_first = Bookmark.objects.filter(user=request.user).count() == 1
+                if is_first:
+                    response = _htmx_list_response(request, query="", tag="")
+                    response["HX-Trigger"] = trigger
+                    return response
+                response = render(
+                    request,
+                    "links/_bookmark_item.html",
+                    {"bookmark": bookmark, "user": request.user},
+                )
+                response["HX-Retarget"] = "#bookmarks ul"
+                response["HX-Reswap"] = "afterbegin"
                 response["HX-Trigger"] = trigger
                 return response
             return redirect("bookmark_list", slug=request.user.slug)
@@ -116,7 +131,8 @@ def bookmark_edit(request, slug: str = "", *, pk):
         form = BookmarkForm(request.POST, instance=bookmark)
         if form.is_valid():
             form.save()
-            invalidate_user_caches(request.user)
+            tags_changed = set(bookmark.tags) != old_tags
+            invalidate_user_caches(request.user, tags_changed=tags_changed)
             if request.htmx:
                 response = render(
                     request,
@@ -125,7 +141,6 @@ def bookmark_edit(request, slug: str = "", *, pk):
                 )
                 response["HX-Retarget"] = f"#bookmark-{bookmark.pk}"
                 response["HX-Reswap"] = "outerHTML"
-                tags_changed = set(bookmark.tags) != old_tags
                 trigger = (
                     "closeBookmarksModal, refreshTags"
                     if tags_changed
@@ -163,9 +178,7 @@ def bookmark_delete(request, slug: str = "", *, pk):
         bookmark.delete()
         invalidate_user_caches(request.user)
         if request.htmx:
-            response = HttpResponse("")
-            response["HX-Trigger"] = "refreshTags"
-            return response
+            return HttpResponse("")
         return redirect("bookmark_list", slug=request.user.slug)
     if request.htmx:
         if request.GET.get("cancel"):
@@ -248,6 +261,8 @@ def bookmark_list(request, slug: str = ""):
         qs = qs.filter(tags__contains=[tag])
 
     paginator = Paginator(qs, settings.BOOKMARKS_PER_PAGE)
+    if not query and not tag:
+        paginator.__dict__["count"] = get_bookmark_count(user)
     page_obj = paginator.get_page(request.GET.get("page", 1))
 
     if query and len(query) >= MIN_SEARCH_LENGTH:
