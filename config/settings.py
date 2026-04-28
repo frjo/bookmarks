@@ -1,3 +1,5 @@
+import os
+import sys
 from pathlib import Path
 
 from environs import env
@@ -5,6 +7,9 @@ from environs import env
 from .django import *  # noqa
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+TESTING = "test" in sys.argv or "PYTEST_VERSION" in os.environ
+
 
 env.read_env()
 
@@ -85,3 +90,43 @@ if not DEBUG:
 STATIC_URL = "/static/"
 STATICFILES_DIRS = [BASE_DIR / "assets"]
 STATIC_ROOT = BASE_DIR / "static"
+
+
+# ---------------------------------------------------------------------------
+# Development
+# ---------------------------------------------------------------------------
+if DEBUG and not TESTING:
+    INSTALLED_APPS = [
+        *INSTALLED_APPS,
+        "django_extensions",
+        "debug_toolbar",
+    ]
+    MIDDLEWARE = [
+        "debug_toolbar.middleware.DebugToolbarMiddleware",
+        *MIDDLEWARE,
+    ]
+    INTERNAL_IPS = ["127.0.0.1"]
+
+    # We disable all panels by default here since some of them (SQL, Template,
+    # Profiling) can be very CPU intensive for this site.  However disabled panels
+    # can be easily toggled on in the UI.
+    DEBUG_TOOLBAR_CONFIG = {
+        "DISABLE_PANELS": {
+            "debug_toolbar.panels.history.HistoryPanel",
+            "debug_toolbar.panels.versions.VersionsPanel",
+            "debug_toolbar.panels.timer.TimerPanel",
+            "debug_toolbar.panels.settings.SettingsPanel",
+            "debug_toolbar.panels.headers.HeadersPanel",
+            "debug_toolbar.panels.request.RequestPanel",
+            "debug_toolbar.panels.sql.SQLPanel",
+            "debug_toolbar.panels.staticfiles.StaticFilesPanel",
+            "debug_toolbar.panels.templates.TemplatesPanel",
+            "debug_toolbar.panels.alerts.AlertsPanel",
+            "debug_toolbar.panels.cache.CachePanel",
+            "debug_toolbar.panels.signals.SignalsPanel",
+            "debug_toolbar.panels.community.CommunityPanel",
+            "debug_toolbar.panels.redirects.RedirectsPanel",
+            "debug_toolbar.panels.profiling.ProfilingPanel",
+        },
+        "SHOW_COLLAPSED": True,
+    }
