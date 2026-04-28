@@ -3,7 +3,6 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.postgres.search import SearchQuery, SearchRank
 from django.core.paginator import Paginator
 from django.db.models import F
-from django.db.models.functions import Unnest
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django_ratelimit.decorators import ratelimit
@@ -15,7 +14,7 @@ from .importexport import (
     import_netscape,
     import_pinboard_json,
 )
-from .models import Bookmark
+from .models import Bookmark, tags_for_user
 
 
 def index(request):
@@ -211,13 +210,7 @@ def bookmark_list(request, slug: str = ""):
     if request.htmx:
         return render(request, "links/_list_partial.html", context)
 
-    context["all_tags"] = (
-        Bookmark.objects.filter(user=user)
-        .annotate(tag=Unnest("tags"))
-        .values_list("tag", flat=True)
-        .distinct()
-        .order_by("tag")
-    )
+    context["all_tags"] = tags_for_user(user)
     return render(request, "links/list.html", context)
 
 
@@ -225,13 +218,7 @@ def bookmark_list(request, slug: str = ""):
 @ratelimit(key="user", rate=settings.LAX_RATE_LIMIT)
 def bookmark_tags(request, slug: str = ""):
     user = request.user
-    all_tags = (
-        Bookmark.objects.filter(user=user)
-        .annotate(tag=Unnest("tags"))
-        .values_list("tag", flat=True)
-        .distinct()
-        .order_by("tag")
-    )
+    all_tags = tags_for_user(user)
     return render(
         request, "links/_sidebar_partial.html", {"all_tags": all_tags, "user": user}
     )

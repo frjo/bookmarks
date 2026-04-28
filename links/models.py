@@ -2,9 +2,26 @@ from django.contrib.postgres.fields import ArrayField
 from django.contrib.postgres.indexes import GinIndex
 from django.contrib.postgres.search import SearchVectorField
 from django.db import models
+from django.db.models import Func
 from django.utils import timezone
 
 from accounts.models import User, generate_cuid
+
+
+class Unnest(Func):
+    # Expands a PostgreSQL array column into one row per element.
+    function = "UNNEST"
+    arity = 1
+
+
+def tags_for_user(user):
+    return (
+        Bookmark.objects.filter(user=user)
+        .annotate(tag=Unnest("tags"))
+        .values_list("tag", flat=True)
+        .distinct()
+        .order_by("tag")
+    )
 
 
 class Bookmark(models.Model):

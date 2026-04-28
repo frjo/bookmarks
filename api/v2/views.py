@@ -405,7 +405,7 @@ def posts_dates(request):
 @_api_auth
 @ratelimit(key="user", rate=settings.DEFAULT_RATE_LIMIT)
 def tags_get(request):
-    from django.db.models.functions import Unnest
+    from links.models import Unnest
 
     user = request.api_user
     rows = (

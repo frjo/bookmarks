@@ -453,7 +453,7 @@ def posts_suggest(request):
     params = request.GET if request.method == "GET" else request.POST
     url = params.get("url", "").strip()
 
-    from django.db.models.functions import Unnest
+    from links.models import Unnest
 
     # Popular: tags used for this URL across all users, sorted by frequency
     popular_rows = (
@@ -504,7 +504,7 @@ def posts_suggest(request):
 @_api_auth
 @ratelimit(key="user", rate=settings.DEFAULT_RATE_LIMIT)
 def tags_get(request):
-    from django.db.models.functions import Unnest
+    from links.models import Unnest
 
     user = request.api_user
     rows = (
