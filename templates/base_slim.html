@@ -1,0 +1,43 @@
+{% load i18n static django_htmx %}
+{% get_current_language as LANGUAGE_CODE %}
+{% get_current_language_bidi as LANGUAGE_BIDI %}
+<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE }}" dir="{% if LANGUAGE_BIDI %}rtl{% else %}ltr{% endif %}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>{% block title %}Bookmarks{% endblock %}</title>
+  <meta name="description" content="A bookmark service by xdeb.net.">
+  <link rel="icon" type="image/png" href="{% static 'favicon/favicon-96x96.png' %}" sizes="96x96">
+  <link rel="icon" type="image/svg+xml" href="{% static 'favicon/favicon.svg' %}">
+  <link rel="shortcut icon" href="{% static 'favicon/favicon.ico' %}">
+  <link rel="apple-touch-icon" href="{% static 'favicon/apple-touch-icon.png' %}">
+  <link rel="manifest" href="{% static 'favicon/site.webmanifest' %}">
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+  <style> [x-cloak] {display: none !important} </style>
+  <script defer src="{% static 'libs/alpine.min.js' %}"></script>
+  {% htmx_script %}
+</head>
+
+<body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+  <div class="page {% block page_class %}{% endblock %}">
+
+    <main class="main">
+      {% if messages %}
+        <ul aria-label="Notifications">
+          {% for message in messages %}
+            <li role="status">{{ message }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+
+      {% block content %}{% endblock %}
+    </main>
+
+  </div>
+
+  <div id="htmx-indicator" class="htmx-indicator" aria-live="polite" aria-label="Loading"></div>
+
+  {% block extra_scripts %}{% endblock %}
+</body>
+</html>

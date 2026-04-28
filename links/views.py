@@ -1,7 +1,3 @@
-import urllib.request
-from html.parser import HTMLParser
-from urllib.parse import urlparse
-
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.postgres.search import SearchQuery, SearchRank
@@ -22,39 +18,6 @@ from .importexport import (
 from .models import Bookmark
 
 _MIN_SEARCH_LENGTH = 3
-_FETCH_META_MAX_BYTES = 65536
-_FETCH_META_TIMEOUT = 5
-
-
-class _MetaParser(HTMLParser):
-    def __init__(self):
-        super().__init__()
-        self.title = ""
-        self.description = ""
-        self._in_title = False
-
-    def handle_starttag(self, tag, attrs):
-        attrs_dict = dict(attrs)
-        if tag == "title":
-            self._in_title = True
-        elif tag == "meta":
-            name = attrs_dict.get("name", "").lower()
-            prop = attrs_dict.get("property", "").lower()
-            content = attrs_dict.get("content", "")
-            if prop == "og:title" and not self.title:
-                self.title = content
-            if name == "description" and not self.description:
-                self.description = content
-            elif prop == "og:description" and not self.description:
-                self.description = content
-
-    def handle_data(self, data):
-        if self._in_title and not self.title:
-            self.title += data
-
-    def handle_endtag(self, tag):
-        if tag == "title":
-            self._in_title = False
 
 
 def index(request):
@@ -121,6 +84,12 @@ def bookmark_add(request, slug: str = ""):
                 "action": "Add bookmark",
                 "form_url": request.get_full_path(),
             },
+        )
+    if request.GET.get("bookmarklet", ""):
+        return render(
+            request,
+            "links/bookmarklet_form.html",
+            {"form": form, "action": "Add bookmark"},
         )
     return render(request, "links/form.html", {"form": form, "action": "Add bookmark"})
 
@@ -296,35 +265,4 @@ def bookmark_tags(request, slug: str = ""):
     all_tags = get_user_tags(user)
     return render(
         request, "links/_sidebar_partial.html", {"all_tags": all_tags, "user": user}
-    )
-
-
-@login_required
-def bookmark_fetch_meta(request, slug: str = ""):
-    url = request.GET.get("url", "").strip()
-    title = ""
-    description = ""
-    if url:
-        parsed = urlparse(url)
-        if parsed.scheme in ("http", "https"):
-            try:
-                req = urllib.request.Request(
-                    url,
-                    headers={"User-Agent": "Mozilla/5.0 (compatible; Bookmarks/1.0)"},
-                )
-                with urllib.request.urlopen(req, timeout=_FETCH_META_TIMEOUT) as resp:
-                    if "html" in resp.headers.get_content_type():
-                        raw = resp.read(_FETCH_META_MAX_BYTES).decode(
-                            "utf-8", errors="replace"
-                        )
-                        parser = _MetaParser()
-                        parser.feed(raw)
-                        title = parser.title.strip()
-                        description = parser.description.strip()
-            except Exception:
-                pass
-    return render(
-        request,
-        "links/_fetch_meta_fields.html",
-        {"title": title, "description": description},
     )

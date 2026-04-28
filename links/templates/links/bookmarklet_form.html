@@ -1,0 +1,14 @@
+{% extends "base_slim.html" %}
+{% block title %}{{ action }} — Bookmarks{% endblock %}
+
+{% block content %}
+  <section class="bookmarklet-form">
+    <h1>{{ action }}</h1>
+
+    <form method="post" novalidate>
+      {% include "links/_form_include.html" %}
+
+      <button type="submit" class="button button--small">{{ action }}</button>
+    </form>
+  </section>
+{% endblock %}
