@@ -73,6 +73,7 @@ def bookmark_add(request, slug: str = ""):
         initial = {
             "url": request.GET.get("url", ""),
             "title": request.GET.get("title", ""),
+            "description": request.GET.get("description", ""),
         }
         form = BookmarkForm(initial=initial)
     if request.htmx:
