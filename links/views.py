@@ -201,7 +201,6 @@ def bookmark_export(request, slug: str = ""):
 
 
 @login_required
-@ratelimit(key="user", rate=settings.LAX_RATE_LIMIT)
 def bookmark_list(request, slug: str = ""):
     user = request.user
     tag = request.GET.get("tag", "").strip()
@@ -247,7 +246,6 @@ def bookmark_list(request, slug: str = ""):
 
 
 @login_required
-@ratelimit(key="user", rate=settings.LAX_RATE_LIMIT)
 def bookmark_tags(request, slug: str = ""):
     user = request.user
     all_tags = get_user_tags(user)
