@@ -26,23 +26,41 @@ def index(request):
     return redirect("bookmark_list", slug=request.user.slug)
 
 
-def _htmx_list_response(request):
+def _htmx_list_response(request, query="", tag=""):
     user = request.user
     qs = Bookmark.objects.filter(user=user)
+
+    if query and len(query) >= MIN_SEARCH_LENGTH:
+        search_query = SearchQuery(query)
+        qs = (
+            qs.filter(search_vector=search_query)
+            .annotate(rank=SearchRank(F("search_vector"), search_query))
+            .order_by("-rank", "-created_at")
+        )
+    elif tag:
+        qs = qs.filter(tags__contains=[tag])
+
     paginator = Paginator(qs, settings.BOOKMARKS_PER_PAGE)
     page_obj = paginator.get_page(1)
+
+    if query and len(query) >= MIN_SEARCH_LENGTH:
+        page_prefix = f"?q={query}&"
+    elif tag:
+        page_prefix = f"?tag={tag}&"
+    else:
+        page_prefix = "?"
+
     context = {
         "user": user,
         "page_obj": page_obj,
-        "query": "",
-        "tag": "",
+        "query": query,
+        "tag": tag,
         "total": paginator.count,
-        "page_prefix": "?",
+        "page_prefix": page_prefix,
     }
     response = render(request, "links/_list_partial.html", context)
     response["HX-Retarget"] = "#bookmarks"
     response["HX-Reswap"] = "outerHTML"
-    response["HX-Trigger"] = "closeBookmarksModal, refreshTags"
     return response
 
 
@@ -54,10 +72,21 @@ def bookmark_add(request, slug: str = ""):
         if form.is_valid():
             bookmark = form.save(commit=False)
             bookmark.user = request.user
+            old_tags = set(get_user_tags(request.user)) if request.htmx else set()
             bookmark.save()
             invalidate_user_caches(request.user)
             if request.htmx:
-                return _htmx_list_response(request)
+                tag = request.GET.get("tag", "").strip()
+                query = request.GET.get("q", "").strip()
+                response = _htmx_list_response(request, query=query, tag=tag)
+                tags_changed = bool(set(bookmark.tags) - old_tags)
+                trigger = (
+                    "closeBookmarksModal, refreshTags"
+                    if tags_changed
+                    else "closeBookmarksModal"
+                )
+                response["HX-Trigger"] = trigger
+                return response
             return redirect("bookmark_list", slug=request.user.slug)
     else:
         initial = {
@@ -72,7 +101,7 @@ def bookmark_add(request, slug: str = ""):
             {
                 "form": form,
                 "action": "Add bookmark",
-                "form_url": request.path,
+                "form_url": request.get_full_path(),
             },
         )
     return render(request, "links/form.html", {"form": form, "action": "Add bookmark"})

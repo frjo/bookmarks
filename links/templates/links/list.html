@@ -6,7 +6,7 @@
 {% block menu_extra %}
   <li><a
     href="{% url 'bookmark_add' slug=user.slug %}"
-    hx-get="{% url 'bookmark_add' slug=user.slug %}"
+    hx-get="{% url 'bookmark_add' slug=user.slug %}{% if query %}?q={{ query }}{% elif tag %}?tag={{ tag }}{% endif %}"
     hx-target="#bookmarks-modal"
     hx-swap="innerHTML"
   >Add bookmark</a></li>
@@ -23,6 +23,7 @@
       hx-get="{{ request.path }}"
       hx-trigger="input[this.value.length >= {{ min_search_length }} || this.value.length === 0] changed delay:400ms, search"
       hx-target="#bookmarks"
+      hx-swap="outerHTML"
       hx-push-url="true"
       hx-indicator="#htmx-indicator"
       class="mx--0"

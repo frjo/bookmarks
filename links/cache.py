@@ -5,10 +5,10 @@ from django.utils import timezone
 
 from .models import Bookmark, Unnest, tags_for_user
 
-_TTL_TAGS = 60
+_TTL_TAGS = 300
 _TTL_UPDATE = 60
-_TTL_TOP_TAGS = 60
-_TTL_DATES = 120
+_TTL_TOP_TAGS = 300
+_TTL_DATES = 600
 
 
 def _tags_key(user):
