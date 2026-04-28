@@ -229,6 +229,7 @@ def bookmark_list(request, slug: str = ""):
         "tag": tag,
         "total": paginator.count,
         "page_prefix": page_prefix,
+        "min_search_length": MIN_SEARCH_LENGTH,
     }
 
     if request.htmx:
