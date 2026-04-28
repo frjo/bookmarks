@@ -7,8 +7,25 @@
 >
   {% if all_tags %}
     <nav class="tag-list">
-      <h2>Tags</h2>
-      <ul class="meta">
+      <header class="flex-inline flex-inline--baseline">
+        <h2>Tags</h2>
+        {% if all_tags|length > 10 %}
+          <input
+            type="search"
+            id="tag-filter"
+            class="tag-filter"
+            placeholder="Filter tags…"
+            autocomplete="off"
+            oninput="
+                     const q = this.value.toLowerCase();
+                     document.querySelectorAll('#tag-list li').forEach(li => {
+                     li.hidden = !li.textContent.toLowerCase().includes(q);
+                     });
+                    "
+          >
+        {% endif %}
+      </header>
+      <ul class="meta" id="tag-list">
         {% for t in all_tags %}
           <li>
             <a
