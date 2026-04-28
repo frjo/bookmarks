@@ -23,8 +23,8 @@
       <nav class="flex-inline pager" aria-label="Pagination">
         {% if page_obj.has_previous %}
           <a
-            href="?q={{ query }}&tag={{ tag }}&page={{ page_obj.previous_page_number }}"
-            hx-get="?q={{ query }}&tag={{ tag }}&page={{ page_obj.previous_page_number }}"
+            href="{{ page_prefix }}page={{ page_obj.previous_page_number }}"
+            hx-get="{{ page_prefix }}page={{ page_obj.previous_page_number }}"
             hx-target="#bookmarks"
             hx-push-url="true"
             rel="prev"
@@ -35,8 +35,8 @@
 
         {% if page_obj.has_next %}
           <a
-            href="?q={{ query }}&tag={{ tag }}&page={{ page_obj.next_page_number }}"
-            hx-get="?q={{ query }}&tag={{ tag }}&page={{ page_obj.next_page_number }}"
+            href="{{ page_prefix }}page={{ page_obj.next_page_number }}"
+            hx-get="{{ page_prefix }}page={{ page_obj.next_page_number }}"
             hx-target="#bookmarks"
             hx-push-url="true"
             rel="next"
