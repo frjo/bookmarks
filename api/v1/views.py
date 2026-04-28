@@ -42,6 +42,12 @@ from django.views.decorators.http import require_http_methods
 from django_ratelimit.decorators import ratelimit
 
 from accounts.models import APIToken
+from links.cache import (
+    get_posts_dates,
+    get_posts_update_time,
+    get_user_top_tags,
+    invalidate_user_caches,
+)
 from links.models import Bookmark
 
 _ALLOW = require_http_methods(["GET", "POST"])
@@ -161,13 +167,7 @@ def _api_auth(view_func):
 @ratelimit(key="user", rate=settings.DEFAULT_RATE_LIMIT)
 def posts_update(request):
     """Return the timestamp of the most recent bookmark change."""
-    latest = (
-        Bookmark.objects.filter(user=request.api_user)
-        .order_by("-updated_at")
-        .values_list("updated_at", flat=True)
-        .first()
-    )
-    ts = (latest or timezone.now()).strftime("%Y-%m-%dT%H:%M:%SZ")
+    ts = get_posts_update_time(request.api_user)
     if _fmt(request) == "json":
         return JsonResponse({"update_time": ts})
     root = Element("update", time=ts)
@@ -234,6 +234,7 @@ def posts_add(request):
             **({"created_at": created_at} if created_at else {}),
         )
 
+    invalidate_user_caches(user)
     return _result_done(request)
 
 
@@ -254,6 +255,7 @@ def posts_delete(request):
     deleted, _ = Bookmark.objects.filter(user=user, url=url).delete()
     if not deleted:
         return _result_error(request, "item not found", 404)
+    invalidate_user_caches(user)
     return _result_done(request)
 
 
@@ -409,33 +411,14 @@ def posts_dates(request):
     user = request.api_user
     params = request.GET if request.method == "GET" else request.POST
     tag_param = params.get("tag", "")
-
-    qs = Bookmark.objects.filter(user=user)
-    if tag_param:
-        for tag in tag_param.split():
-            qs = qs.filter(tags__contains=[tag])
-
-    from django.db.models.functions import TruncDate
-
-    rows = (
-        qs.annotate(date=TruncDate("created_at"))
-        .values("date")
-        .annotate(count=Count("id"))
-        .order_by("-date")
-    )
+    dates = get_posts_dates(user, tag_param)
 
     if _fmt(request) == "json":
-        return JsonResponse(
-            {
-                "user": user.username,
-                "tag": tag_param,
-                "dates": {str(r["date"]): r["count"] for r in rows},
-            }
-        )
+        return JsonResponse({"user": user.username, "tag": tag_param, "dates": dates})
 
     root = Element("dates", tag=tag_param, user=user.username)
-    for r in rows:
-        SubElement(root, "date", date=str(r["date"]), count=str(r["count"]))
+    for date_str, count in dates.items():
+        SubElement(root, "date", date=date_str, count=str(count))
     return _xml_response(root)
 
 
@@ -470,14 +453,7 @@ def posts_suggest(request):
     if user_bm:
         recommended = user_bm.tags
     else:
-        rec_rows = (
-            Bookmark.objects.filter(user=user)
-            .annotate(tag=Unnest("tags"))
-            .values("tag")
-            .annotate(count=Count("id"))
-            .order_by("-count")[:100]
-        )
-        recommended = [r["tag"] for r in rec_rows]
+        recommended = get_user_top_tags(user)
 
     if _fmt(request) == "json":
         return JsonResponse(
@@ -543,6 +519,7 @@ def tags_delete(request):
         bm.tags = [t for t in bm.tags if t != tag]
         bm.save(update_fields=["tags"])
 
+    invalidate_user_caches(user)
     return _result_done(request)
 
 
@@ -567,6 +544,7 @@ def tags_rename(request):
         bm.tags = sorted(set(tags))
         bm.save(update_fields=["tags"])
 
+    invalidate_user_caches(user)
     return _result_done(request)
 
 

@@ -10,9 +10,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 TESTING = "test" in sys.argv or "PYTEST_VERSION" in os.environ
 
-
 env.read_env()
-
 
 # ---------------------------------------------------------------------------
 # App settings
@@ -59,7 +57,6 @@ DATABASES = {
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-
 # ---------------------------------------------------------------------------
 # WebAuthn / Passkeys
 # ---------------------------------------------------------------------------
@@ -85,12 +82,22 @@ if not DEBUG:
     SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 # ---------------------------------------------------------------------------
+# Cache
+# ---------------------------------------------------------------------------
+
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.db.DatabaseCache",
+        "LOCATION": "database_cache",
+    },
+}
+
+# ---------------------------------------------------------------------------
 # Static files
 # ---------------------------------------------------------------------------
 STATIC_URL = "/static/"
 STATICFILES_DIRS = [BASE_DIR / "assets"]
 STATIC_ROOT = BASE_DIR / "static"
-
 
 # ---------------------------------------------------------------------------
 # Development

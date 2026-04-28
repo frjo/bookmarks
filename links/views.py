@@ -1,13 +1,13 @@
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.postgres.search import SearchQuery, SearchRank
-from django.core.cache import cache
 from django.core.paginator import Paginator
 from django.db.models import F
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django_ratelimit.decorators import ratelimit
 
+from .cache import get_user_tags, invalidate_user_caches
 from .forms import BookmarkForm
 from .importexport import (
     export_json,
@@ -15,26 +15,9 @@ from .importexport import (
     import_netscape,
     import_pinboard_json,
 )
-from .models import Bookmark, tags_for_user
+from .models import Bookmark
 
 MIN_SEARCH_LENGTH = 3
-
-
-def _user_tags_cache_key(user):
-    return f"user_tags:{user.pk}"
-
-
-def _get_user_tags(user):
-    key = _user_tags_cache_key(user)
-    tags = cache.get(key)
-    if tags is None:
-        tags = list(tags_for_user(user))
-        cache.set(key, tags, 60)
-    return tags
-
-
-def _invalidate_user_tags(user):
-    cache.delete(_user_tags_cache_key(user))
 
 
 def index(request):
@@ -72,7 +55,7 @@ def bookmark_add(request, slug: str = ""):
             bookmark = form.save(commit=False)
             bookmark.user = request.user
             bookmark.save()
-            _invalidate_user_tags(request.user)
+            invalidate_user_caches(request.user)
             if request.htmx:
                 return _htmx_list_response(request)
             return redirect("bookmark_list", slug=request.user.slug)
@@ -103,7 +86,7 @@ def bookmark_edit(request, slug: str = "", *, pk):
         form = BookmarkForm(request.POST, instance=bookmark)
         if form.is_valid():
             form.save()
-            _invalidate_user_tags(request.user)
+            invalidate_user_caches(request.user)
             if request.htmx:
                 response = render(
                     request,
@@ -142,7 +125,7 @@ def bookmark_delete(request, slug: str = "", *, pk):
     is_limited = getattr(request, "limited", False)
     if request.method == "POST" and not is_limited:
         bookmark.delete()
-        _invalidate_user_tags(request.user)
+        invalidate_user_caches(request.user)
         if request.htmx:
             response = HttpResponse("")
             response["HX-Trigger"] = "refreshTags"
@@ -183,7 +166,7 @@ def bookmark_import(request, slug: str = ""):
         else:
             created, skipped = import_netscape(content, request.user)
 
-        _invalidate_user_tags(request.user)
+        invalidate_user_caches(request.user)
         return render(
             request,
             "links/import.html",
@@ -251,7 +234,7 @@ def bookmark_list(request, slug: str = ""):
     if request.htmx:
         return render(request, "links/_list_partial.html", context)
 
-    context["all_tags"] = _get_user_tags(user)
+    context["all_tags"] = get_user_tags(user)
     return render(request, "links/list.html", context)
 
 
@@ -259,7 +242,7 @@ def bookmark_list(request, slug: str = ""):
 @ratelimit(key="user", rate=settings.LAX_RATE_LIMIT)
 def bookmark_tags(request, slug: str = ""):
     user = request.user
-    all_tags = _get_user_tags(user)
+    all_tags = get_user_tags(user)
     return render(
         request, "links/_sidebar_partial.html", {"all_tags": all_tags, "user": user}
     )

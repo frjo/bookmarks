@@ -39,6 +39,7 @@ from django.views.decorators.http import require_http_methods
 from django_ratelimit.decorators import ratelimit
 
 from accounts.models import APIToken
+from links.cache import get_posts_dates, invalidate_user_caches
 from links.models import Bookmark
 
 _READ = require_http_methods(["GET"])
@@ -340,6 +341,7 @@ def posts_add(request):
             **({"created_at": created_at} if created_at else {}),
         )
 
+    invalidate_user_caches(user)
     return _ok({"result_code": "done"})
 
 
@@ -358,6 +360,7 @@ def posts_delete(request):
     if not url:
         return _error("missing_url", "url is required")
     Bookmark.objects.filter(user=user, url=url).delete()
+    invalidate_user_caches(user)
     return _ok({"result_code": "done"})
 
 
@@ -373,27 +376,8 @@ def posts_dates(request):
     user = request.api_user
     params = _params(request)
     tag_param = params.get("tag", "")
-
-    qs = Bookmark.objects.filter(user=user)
-    if tag_param:
-        for tag in tag_param.split():
-            qs = qs.filter(tags__contains=[tag])
-
-    from django.db.models.functions import TruncDate
-
-    rows = (
-        qs.annotate(date=TruncDate("created_at"))
-        .values("date")
-        .annotate(count=Count("id"))
-        .order_by("-date")
-    )
-    return _ok(
-        {
-            "user": user.username,
-            "tag": tag_param,
-            "dates": {str(r["date"]): r["count"] for r in rows},
-        }
-    )
+    dates = get_posts_dates(user, tag_param)
+    return _ok({"user": user.username, "tag": tag_param, "dates": dates})
 
 
 # ---------------------------------------------------------------------------
@@ -438,6 +422,7 @@ def tags_rename(request):
         bm.tags = sorted({new if t == old else t for t in bm.tags})
         bm.save(update_fields=["tags"])
 
+    invalidate_user_caches(user)
     return _ok({"result_code": "done"})
 
 
@@ -460,6 +445,7 @@ def tags_delete(request):
         bm.tags = [t for t in bm.tags if t != tag]
         bm.save(update_fields=["tags"])
 
+    invalidate_user_caches(user)
     return _ok({"result_code": "done"})
 
 
