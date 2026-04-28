@@ -125,7 +125,7 @@ def bookmark_delete(request, slug: str = "", *, pk):
             )
         return render(
             request,
-            "links/_delete_confirm_inline.html",
+            "links/_delete_confirm.html",
             {"bookmark": bookmark, "user": request.user},
         )
     return render(request, "links/confirm_delete.html", {"bookmark": bookmark})
