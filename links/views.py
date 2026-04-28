@@ -83,6 +83,7 @@ def bookmark_add(request, slug: str = ""):
 def bookmark_edit(request, slug: str = "", *, pk):
     bookmark = get_object_or_404(Bookmark, pk=pk, user=request.user)
     if request.method == "POST":
+        old_tags = set(bookmark.tags)
         form = BookmarkForm(request.POST, instance=bookmark)
         if form.is_valid():
             form.save()
@@ -95,7 +96,13 @@ def bookmark_edit(request, slug: str = "", *, pk):
                 )
                 response["HX-Retarget"] = f"#bookmark-{bookmark.pk}"
                 response["HX-Reswap"] = "outerHTML"
-                response["HX-Trigger"] = "closeBookmarksModal, refreshTags"
+                tags_changed = set(bookmark.tags) != old_tags
+                trigger = (
+                    "closeBookmarksModal, refreshTags"
+                    if tags_changed
+                    else "closeBookmarksModal"
+                )
+                response["HX-Trigger"] = trigger
                 return response
             return redirect("bookmark_list", slug=request.user.slug)
     else:

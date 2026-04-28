@@ -13,6 +13,7 @@ import json
 from html.parser import HTMLParser
 
 import nh3
+from django.contrib.postgres.search import SearchVector
 from django.utils import timezone
 
 # ---------------------------------------------------------------------------
@@ -107,6 +108,21 @@ def _parse_pinboard_time(value: str) -> datetime.datetime:
 # ---------------------------------------------------------------------------
 
 
+def _update_search_vectors(bookmarks) -> None:
+    if not bookmarks:
+        return
+    from .models import Bookmark
+
+    pks = [b.pk for b in bookmarks]
+    Bookmark.objects.filter(pk__in=pks).update(
+        search_vector=(
+            SearchVector("title", weight="A")
+            + SearchVector("description", weight="B")
+            + SearchVector("url", weight="C")
+        )
+    )
+
+
 def import_netscape(content: str, user) -> tuple[int, int]:
     """Parse a Netscape HTML bookmark file and create Bookmark objects.
 
@@ -117,28 +133,33 @@ def import_netscape(content: str, user) -> tuple[int, int]:
     parser = _NetscapeParser()
     parser.feed(content)
 
-    created = skipped = 0
+    existing_urls = set(
+        Bookmark.objects.filter(user=user).values_list("url", flat=True)
+    )
+    seen_urls: set[str] = set()
+    to_create = []
+    skipped = 0
     for item in parser.bookmarks:
         url = item["url"][:500]
-        if not url:
+        if not url or url in existing_urls or url in seen_urls:
             skipped += 1
             continue
+        seen_urls.add(url)
         tags = [nh3.clean(t, tags=set()) for t in item["tags"] if t]
-        _, was_created = Bookmark.objects.get_or_create(
-            user=user,
-            url=url,
-            defaults={
-                "title": nh3.clean(item["title"], tags=set())[:500],
-                "description": nh3.clean(item["description"], tags=set())[:2000],
-                "tags": tags,
-                "created_at": _parse_add_date(item["add_date"]),
-            },
+        to_create.append(
+            Bookmark(
+                user=user,
+                url=url,
+                title=nh3.clean(item["title"], tags=set())[:500],
+                description=nh3.clean(item["description"], tags=set())[:2000],
+                tags=tags,
+                created_at=_parse_add_date(item["add_date"]),
+            )
         )
-        if was_created:
-            created += 1
-        else:
-            skipped += 1
-    return created, skipped
+
+    created_objs = Bookmark.objects.bulk_create(to_create)
+    _update_search_vectors(created_objs)
+    return len(created_objs), skipped
 
 
 def import_pinboard_json(content: str, user) -> tuple[int, int]:
@@ -153,33 +174,38 @@ def import_pinboard_json(content: str, user) -> tuple[int, int]:
     except (json.JSONDecodeError, ValueError):
         return 0, 0
 
-    created = skipped = 0
+    existing_urls = set(
+        Bookmark.objects.filter(user=user).values_list("url", flat=True)
+    )
+    seen_urls: set[str] = set()
+    to_create = []
+    skipped = 0
     for item in items:
         url = item.get("href", "").strip()[:500]
-        if not url:
+        if not url or url in existing_urls or url in seen_urls:
             skipped += 1
             continue
+        seen_urls.add(url)
         tags_str = item.get("tags", "")
         tags = [
             nh3.clean(t.strip().lower(), tags=set())
             for t in tags_str.split()
             if t.strip()
         ]
-        _, was_created = Bookmark.objects.get_or_create(
-            user=user,
-            url=url,
-            defaults={
-                "title": nh3.clean(item.get("description", url), tags=set())[:500],
-                "description": nh3.clean(item.get("extended", ""), tags=set())[:2000],
-                "tags": tags,
-                "created_at": _parse_pinboard_time(item.get("time", "")),
-            },
+        to_create.append(
+            Bookmark(
+                user=user,
+                url=url,
+                title=nh3.clean(item.get("description", url), tags=set())[:500],
+                description=nh3.clean(item.get("extended", ""), tags=set())[:2000],
+                tags=tags,
+                created_at=_parse_pinboard_time(item.get("time", "")),
+            )
         )
-        if was_created:
-            created += 1
-        else:
-            skipped += 1
-    return created, skipped
+
+    created_objs = Bookmark.objects.bulk_create(to_create)
+    _update_search_vectors(created_objs)
+    return len(created_objs), skipped
 
 
 # ---------------------------------------------------------------------------

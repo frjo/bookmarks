@@ -27,6 +27,7 @@
             hx-get="{{ page_prefix }}page={{ page_obj.previous_page_number }}"
             hx-target="#bookmarks"
             hx-push-url="true"
+            hx-indicator="#htmx-indicator"
             rel="prev"
           ><span aria-hidden="true">« </span> Previous</a>
         {% endif %}
@@ -39,6 +40,7 @@
             hx-get="{{ page_prefix }}page={{ page_obj.next_page_number }}"
             hx-target="#bookmarks"
             hx-push-url="true"
+            hx-indicator="#htmx-indicator"
             rel="next"
           >Next <span aria-hidden="true"> »</span></a>
         {% endif %}
