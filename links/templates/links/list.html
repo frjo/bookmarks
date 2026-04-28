@@ -33,7 +33,7 @@
 {% endblock %}
 
 {% block sidebar %}
-  <div id="tags" hx-get="{% url 'bookmark_tags' slug=user.slug %}" hx-trigger="load" hx-swap="outerHTML"></div>
+  {% include "links/_sidebar_partial.html" %}
 {% endblock %}
 
 {% block modal %}<dialog id="bookmarks-modal" class="bookmarks__modal"></dialog>{% endblock %}

@@ -1,10 +1,9 @@
-from itertools import chain
-
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.postgres.search import SearchQuery, SearchRank
 from django.core.paginator import Paginator
 from django.db.models import F
+from django.db.models.functions import Unnest
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django_ratelimit.decorators import ratelimit
@@ -114,7 +113,9 @@ def bookmark_delete(request, slug: str = "", *, pk):
     if request.method == "POST" and not is_limited:
         bookmark.delete()
         if request.htmx:
-            return _htmx_list_response(request)
+            response = HttpResponse("")
+            response["HX-Trigger"] = "refreshTags"
+            return response
         return redirect("bookmark_list", slug=request.user.slug)
     if request.htmx:
         if request.GET.get("cancel"):
@@ -209,6 +210,14 @@ def bookmark_list(request, slug: str = ""):
 
     if request.htmx:
         return render(request, "links/_list_partial.html", context)
+
+    context["all_tags"] = (
+        Bookmark.objects.filter(user=user)
+        .annotate(tag=Unnest("tags"))
+        .values_list("tag", flat=True)
+        .distinct()
+        .order_by("tag")
+    )
     return render(request, "links/list.html", context)
 
 
@@ -216,12 +225,12 @@ def bookmark_list(request, slug: str = ""):
 @ratelimit(key="user", rate=settings.LAX_RATE_LIMIT)
 def bookmark_tags(request, slug: str = ""):
     user = request.user
-    all_tags = sorted(
-        set(
-            chain.from_iterable(
-                Bookmark.objects.filter(user=user).values_list("tags", flat=True)
-            )
-        )
+    all_tags = (
+        Bookmark.objects.filter(user=user)
+        .annotate(tag=Unnest("tags"))
+        .values_list("tag", flat=True)
+        .distinct()
+        .order_by("tag")
     )
     return render(
         request, "links/_sidebar_partial.html", {"all_tags": all_tags, "user": user}

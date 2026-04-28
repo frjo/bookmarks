@@ -28,7 +28,7 @@
             hx-target="#bookmarks"
             hx-push-url="true"
             rel="prev"
-          ><span aria-hidden="true">« </span> Next</a>
+          ><span aria-hidden="true">« </span> Previous</a>
         {% endif %}
 
         <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
@@ -40,7 +40,7 @@
             hx-target="#bookmarks"
             hx-push-url="true"
             rel="next"
-          >Previous <span aria-hidden="true"> »</span></a>
+          >Next <span aria-hidden="true"> »</span></a>
         {% endif %}
       </nav>
     {% endif %}

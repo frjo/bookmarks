@@ -8,7 +8,7 @@
   <a
     href="{% url 'bookmark_delete' slug=user.slug pk=bookmark.pk %}"
     hx-post="{% url 'bookmark_delete' slug=user.slug pk=bookmark.pk %}"
-    hx-target="#bookmarks"
-    hx-swap="innerHTML"
+    hx-target="#bookmark-{{ bookmark.pk }}"
+    hx-swap="outerHTML"
   >yes, delete</a>
 </li>
