@@ -1,12 +1,12 @@
 {% extends "base.html" %}
-{% load static %}
-{% block title %}Log in — Bookmarks{% endblock %}
+{% load i18n static %}
+{% block title %}{% trans "Log in" %} — {% trans "Bookmarks" %}{% endblock %}
 
 {% block content %}
   <section>
-    <h1>Log in</h1>
+    <h1>{% trans "Log in" %}</h1>
 
-    <p>Use a passkey saved on this device to log in.</p>
+    <p>{% trans "Use a passkey saved on this device to log in." %}</p>
 
   {# Username input enables conditional mediation (passkey autofill in browser UI) #}
     <input type="text" name="username" autocomplete="username webauthn" hidden aria-hidden="true">
@@ -22,11 +22,11 @@
         data-complete-url="{% url 'login_complete' %}"
         data-next-url=""
         onclick="window.bookmarks.passkeys.authenticate()"
-      >Log in with passkey</button>
+      >{% trans "Log in with passkey" %}</button>
     </div>
 
-    <p id="no-passkey-msg" class="form-error" hidden>Your browser does not support passkeys.</p>
-    <p>Don't have an account yet? <a href="{% url 'register' %}">Register</a></p>
+    <p id="no-passkey-msg" class="form-error" hidden>{% trans "Your browser does not support passkeys." %}</p>
+    <p>{% trans "Don't have an account yet?" %} <a href="{% url 'register' %}">{% trans "Register" %}</a></p>
   </section>
 {% endblock %}
 

@@ -11,6 +11,7 @@ from django.http import JsonResponse
 from django.shortcuts import redirect, render
 from django.utils import timezone
 from django.utils.http import url_has_allowed_host_and_scheme
+from django.utils.translation import gettext as _
 from django.views.decorators.http import require_GET, require_POST
 from django_ratelimit.decorators import ratelimit
 from webauthn import (
@@ -92,18 +93,18 @@ def register_username(request):
     try:
         body = json.loads(request.body)
     except (json.JSONDecodeError, ValueError):
-        return JsonResponse({"error": "Invalid request body."}, status=400)
+        return JsonResponse({"error": _("Invalid request body.")}, status=400)
 
     username = nh3.clean(body.get("username", "").strip(), tags=set())
     if username:
         if not (3 <= len(username) <= 50):
             return JsonResponse(
-                {"error": "Username must be 3–50 characters."},
+                {"error": _("Username must be 3–50 characters.")},
                 status=400,
             )
         if User.objects.filter(username=username).exists():
             return JsonResponse(
-                {"error": "That username is already taken."}, status=400
+                {"error": _("That username is already taken.")}, status=400
             )
 
     request.session["reg_username"] = username
@@ -140,18 +141,20 @@ def register_complete(request):
 
     if not challenge_b64 or "reg_username" not in request.session:
         return JsonResponse(
-            {"error": "Registration session expired. Please try again."}, status=400
+            {"error": _("Registration session expired. Please try again.")}, status=400
         )
 
     if username and User.objects.filter(username=username).exists():
-        return JsonResponse({"error": "That username is already taken."}, status=400)
+        return JsonResponse({"error": _("That username is already taken.")}, status=400)
 
     try:
         challenge = base64.b64decode(challenge_b64)
         data = json.loads(request.body)
         verification = _verify_registration(data, challenge)
     except Exception as exc:
-        return JsonResponse({"error": f"Verification failed: {exc}"}, status=400)
+        return JsonResponse(
+            {"error": _("Verification failed: %(exc)s") % {"exc": exc}}, status=400
+        )
 
     user = User.objects.create_user(username=username)
     WebAuthnCredential.objects.create(
@@ -199,7 +202,8 @@ def login_complete(request):
     challenge_b64 = request.session.get("auth_challenge", "")
     if not challenge_b64:
         return JsonResponse(
-            {"error": "Authentication session expired. Please try again."}, status=400
+            {"error": _("Authentication session expired. Please try again.")},
+            status=400,
         )
 
     try:
@@ -233,9 +237,11 @@ def login_complete(request):
             credential_current_sign_count=stored.sign_count,
         )
     except WebAuthnCredential.DoesNotExist:
-        return JsonResponse({"error": "Passkey not recognised."}, status=401)
+        return JsonResponse({"error": _("Passkey not recognised.")}, status=401)
     except Exception as exc:
-        return JsonResponse({"error": f"Authentication failed: {exc}"}, status=401)
+        return JsonResponse(
+            {"error": _("Authentication failed: %(exc)s") % {"exc": exc}}, status=401
+        )
 
     stored.sign_count = verification.new_sign_count
     stored.last_used_at = timezone.now()
@@ -295,14 +301,18 @@ def passkey_add_complete(request):
     """Complete adding a new passkey for an already-authenticated user."""
     challenge_b64 = request.session.get("add_passkey_challenge", "")
     if not challenge_b64:
-        return JsonResponse({"error": "Session expired. Please try again."}, status=400)
+        return JsonResponse(
+            {"error": _("Session expired. Please try again.")}, status=400
+        )
 
     try:
         challenge = base64.b64decode(challenge_b64)
         data = json.loads(request.body)
         verification = _verify_registration(data, challenge)
     except Exception as exc:
-        return JsonResponse({"error": f"Verification failed: {exc}"}, status=400)
+        return JsonResponse(
+            {"error": _("Verification failed: %(exc)s") % {"exc": exc}}, status=400
+        )
 
     WebAuthnCredential.objects.create(
         user=request.user,
@@ -339,25 +349,25 @@ def account_view(request, slug: str = ""):
             if not (3 <= len(new_username) <= 50):
                 messages.error(
                     request,
-                    "Username must be 3–50 characters.",
+                    _("Username must be 3–50 characters."),
                 )
             elif (
                 new_username != user.username
                 and User.objects.filter(username=new_username).exists()
             ):
-                messages.error(request, "That username is already taken.")
+                messages.error(request, _("That username is already taken."))
             else:
                 user.username = new_username
                 user.save(update_fields=["username"])
-                messages.success(request, "Username updated.")
+                messages.success(request, _("Username updated."))
 
         elif action == "regenerate_token":
             new_token = APIToken.generate_token()
-            api_token, _ = APIToken.objects.update_or_create(
+            api_token, _created = APIToken.objects.update_or_create(
                 user=user,
                 defaults={"token": new_token},
             )
-            messages.success(request, "API token regenerated.")
+            messages.success(request, _("API token regenerated."))
 
         return redirect("account", slug=user.slug)
 

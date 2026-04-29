@@ -1,5 +1,6 @@
 import nh3
 from django import forms
+from django.utils.translation import gettext_lazy as _
 
 from .models import Bookmark
 
@@ -27,8 +28,8 @@ class TagsField(forms.CharField):
 class BookmarkForm(forms.ModelForm):
     tags = TagsField(
         required=False,
-        label="Tags",
-        help_text="Space-separated. Lowercase, no special characters.",
+        label=_("Tags"),
+        help_text=_("Space-separated. Lowercase, no special characters."),
         widget=forms.TextInput(attrs={"autocomplete": "off", "spellcheck": "false"}),
     )
 

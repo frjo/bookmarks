@@ -34,6 +34,7 @@ from django.conf import settings
 from django.db.models import Count
 from django.http import JsonResponse
 from django.utils import timezone
+from django.utils.translation import gettext as _
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django_ratelimit.decorators import ratelimit
@@ -108,20 +109,20 @@ def _api_auth(view_func):
 
         if param_token and header_token:
             return _error(
-                "too_much_auth", "Supply auth_token or X-Auth-Token, not both", 400
+                "too_much_auth", _("Supply auth_token or X-Auth-Token, not both"), 400
             )
 
         auth_token = param_token or header_token
         if not auth_token or ":" not in auth_token:
-            return _error("no_auth_token", "Authentication required", 401)
+            return _error("no_auth_token", _("Authentication required"), 401)
 
-        username, _, token = auth_token.partition(":")
+        username, _sep, token = auth_token.partition(":")
         try:
             record = APIToken.objects.select_related("user").get(
                 user__username=username, token=token
             )
         except APIToken.DoesNotExist:
-            return _error("unauthorized", "Invalid auth token", 401)
+            return _error("unauthorized", _("Invalid auth token"), 401)
 
         request.api_user = record.user
         request.api_token = record.token
@@ -291,7 +292,7 @@ def posts_add(request):
 
     url = params.get("url", "").strip()
     if not url:
-        return _error("missing_url", "url is required")
+        return _error("missing_url", _("url is required"))
 
     title = nh3.clean(params.get("description", "").strip(), tags=set())
     description = nh3.clean(params.get("extended", "").strip(), tags=set())
@@ -358,7 +359,7 @@ def posts_delete(request):
     params = _params(request)
     url = params.get("url", "").strip()
     if not url:
-        return _error("missing_url", "url is required")
+        return _error("missing_url", _("url is required"))
     Bookmark.objects.filter(user=user, url=url).delete()
     invalidate_user_caches(user)
     return _ok({"result_code": "done"})
@@ -416,7 +417,7 @@ def tags_rename(request):
     old = params.get("old", "").strip()
     new = nh3.clean(params.get("new", "").strip().lower(), tags=set())
     if not old or not new:
-        return _error("missing_params", "old and new are required")
+        return _error("missing_params", _("old and new are required"))
 
     for bm in Bookmark.objects.filter(user=user, tags__contains=[old]):
         bm.tags = sorted({new if t == old else t for t in bm.tags})
@@ -439,7 +440,7 @@ def tags_delete(request):
     params = _params(request)
     tag = params.get("tag", "").strip()
     if not tag:
-        return _error("missing_tag", "tag is required")
+        return _error("missing_tag", _("tag is required"))
 
     for bm in Bookmark.objects.filter(user=user, tags__contains=[tag]):
         bm.tags = [t for t in bm.tags if t != tag]

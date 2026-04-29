@@ -1,3 +1,4 @@
+{% load i18n %}
 <aside
   id="tags"
   class="sidebar layout__second-sidebar"
@@ -8,13 +9,13 @@
   {% if all_tags %}
     <nav class="tag-list">
       <header class="flex-inline flex-inline--baseline">
-        <h2>Tags</h2>
+        <h2>{% trans "Tags" %}</h2>
         {% if all_tags|length > 10 %}
           <input
             type="search"
             id="tag-filter"
             class="tag-filter mb--0"
-            placeholder="Filter tags…"
+            placeholder="{% trans 'Filter tags…' %}"
             autocomplete="off"
             oninput="
                      const q = this.value.toLowerCase();

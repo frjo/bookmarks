@@ -1,41 +1,42 @@
 {% extends "base.html" %}
-{% block title %}Import bookmarks — Bookmarks{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "Import bookmarks" %} — {% trans "Bookmarks" %}{% endblock %}
 
 {% block content %}
   <section>
-    <h1>Import bookmarks</h1>
+    <h1>{% trans "Import bookmarks" %}</h1>
 
     {% if done %}
       <p role="status">
-        Import complete:
-        <strong>{{ created }}</strong> bookmark{{ created|pluralize }} added,
-        <strong>{{ skipped }}</strong> skipped (already exist).
+        {% trans "Import complete:" %}
+        <strong>{{ created }}</strong> {% blocktrans count count=created %}bookmark added{% plural %}bookmarks added{% endblocktrans %},
+        <strong>{{ skipped }}</strong> {% trans "skipped (already exist)." %}
       </p>
-      <p><a href="{% url 'bookmark_list' slug=user.slug %}">View your bookmarks</a></p>
+      <p><a href="{% url 'bookmark_list' slug=user.slug %}">{% trans "View your bookmarks" %}</a></p>
     {% else %}
       {% if error %}
         <p class="form-error" role="alert">{{ error }}</p>
       {% endif %}
 
       <p>
-        Supported formats:
+        {% trans "Supported formats:" %}
       </p>
       <ul>
-        <li>Netscape HTML bookmark file (<code>.html</code>) — exported by most browsers and by Pinboard.</li>
-        <li>Pinboard JSON export (<code>.json</code>).</li>
+        <li>{% blocktrans %}Netscape HTML bookmark file (<code>.html</code>) — exported by most browsers and by Pinboard.{% endblocktrans %}</li>
+        <li>{% blocktrans %}Pinboard JSON export (<code>.json</code>).{% endblocktrans %}</li>
       </ul>
-      <p>Existing bookmarks with the same URL are not duplicated.</p>
+      <p>{% trans "Existing bookmarks with the same URL are not duplicated." %}</p>
 
       <form method="post" enctype="multipart/form-data" onsubmit="document.getElementById('htmx-indicator').classList.add('htmx-request')">
         {% csrf_token %}
         <div>
-          <label for="file">Bookmark file</label>
+          <label for="file">{% trans "Bookmark file" %}</label>
           <input type="file" id="file" name="file" accept=".html,.htm,.json" required>
         </div>
 
         <div class="flex-inline">
-          <button type="submit">Import</button>
-          <a class="button button--outline" href="{% url 'bookmark_list' slug=user.slug %}">Cancel</a>
+          <button type="submit">{% trans "Import" %}</button>
+          <a class="button button--outline" href="{% url 'bookmark_list' slug=user.slug %}">{% trans "Cancel" %}</a>
         </div>
       </form>
     {% endif %}

@@ -1,0 +1,402 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-04-29 20:57+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Account"
+msgstr ""
+
+msgid "Bookmarks"
+msgstr ""
+
+msgid "Profile"
+msgstr ""
+
+msgid "Account ID"
+msgstr ""
+
+msgid "Display username"
+msgstr ""
+
+msgid "3–50 characters."
+msgstr ""
+
+msgid "Update username"
+msgstr ""
+
+msgid "Bookmarklet"
+msgstr ""
+
+msgid "Your bookmarklet:"
+msgstr ""
+
+msgid "Bookmark"
+msgstr ""
+
+msgid "Drag the \\"
+msgstr ""
+
+msgid "API token"
+msgstr ""
+
+msgid "Your API token:"
+msgstr ""
+
+#, python-format
+msgid ""
+"Use this as the <code>auth_token</code> query parameter when calling the "
+"API, e.g. <code>%(scheme)s://%(host)s/api/v2/posts/recent?auth_token=%(uid)s:"
+"%(token)s</code>"
+msgstr ""
+
+msgid "You don't have an API token yet."
+msgstr ""
+
+msgid "Regenerate token"
+msgstr ""
+
+msgid "Generate token"
+msgstr ""
+
+msgid "Passkeys"
+msgstr ""
+
+#, python-format
+msgid "Passkey %(counter)s"
+msgstr ""
+
+msgid "added"
+msgstr ""
+
+msgid "last used"
+msgstr ""
+
+msgid "No passkeys found."
+msgstr ""
+
+msgid "Add a passkey"
+msgstr ""
+
+msgid "Could not begin passkey registration."
+msgstr ""
+
+msgid "Passkey registration failed."
+msgstr ""
+
+msgid "A passkey for this authenticator is already registered."
+msgstr ""
+
+msgid "Passkey name (optional)"
+msgstr ""
+
+msgid "e.g. MacBook Touch ID"
+msgstr ""
+
+msgid "Add passkey"
+msgstr ""
+
+msgid "Log in"
+msgstr ""
+
+msgid "Use a passkey saved on this device to log in."
+msgstr ""
+
+msgid "Log in with passkey"
+msgstr ""
+
+msgid "Your browser does not support passkeys."
+msgstr ""
+
+msgid "Don't have an account yet?"
+msgstr ""
+
+msgid "Register"
+msgstr ""
+
+msgid "Create an account"
+msgstr ""
+
+msgid ""
+"Optionally choose a username, then follow the prompt to create a passkey on "
+"this device. You can set or change your username later on the account page."
+msgstr ""
+
+msgid "Could not begin registration."
+msgstr ""
+
+msgid "Registration failed."
+msgstr ""
+
+msgid "Username"
+msgstr ""
+
+msgid "Optional. 3–50 characters."
+msgstr ""
+
+msgid "Register with passkey"
+msgstr ""
+
+msgid "Already have an account?"
+msgstr ""
+
+msgid "Invalid request body."
+msgstr ""
+
+msgid "Username must be 3–50 characters."
+msgstr ""
+
+msgid "That username is already taken."
+msgstr ""
+
+msgid "Registration session expired. Please try again."
+msgstr ""
+
+#, python-format
+msgid "Verification failed: %(exc)s"
+msgstr ""
+
+msgid "Authentication session expired. Please try again."
+msgstr ""
+
+msgid "Passkey not recognised."
+msgstr ""
+
+#, python-format
+msgid "Authentication failed: %(exc)s"
+msgstr ""
+
+msgid "Session expired. Please try again."
+msgstr ""
+
+msgid "Username updated."
+msgstr ""
+
+msgid "API token regenerated."
+msgstr ""
+
+msgid "authentication required"
+msgstr ""
+
+msgid "invalid token"
+msgstr ""
+
+msgid "url is required"
+msgstr ""
+
+msgid "item already exists"
+msgstr ""
+
+msgid "item not found"
+msgstr ""
+
+msgid "tag is required"
+msgstr ""
+
+msgid "old and new are required"
+msgstr ""
+
+msgid "note not found"
+msgstr ""
+
+msgid "Supply auth_token or X-Auth-Token, not both"
+msgstr ""
+
+msgid "Authentication required"
+msgstr ""
+
+msgid "Invalid auth token"
+msgstr ""
+
+msgid "Tags"
+msgstr ""
+
+msgid "Space-separated. Lowercase, no special characters."
+msgstr ""
+
+msgid "Actions"
+msgstr ""
+
+msgid "edit"
+msgstr ""
+
+msgid "cancel"
+msgstr ""
+
+msgid "yes, delete"
+msgstr ""
+
+msgid "delete"
+msgstr ""
+
+msgid "Form errors"
+msgstr ""
+
+msgid "URL"
+msgstr ""
+
+msgid "Title"
+msgstr ""
+
+msgid "Description"
+msgstr ""
+
+msgid "Bookmark list"
+msgstr ""
+
+msgid "Showing bookmarks tagged"
+msgstr ""
+
+msgid "Searched for"
+msgstr ""
+
+msgid "in your bookmarks"
+msgstr ""
+
+#, python-format
+msgid "%(name)s bookmarks"
+msgstr ""
+
+#, python-format
+msgid "Found %(total)s results."
+msgstr ""
+
+msgid "Pagination"
+msgstr ""
+
+msgid "Previous"
+msgstr ""
+
+#, python-format
+msgid "Page %(num)s of %(total)s"
+msgstr ""
+
+msgid "Next"
+msgstr ""
+
+msgid "No bookmarks match your search."
+msgstr ""
+
+msgid "No bookmarks with this tag."
+msgstr ""
+
+msgid "You have no bookmarks yet."
+msgstr ""
+
+msgid "Add your first one"
+msgstr ""
+
+msgid "Submit"
+msgstr ""
+
+msgid "Cancel"
+msgstr ""
+
+msgid "Filter tags…"
+msgstr ""
+
+msgid "Delete bookmark"
+msgstr ""
+
+msgid "Are you sure you want to delete this bookmark?"
+msgstr ""
+
+msgid "Yes, delete"
+msgstr ""
+
+msgid "Import bookmarks"
+msgstr ""
+
+msgid "Import complete:"
+msgstr ""
+
+msgid "bookmark added"
+msgid_plural "bookmarks added"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "skipped (already exist)."
+msgstr ""
+
+msgid "View your bookmarks"
+msgstr ""
+
+msgid "Supported formats:"
+msgstr ""
+
+msgid ""
+"Netscape HTML bookmark file (<code>.html</code>) — exported by most browsers "
+"and by Pinboard."
+msgstr ""
+
+msgid "Pinboard JSON export (<code>.json</code>)."
+msgstr ""
+
+msgid "Existing bookmarks with the same URL are not duplicated."
+msgstr ""
+
+msgid "Bookmark file"
+msgstr ""
+
+msgid "Import"
+msgstr ""
+
+msgid "Add bookmark"
+msgstr ""
+
+msgid "Search bookmarks"
+msgstr ""
+
+msgid "Search titles, descriptions, URLs…"
+msgstr ""
+
+msgid "Edit bookmark"
+msgstr ""
+
+msgid "No file selected."
+msgstr ""
+
+msgid "Could not read the file."
+msgstr ""
+
+msgid "Home"
+msgstr ""
+
+msgid "Export HTML"
+msgstr ""
+
+msgid "Export JSON"
+msgstr ""
+
+#, python-format
+msgid "Account (%(name)s)"
+msgstr ""
+
+msgid "Log out"
+msgstr ""
+
+msgid "All bookmarks"
+msgstr ""
+
+msgid "Notifications"
+msgstr ""
+
+msgid "xdeb.net Bookmarks"
+msgstr ""
+
+msgid "Loading"
+msgstr ""

@@ -1,7 +1,8 @@
+{% load i18n %}
 {% csrf_token %}
 
 {% if form.non_field_errors %}
-  <ul aria-label="Form errors">
+  <ul aria-label="{% trans 'Form errors' %}">
     {% for error in form.non_field_errors %}
       <li class="form-error" role="alert">{{ error }}</li>
     {% endfor %}
@@ -9,7 +10,7 @@
 {% endif %}
 
 <div x-data="{ urlValid: false }">
-  <label for="{{ form.url.id_for_label }}">URL</label>
+  <label for="{{ form.url.id_for_label }}">{% trans "URL" %}</label>
   <input
     type="url"
     id="{{ form.url.id_for_label }}"
@@ -28,7 +29,7 @@
 </div>
 
 <div>
-  <label for="{{ form.title.id_for_label }}">Title</label>
+  <label for="{{ form.title.id_for_label }}">{% trans "Title" %}</label>
   <input
     type="text"
     id="{{ form.title.id_for_label }}"
@@ -44,7 +45,7 @@
 </div>
 
 <div>
-  <label for="{{ form.description.id_for_label }}">Description</label>
+  <label for="{{ form.description.id_for_label }}">{% trans "Description" %}</label>
   <textarea
     id="{{ form.description.id_for_label }}"
     name="{{ form.description.html_name }}"
@@ -58,7 +59,7 @@
 </div>
 
 <div>
-  <label for="{{ form.tags.id_for_label }}">Tags</label>
+  <label for="{{ form.tags.id_for_label }}">{% trans "Tags" %}</label>
   <input
     type="text"
     id="{{ form.tags.id_for_label }}"

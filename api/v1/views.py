@@ -37,6 +37,7 @@ from django.conf import settings
 from django.db.models import Count
 from django.http import HttpResponse, JsonResponse
 from django.utils import timezone
+from django.utils.translation import gettext as _
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django_ratelimit.decorators import ratelimit
@@ -140,14 +141,14 @@ def _api_auth(view_func):
         params = request.GET if request.method == "GET" else request.POST
         auth_token = params.get("auth_token")
         if not auth_token or ":" not in auth_token:
-            return _result_error(request, "authentication required", 401)
-        username, _, token = auth_token.partition(":")
+            return _result_error(request, _("authentication required"), 401)
+        username, _sep, token = auth_token.partition(":")
         try:
             record = APIToken.objects.select_related("user").get(
                 user__username=username, token=token
             )
         except APIToken.DoesNotExist:
-            return _result_error(request, "invalid token", 401)
+            return _result_error(request, _("invalid token"), 401)
         request.api_user = record.user
         request.api_token = record.token
         # Set request.user so @ratelimit(key="user") can key per API user.
@@ -189,7 +190,7 @@ def posts_add(request):
 
     url = params.get("url", "").strip()
     if not url:
-        return _result_error(request, "url is required")
+        return _result_error(request, _("url is required"))
 
     title = nh3.clean(params.get("description", "").strip(), tags=set())
     description = nh3.clean(params.get("extended", "").strip(), tags=set())
@@ -207,7 +208,7 @@ def posts_add(request):
 
     existing = Bookmark.objects.filter(user=user, url=url).first()
     if existing and not replace:
-        return _result_error(request, "item already exists")
+        return _result_error(request, _("item already exists"))
 
     if existing:
         existing.title = title or existing.title
@@ -251,10 +252,10 @@ def posts_delete(request):
     params = request.GET if request.method == "GET" else request.POST
     url = params.get("url", "").strip()
     if not url:
-        return _result_error(request, "url is required")
-    deleted, _ = Bookmark.objects.filter(user=user, url=url).delete()
+        return _result_error(request, _("url is required"))
+    deleted, _rows = Bookmark.objects.filter(user=user, url=url).delete()
     if not deleted:
-        return _result_error(request, "item not found", 404)
+        return _result_error(request, _("item not found"), 404)
     invalidate_user_caches(user)
     return _result_done(request)
 
@@ -513,7 +514,7 @@ def tags_delete(request):
     params = request.GET if request.method == "GET" else request.POST
     tag = params.get("tag", "").strip()
     if not tag:
-        return _result_error(request, "tag is required")
+        return _result_error(request, _("tag is required"))
 
     for bm in Bookmark.objects.filter(user=user, tags__contains=[tag]):
         bm.tags = [t for t in bm.tags if t != tag]
@@ -537,7 +538,7 @@ def tags_rename(request):
     old = params.get("old", "").strip()
     new = nh3.clean(params.get("new", "").strip().lower(), tags=set())
     if not old or not new:
-        return _result_error(request, "old and new are required")
+        return _result_error(request, _("old and new are required"))
 
     for bm in Bookmark.objects.filter(user=user, tags__contains=[old]):
         tags = [new if t == old else t for t in bm.tags]
@@ -606,4 +607,4 @@ def notes_list(request):
 @_api_auth
 @ratelimit(key="user", rate=settings.DEFAULT_RATE_LIMIT)
 def notes_detail(request, note_id):
-    return _result_error(request, "note not found", 404)
+    return _result_error(request, _("note not found"), 404)

@@ -6,7 +6,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width">
-  <title>{% block title %}Bookmarks{% endblock %}</title>
+  <title>{% block title %}{% trans "Bookmarks" %}{% endblock %}</title>
   <meta name="description" content="A bookmark service by xdeb.net.">
   <link rel="icon" type="image/png" href="{% static 'favicon/favicon-96x96.png' %}" sizes="96x96">
   <link rel="icon" type="image/svg+xml" href="{% static 'favicon/favicon.svg' %}">
@@ -24,7 +24,7 @@
 
     <main class="main">
       {% if messages %}
-        <ul aria-label="Notifications">
+        <ul aria-label="{% trans 'Notifications' %}">
           {% for message in messages %}
             <li role="status">{{ message }}</li>
           {% endfor %}
@@ -36,7 +36,7 @@
 
   </div>
 
-  <div id="htmx-indicator" class="htmx-indicator" aria-live="polite" aria-label="Loading"></div>
+  <div id="htmx-indicator" class="htmx-indicator" aria-live="polite" aria-label="{% trans 'Loading' %}"></div>
 
   {% block extra_scripts %}{% endblock %}
 </body>

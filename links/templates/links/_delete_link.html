@@ -1,6 +1,7 @@
+{% load i18n %}
 <li><a
   href="{% url 'bookmark_delete' slug=user.slug pk=bookmark.pk %}"
   hx-get="{% url 'bookmark_delete' slug=user.slug pk=bookmark.pk %}"
   hx-target="closest li"
   hx-swap="outerHTML"
->delete</a></li>
+>{% trans "delete" %}</a></li>

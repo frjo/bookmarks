@@ -1,5 +1,6 @@
 {% extends "base.html" %}
-{% block title %}{{ action }} — Bookmarks{% endblock %}
+{% load i18n %}
+{% block title %}{{ action }} — {% trans "Bookmarks" %}{% endblock %}
 
 {% block content %}
   <section>
@@ -9,8 +10,8 @@
       {% include "links/_form_include.html" %}
 
       <div class="flex-inline">
-        <button type="submit">Submit</button>
-        <a class="button button--outline" href="{% url 'bookmark_list' slug=user.slug %}">Cancel</a>
+        <button type="submit">{% trans "Submit" %}</button>
+        <a class="button button--outline" href="{% url 'bookmark_list' slug=user.slug %}">{% trans "Cancel" %}</a>
       </div>
     </form>
   </section>

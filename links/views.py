@@ -5,6 +5,7 @@ from django.core.paginator import Paginator
 from django.db.models import F
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.utils.translation import gettext as _
 from django_ratelimit.decorators import ratelimit
 
 from .cache import get_bookmark_count, get_user_tags, invalidate_user_caches
@@ -18,12 +19,6 @@ from .importexport import (
 from .models import Bookmark
 
 _MIN_SEARCH_LENGTH = 3
-
-
-def index(request):
-    if not request.user.is_authenticated:
-        return redirect("login")
-    return redirect("bookmark_list", slug=request.user.slug)
 
 
 @login_required
@@ -84,7 +79,7 @@ def bookmark_add(request, slug: str = ""):
             "links/_modal_form.html",
             {
                 "form": form,
-                "action": "Add bookmark",
+                "action": _("Add bookmark"),
                 "form_url": request.get_full_path(),
             },
         )
@@ -92,9 +87,11 @@ def bookmark_add(request, slug: str = ""):
         return render(
             request,
             "links/bookmarklet_form.html",
-            {"form": form, "action": "Add bookmark"},
+            {"form": form, "action": _("Add bookmark")},
         )
-    return render(request, "links/form.html", {"form": form, "action": "Add bookmark"})
+    return render(
+        request, "links/form.html", {"form": form, "action": _("Add bookmark")}
+    )
 
 
 @login_required
@@ -132,7 +129,7 @@ def bookmark_edit(request, slug: str = "", *, pk):
             "links/_modal_form.html",
             {
                 "form": form,
-                "action": "Edit bookmark",
+                "action": _("Edit bookmark"),
                 "bookmark": bookmark,
                 "form_url": request.path,
             },
@@ -140,7 +137,7 @@ def bookmark_edit(request, slug: str = "", *, pk):
     return render(
         request,
         "links/form.html",
-        {"form": form, "action": "Edit bookmark", "bookmark": bookmark},
+        {"form": form, "action": _("Edit bookmark"), "bookmark": bookmark},
     )
 
 
@@ -176,13 +173,15 @@ def bookmark_import(request, slug: str = ""):
     if request.method == "POST":
         uploaded = request.FILES.get("file")
         if not uploaded:
-            return render(request, "links/import.html", {"error": "No file selected."})
+            return render(
+                request, "links/import.html", {"error": _("No file selected.")}
+            )
 
         try:
             content = uploaded.read().decode("utf-8", errors="replace")
         except Exception:
             return render(
-                request, "links/import.html", {"error": "Could not read the file."}
+                request, "links/import.html", {"error": _("Could not read the file.")}
             )
 
         if uploaded.name.lower().endswith(".json"):

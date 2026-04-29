@@ -6,7 +6,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width">
-  <title>{% block title %}Bookmarks{% endblock %}</title>
+  <title>{% block title %}{% trans "Bookmarks" %}{% endblock %}</title>
   <meta name="description" content="A bookmark service by xdeb.net.">
   <link rel="icon" type="image/png" href="{% static 'favicon/favicon-96x96.png' %}" sizes="96x96">
   <link rel="icon" type="image/svg+xml" href="{% static 'favicon/favicon.svg' %}">
@@ -24,23 +24,23 @@
 <body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
   <div class="page layout__page {% block page_class %}{% endblock %}">
     <header class="header layout__header">
-      <a href="{% url 'index' %}" title="Home" rel="home" class="header__logo"><img alt="Home" src="{% static 'favicon/favicon.svg' %}" width="64" height="64" class="header__logo-image"></a>
+      <a href="{% url 'index' %}" title="{% trans 'Home' %}" rel="home" class="header__logo"><img alt="{% trans 'Home' %}" src="{% static 'favicon/favicon.svg' %}" width="64" height="64" class="header__logo-image"></a>
 
       <span class="header__site-name">
-      <a href="{% url 'index' %}" title="Home" class="header__site-link" rel="home"><span>Bookmarks</span></a>
+      <a href="{% url 'index' %}" title="{% trans 'Home' %}" class="header__site-link" rel="home"><span>{% trans "Bookmarks" %}</span></a>
       </span>
 
       {% if user.is_authenticated %}
       <div class="region header__region">
         <nav class="secondary-menu" aria-label="Secondary navigation">
           <ul class="flex-inline mx--0">
-            <li class="desktop"><a href="{% url 'bookmark_import' slug=user.slug %}">Import</a></li>
-            <li class="desktop"><a href="{% url 'bookmark_export' slug=user.slug %}">Export HTML</a></li>
-            <li class="desktop"><a href="{% url 'bookmark_export' slug=user.slug %}?format=json">Export JSON</a></li>
-            <li><a href="{% url 'account' slug=user.slug %}">Account ({{ user.get_display_name }})</a></li>
+            <li class="desktop"><a href="{% url 'bookmark_import' slug=user.slug %}">{% trans "Import" %}</a></li>
+            <li class="desktop"><a href="{% url 'bookmark_export' slug=user.slug %}">{% trans "Export HTML" %}</a></li>
+            <li class="desktop"><a href="{% url 'bookmark_export' slug=user.slug %}?format=json">{% trans "Export JSON" %}</a></li>
+            <li><a href="{% url 'account' slug=user.slug %}">{% blocktrans with name=user.get_display_name %}Account ({{ name }}){% endblocktrans %}</a></li>
             <li><form method="post" action="{% url 'logout' %}">
               {% csrf_token %}
-              <button class="button button--small" type="submit">Log out</button>
+              <button class="button button--small" type="submit">{% trans "Log out" %}</button>
             </form></li>
           </ul>
         </nav>
@@ -51,7 +51,7 @@
       {% if user.is_authenticated %}
       <nav class="main-menu mx--xs layout__navigation" aria-label="Main navigation">
         <ul class="flex-inline mx--0">
-          <li><a href="{% url 'bookmark_list' slug=user.slug %}">All bookmarks</a></li>
+          <li><a href="{% url 'bookmark_list' slug=user.slug %}">{% trans "All bookmarks" %}</a></li>
           {% block menu_extra %}{% endblock %}
         </ul>
       </nav>
@@ -59,7 +59,7 @@
 
     <main class="main layout__main">
       {% if messages %}
-        <ul aria-label="Notifications">
+        <ul aria-label="{% trans 'Notifications' %}">
           {% for message in messages %}
             <li role="status">{{ message }}</li>
           {% endfor %}
@@ -72,13 +72,13 @@
     {% block sidebar %}{% endblock %}
 
     <footer class="footer layout__footer mt--l">
-      <p>xdeb.net Bookmarks</p>
+      <p>{% trans "xdeb.net Bookmarks" %}</p>
     </footer>
   </div>
 
   {% block modal %}{% endblock %}
 
-  <div id="htmx-indicator" class="htmx-indicator" aria-live="polite" aria-label="Loading"></div>
+  <div id="htmx-indicator" class="htmx-indicator" aria-live="polite" aria-label="{% trans 'Loading' %}"></div>
 
   {% block extra_scripts %}{% endblock %}
 </body>

@@ -1,5 +1,6 @@
 {% extends "base.html" %}
-{% block title %}{{ user.get_display_name }} bookmarks{% endblock %}
+{% load i18n %}
+{% block title %}{% blocktrans with name=user.get_display_name %}{{ name }} bookmarks{% endblocktrans %}{% endblock %}
 
 {% block page_class %}layout__sidebar-second{% endblock %}
 
@@ -9,15 +10,15 @@
     hx-get="{% url 'bookmark_add' slug=user.slug %}{% if query %}?q={{ query }}{% elif tag %}?tag={{ tag }}{% endif %}"
     hx-target="#bookmarks-modal"
     hx-swap="innerHTML"
-  >Add bookmark</a></li>
+  >{% trans "Add bookmark" %}</a></li>
   <li><form role="search" method="get" class="mx--0">
-    <label for="search-input" class="visually-hidden">Search bookmarks</label>
+    <label for="search-input" class="visually-hidden">{% trans "Search bookmarks" %}</label>
     <input
       type="search"
       id="search-input"
       name="q"
       value="{{ query }}"
-      placeholder="Search titles, descriptions, URLs…"
+      placeholder="{% trans 'Search titles, descriptions, URLs…' %}"
       autocomplete="off"
       minlength="{{ min_search_length }}"
       hx-get="{{ request.path }}"

@@ -1,12 +1,12 @@
 {% extends "base.html" %}
-{% load static %}
-{% block title %}Register — Bookmarks{% endblock %}
+{% load i18n static %}
+{% block title %}{% trans "Register" %} — {% trans "Bookmarks" %}{% endblock %}
 
 {% block content %}
   <section>
-    <h1>Create an account</h1>
+    <h1>{% trans "Create an account" %}</h1>
 
-    <p>Optionally choose a username, then follow the prompt to create a passkey on this device. You can set or change your username later on the account page.</p>
+    <p>{% trans "Optionally choose a username, then follow the prompt to create a passkey on this device. You can set or change your username later on the account page." %}</p>
 
     <form
       id="register-form"
@@ -14,12 +14,12 @@
       data-username-url="{% url 'register_username' %}"
       data-begin-url="{% url 'register_begin' %}"
       data-complete-url="{% url 'register_complete' %}"
-      data-error-server="Could not begin registration."
-      data-error-register="Registration failed."
-      data-error-duplicate="A passkey for this authenticator is already registered."
+      data-error-server="{% trans 'Could not begin registration.' %}"
+      data-error-register="{% trans 'Registration failed.' %}"
+      data-error-duplicate="{% trans 'A passkey for this authenticator is already registered.' %}"
     >
       <div>
-        <label for="username">Username</label>
+        <label for="username">{% trans "Username" %}</label>
         <input
           type="text"
           id="username"
@@ -30,7 +30,7 @@
           autocomplete="username"
           aria-describedby="username-hint"
         >
-        <p id="username-hint">Optional. 3–50 characters.</p>
+        <p id="username-hint">{% trans "Optional. 3–50 characters." %}</p>
       </div>
 
       {# Hidden name field — passkeys.js sends this to complete_url; left blank for initial registration #}
@@ -39,11 +39,11 @@
       <p class="form-error" role="alert" id="passkey-error" hidden></p>
 
       <div data-passkey-ui hidden>
-        <button type="submit" class="mb--s">Register with passkey</button>
+        <button type="submit" class="mb--s">{% trans "Register with passkey" %}</button>
       </div>
 
-      <p id="no-passkey-msg" class="form-error" hidden>Your browser does not support passkeys.</p>
-      <p>Already have an account? <a href="{% url 'login' %}">Log in</a></p>
+      <p id="no-passkey-msg" class="form-error" hidden>{% trans "Your browser does not support passkeys." %}</p>
+      <p>{% trans "Already have an account?" %} <a href="{% url 'login' %}">{% trans "Log in" %}</a></p>
     </form>
 
   </section>

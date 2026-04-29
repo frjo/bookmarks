@@ -1,15 +1,16 @@
-<section id="bookmarks" class="bookmarks" aria-label="Bookmark list" aria-live="polite">
+{% load i18n %}
+<section id="bookmarks" class="bookmarks" aria-label="{% trans 'Bookmark list' %}" aria-live="polite">
   <header class="flex-inline flex-inline--baseline">
     <h1>
       {% if tag %}
-        Showing bookmarks tagged <em>{{ tag }}</em>
+        {% trans "Showing bookmarks tagged" %} <em>{{ tag }}</em>
       {% elif query %}
-        Searched for <em>{{ query }}</em> in your bookmarks
+        {% trans "Searched for" %} <em>{{ query }}</em> {% trans "in your bookmarks" %}
       {% else %}
-        {{ user.get_display_name }} bookmarks
+        {% blocktrans with name=user.get_display_name %}{{ name }} bookmarks{% endblocktrans %}
       {% endif %}
     </h1>
-    <span>Found {{ total }} results.</span>
+    <span>{% blocktrans with total=total %}Found {{ total }} results.{% endblocktrans %}</span>
   </header>
 
   {% if page_obj.object_list %}
@@ -20,7 +21,7 @@
     </ul>
 
     {% if page_obj.has_previous or page_obj.has_next %}
-      <nav class="flex-inline pager" aria-label="Pagination">
+      <nav class="flex-inline pager" aria-label="{% trans 'Pagination' %}">
         {% if page_obj.has_previous %}
           <a
             href="{{ page_prefix }}page={{ page_obj.previous_page_number }}"
@@ -30,10 +31,10 @@
             hx-push-url="true"
             hx-indicator="#htmx-indicator"
             rel="prev"
-          ><span aria-hidden="true">« </span> Previous</a>
+          ><span aria-hidden="true">« </span> {% trans "Previous" %}</a>
         {% endif %}
 
-        <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+        <span>{% blocktrans with num=page_obj.number total=page_obj.paginator.num_pages %}Page {{ num }} of {{ total }}{% endblocktrans %}</span>
 
         {% if page_obj.has_next %}
           <a
@@ -44,7 +45,7 @@
             hx-push-url="true"
             hx-indicator="#htmx-indicator"
             rel="next"
-          >Next <span aria-hidden="true"> »</span></a>
+          >{% trans "Next" %} <span aria-hidden="true"> »</span></a>
         {% endif %}
       </nav>
     {% endif %}
@@ -52,16 +53,16 @@
   {% else %}
     <p>
       {% if query %}
-        No bookmarks match your search.
+        {% trans "No bookmarks match your search." %}
       {% elif tag %}
-        No bookmarks with this tag.
+        {% trans "No bookmarks with this tag." %}
       {% else %}
-        You have no bookmarks yet. <a
+        {% trans "You have no bookmarks yet." %} <a
           href="{% url 'bookmark_add' slug=user.slug %}"
           hx-get="{% url 'bookmark_add' slug=user.slug %}"
           hx-target="#bookmarks-modal"
           hx-swap="innerHTML"
-        >Add your first one</a>.
+        >{% trans "Add your first one" %}</a>.
       {% endif %}
     </p>
   {% endif %}
