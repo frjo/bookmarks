@@ -1,5 +1,10 @@
 /* Messages */
 
+.messages {
+  padding-inline-start: 0;
+  list-style: none;
+}
+
 .message {
   padding: .5rem;
   outline-width: 2px;

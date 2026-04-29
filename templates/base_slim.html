@@ -24,9 +24,9 @@
 
     <main class="main">
       {% if messages %}
-        <ul aria-label="{% trans 'Notifications' %}">
+        <ul class="messages" aria-label="{% trans 'Notifications' %}">
           {% for message in messages %}
-            <li role="status">{{ message }}</li>
+            <li class="message {{ message.tags }}" role="status">{{ message }}</li>
           {% endfor %}
         </ul>
       {% endif %}
