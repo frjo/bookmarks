@@ -2,7 +2,7 @@
 
 Authentication
 --------------
-Token-based: ?auth_token=username:TOKEN
+Token-based: ?auth_token=user_id:TOKEN
 
 Endpoints
 ---------
@@ -130,7 +130,7 @@ def _rss_secret(token_str: str) -> str:
 
 
 # ---------------------------------------------------------------------------
-# Auth decorator — username:token format
+# Auth decorator — user_id:token format
 # ---------------------------------------------------------------------------
 
 
@@ -142,10 +142,10 @@ def _api_auth(view_func):
         auth_token = params.get("auth_token")
         if not auth_token or ":" not in auth_token:
             return _result_error(request, _("authentication required"), 401)
-        username, _sep, token = auth_token.partition(":")
+        user_id, _sep, token = auth_token.partition(":")
         try:
             record = APIToken.objects.select_related("user").get(
-                user__username=username, token=token
+                user__id=user_id, token=token
             )
         except APIToken.DoesNotExist:
             return _result_error(request, _("invalid token"), 401)
@@ -575,7 +575,7 @@ def user_secret(request):
 @ratelimit(key="user", rate=settings.DEFAULT_RATE_LIMIT)
 def user_api_token(request):
     user = request.api_user
-    result = f"{user.username}:{request.api_token}"
+    result = f"{user.id}:{request.api_token}"
     if _fmt(request) == "json":
         return JsonResponse({"result": result})
     root = Element("result", code=result)

@@ -3,8 +3,8 @@
 Authentication
 --------------
 Pass the API token as exactly one of:
-  - Query parameter: ?auth_token=username:TOKEN
-  - HTTP header:     X-Auth-Token: username:TOKEN
+  - Query parameter: ?auth_token=user_id:TOKEN
+  - HTTP header:     X-Auth-Token: user_id:TOKEN
 
 Supplying both simultaneously returns a 400 error.
 
@@ -96,7 +96,7 @@ def _serialize(bm: Bookmark) -> dict:
 
 
 # ---------------------------------------------------------------------------
-# Auth decorator — username:token, query param or X-Auth-Token header
+# Auth decorator — user_id:token, query param or X-Auth-Token header
 # ---------------------------------------------------------------------------
 
 
@@ -116,10 +116,10 @@ def _api_auth(view_func):
         if not auth_token or ":" not in auth_token:
             return _error("no_auth_token", _("Authentication required"), 401)
 
-        username, _sep, token = auth_token.partition(":")
+        user_id, _sep, token = auth_token.partition(":")
         try:
             record = APIToken.objects.select_related("user").get(
-                user__username=username, token=token
+                user__id=user_id, token=token
             )
         except APIToken.DoesNotExist:
             return _error("unauthorized", _("Invalid auth token"), 401)
@@ -460,4 +460,4 @@ def tags_delete(request):
 @ratelimit(key="user", rate=settings.DEFAULT_RATE_LIMIT)
 def user_api_token(request):
     user = request.api_user
-    return _ok({"result": f"{user.username}:{request.api_token}"})
+    return _ok({"result": f"{user.id}:{request.api_token}"})
