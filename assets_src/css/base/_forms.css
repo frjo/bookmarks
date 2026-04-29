@@ -12,7 +12,8 @@ select {
 }
 
 label {
-  font-weight: var(--fw-bold);
+  font-size: var(--fs-s);
+  font-family: var(--ff-alt);
 
   /* Display as block if before input. */
   &:has(+ input),

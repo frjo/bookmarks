@@ -15,14 +15,28 @@ a {
   text-decoration: none;
 }
 
-label {
-  font-size: var(--fs-s);
-  font-family: var(--ff-alt);
+.desktop {
+  @media (max-width: 666px) {
+    display: none;
+  }
 }
 
-.header__site-name {
-  font-size: var(--fs-xl);
-  letter-spacing: -.01em;
+[type='url'] {
+  width: min(30em, 100%);
+}
+
+input,
+textarea {
+  &:has(+ .help-text),
+  &:has(+ .form-error) {
+    margin-block-end: 0;
+  }
+}
+
+.form-error {
+  font-family: var(--ff-alt);
+  font-size: var(--fs-xs);
+  color: var(--color-error);
 }
 
 .bookmarks {
@@ -142,24 +156,6 @@ label {
   margin-block: var(--spacing-m);
   justify-content: center;
   font-family: var(--ff-alt);
-}
-
-[type='url'] {
-  width: min(30em, 100%);
-}
-
-input,
-textarea {
-  &:has(+ .help-text),
-  &:has(+ .form-error) {
-    margin-block-end: 0;
-  }
-}
-
-.form-error {
-  font-family: var(--ff-headings);
-  font-size: var(--fs-xs);
-  color: var(--color-error);
 }
 
 .htmx-indicator {
