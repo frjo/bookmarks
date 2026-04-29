@@ -1,0 +1,543 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-04-29 21:11+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: accounts/templates/accounts/account.html:3
+#: accounts/templates/accounts/account.html:7
+msgid "Account"
+msgstr ""
+
+#: accounts/templates/accounts/account.html:3
+#: accounts/templates/accounts/login.html:3
+#: accounts/templates/accounts/register.html:3
+#: links/templates/links/confirm_delete.html:3
+#: links/templates/links/form.html:3 links/templates/links/import.html:3
+#: templates/base.html:9 templates/base.html:30 templates/base_slim.html:9
+msgid "Bookmarks"
+msgstr ""
+
+#: accounts/templates/accounts/account.html:10
+msgid "Profile"
+msgstr ""
+
+#: accounts/templates/accounts/account.html:12
+msgid "Account ID"
+msgstr ""
+
+#: accounts/templates/accounts/account.html:19
+msgid "Display username"
+msgstr ""
+
+#: accounts/templates/accounts/account.html:31
+msgid "3–50 characters."
+msgstr ""
+
+#: accounts/templates/accounts/account.html:33
+msgid "Update username"
+msgstr ""
+
+#: accounts/templates/accounts/account.html:38
+msgid "Bookmarklet"
+msgstr ""
+
+#: accounts/templates/accounts/account.html:40
+msgid "Your bookmarklet:"
+msgstr ""
+
+#: accounts/templates/accounts/account.html:40
+msgid "Bookmark"
+msgstr ""
+
+#: accounts/templates/accounts/account.html:42
+msgid "Drag the \\"
+msgstr ""
+
+#: accounts/templates/accounts/account.html:46
+msgid "API token"
+msgstr ""
+
+#: accounts/templates/accounts/account.html:49
+msgid "Your API token:"
+msgstr ""
+
+#: accounts/templates/accounts/account.html:53
+#, python-format
+msgid ""
+"Use this as the <code>auth_token</code> query parameter when calling the "
+"API, e.g. <code>%(scheme)s://%(host)s/api/v2/posts/recent?auth_token=%(uid)s:"
+"%(token)s</code>"
+msgstr ""
+
+#: accounts/templates/accounts/account.html:56
+msgid "You don't have an API token yet."
+msgstr ""
+
+#: accounts/templates/accounts/account.html:62
+msgid "Regenerate token"
+msgstr ""
+
+#: accounts/templates/accounts/account.html:62
+msgid "Generate token"
+msgstr ""
+
+#: accounts/templates/accounts/account.html:68
+msgid "Passkeys"
+msgstr ""
+
+#: accounts/templates/accounts/account.html:73
+#, python-format
+msgid "Passkey %(counter)s"
+msgstr ""
+
+#: accounts/templates/accounts/account.html:74
+msgid "added"
+msgstr ""
+
+#: accounts/templates/accounts/account.html:75
+msgid "last used"
+msgstr ""
+
+#: accounts/templates/accounts/account.html:80
+msgid "No passkeys found."
+msgstr ""
+
+#: accounts/templates/accounts/account.html:84
+msgid "Add a passkey"
+msgstr ""
+
+#: accounts/templates/accounts/account.html:89
+msgid "Could not begin passkey registration."
+msgstr ""
+
+#: accounts/templates/accounts/account.html:90
+msgid "Passkey registration failed."
+msgstr ""
+
+#: accounts/templates/accounts/account.html:91
+#: accounts/templates/accounts/register.html:19
+msgid "A passkey for this authenticator is already registered."
+msgstr ""
+
+#: accounts/templates/accounts/account.html:95
+msgid "Passkey name (optional)"
+msgstr ""
+
+#: accounts/templates/accounts/account.html:96
+msgid "e.g. MacBook Touch ID"
+msgstr ""
+
+#: accounts/templates/accounts/account.html:99
+msgid "Add passkey"
+msgstr ""
+
+#: accounts/templates/accounts/login.html:3
+#: accounts/templates/accounts/login.html:7
+#: accounts/templates/accounts/register.html:46
+msgid "Log in"
+msgstr ""
+
+#: accounts/templates/accounts/login.html:9
+msgid "Use a passkey saved on this device to log in."
+msgstr ""
+
+#: accounts/templates/accounts/login.html:25
+msgid "Log in with passkey"
+msgstr ""
+
+#: accounts/templates/accounts/login.html:28
+#: accounts/templates/accounts/register.html:45
+msgid "Your browser does not support passkeys."
+msgstr ""
+
+#: accounts/templates/accounts/login.html:29
+msgid "Don't have an account yet?"
+msgstr ""
+
+#: accounts/templates/accounts/login.html:29
+#: accounts/templates/accounts/register.html:3
+msgid "Register"
+msgstr ""
+
+#: accounts/templates/accounts/register.html:7
+msgid "Create an account"
+msgstr ""
+
+#: accounts/templates/accounts/register.html:9
+msgid ""
+"Optionally choose a username, then follow the prompt to create a passkey on "
+"this device. You can set or change your username later on the account page."
+msgstr ""
+
+#: accounts/templates/accounts/register.html:17
+msgid "Could not begin registration."
+msgstr ""
+
+#: accounts/templates/accounts/register.html:18
+msgid "Registration failed."
+msgstr ""
+
+#: accounts/templates/accounts/register.html:22
+msgid "Username"
+msgstr ""
+
+#: accounts/templates/accounts/register.html:33
+msgid "Optional. 3–50 characters."
+msgstr ""
+
+#: accounts/templates/accounts/register.html:42
+msgid "Register with passkey"
+msgstr ""
+
+#: accounts/templates/accounts/register.html:46
+msgid "Already have an account?"
+msgstr ""
+
+#: accounts/views.py:96
+msgid "Invalid request body."
+msgstr ""
+
+#: accounts/views.py:102 accounts/views.py:352
+msgid "Username must be 3–50 characters."
+msgstr ""
+
+#: accounts/views.py:107 accounts/views.py:148 accounts/views.py:358
+msgid "That username is already taken."
+msgstr ""
+
+#: accounts/views.py:144
+msgid "Registration session expired. Please try again."
+msgstr ""
+
+#: accounts/views.py:156 accounts/views.py:314
+#, python-format
+msgid "Verification failed: %(exc)s"
+msgstr ""
+
+#: accounts/views.py:205
+msgid "Authentication session expired. Please try again."
+msgstr ""
+
+#: accounts/views.py:240
+msgid "Passkey not recognised."
+msgstr ""
+
+#: accounts/views.py:243
+#, python-format
+msgid "Authentication failed: %(exc)s"
+msgstr ""
+
+#: accounts/views.py:305
+msgid "Session expired. Please try again."
+msgstr ""
+
+#: accounts/views.py:362
+msgid "Username updated."
+msgstr ""
+
+#: accounts/views.py:370
+msgid "API token regenerated."
+msgstr ""
+
+#: api/v1/views.py:144
+msgid "authentication required"
+msgstr ""
+
+#: api/v1/views.py:151
+msgid "invalid token"
+msgstr ""
+
+#: api/v1/views.py:193 api/v1/views.py:255 api/v2/views.py:295
+#: api/v2/views.py:362
+msgid "url is required"
+msgstr ""
+
+#: api/v1/views.py:211
+msgid "item already exists"
+msgstr ""
+
+#: api/v1/views.py:258
+msgid "item not found"
+msgstr ""
+
+#: api/v1/views.py:517 api/v2/views.py:443
+msgid "tag is required"
+msgstr ""
+
+#: api/v1/views.py:541 api/v2/views.py:420
+msgid "old and new are required"
+msgstr ""
+
+#: api/v1/views.py:610
+msgid "note not found"
+msgstr ""
+
+#: api/v2/views.py:112
+msgid "Supply auth_token or X-Auth-Token, not both"
+msgstr ""
+
+#: api/v2/views.py:117
+msgid "Authentication required"
+msgstr ""
+
+#: api/v2/views.py:125
+msgid "Invalid auth token"
+msgstr ""
+
+#: links/forms.py:31 links/templates/links/_bookmark_item.html:14
+#: links/templates/links/_form_include.html:62
+#: links/templates/links/_sidebar_partial.html:12
+msgid "Tags"
+msgstr ""
+
+#: links/forms.py:32
+msgid "Space-separated. Lowercase, no special characters."
+msgstr ""
+
+#: links/templates/links/_bookmark_item.html:35
+msgid "Actions"
+msgstr ""
+
+#: links/templates/links/_bookmark_item.html:41
+msgid "edit"
+msgstr ""
+
+#: links/templates/links/_delete_confirm.html:8
+msgid "cancel"
+msgstr ""
+
+#: links/templates/links/_delete_confirm.html:14
+msgid "yes, delete"
+msgstr ""
+
+#: links/templates/links/_delete_link.html:7
+msgid "delete"
+msgstr ""
+
+#: links/templates/links/_form_include.html:5
+msgid "Form errors"
+msgstr ""
+
+#: links/templates/links/_form_include.html:13
+msgid "URL"
+msgstr ""
+
+#: links/templates/links/_form_include.html:32
+msgid "Title"
+msgstr ""
+
+#: links/templates/links/_form_include.html:48
+msgid "Description"
+msgstr ""
+
+#: links/templates/links/_list_partial.html:2
+msgid "Bookmark list"
+msgstr ""
+
+#: links/templates/links/_list_partial.html:6
+msgid "Showing bookmarks tagged"
+msgstr ""
+
+#: links/templates/links/_list_partial.html:8
+msgid "Searched for"
+msgstr ""
+
+#: links/templates/links/_list_partial.html:8
+msgid "in your bookmarks"
+msgstr ""
+
+#: links/templates/links/_list_partial.html:10
+#: links/templates/links/list.html:3
+#, python-format
+msgid "%(name)s bookmarks"
+msgstr ""
+
+#: links/templates/links/_list_partial.html:13
+#, python-format
+msgid "Found %(total)s results."
+msgstr ""
+
+#: links/templates/links/_list_partial.html:24
+msgid "Pagination"
+msgstr ""
+
+#: links/templates/links/_list_partial.html:34
+msgid "Previous"
+msgstr ""
+
+#: links/templates/links/_list_partial.html:37
+#, python-format
+msgid "Page %(num)s of %(total)s"
+msgstr ""
+
+#: links/templates/links/_list_partial.html:48
+msgid "Next"
+msgstr ""
+
+#: links/templates/links/_list_partial.html:56
+msgid "No bookmarks match your search."
+msgstr ""
+
+#: links/templates/links/_list_partial.html:58
+msgid "No bookmarks with this tag."
+msgstr ""
+
+#: links/templates/links/_list_partial.html:60
+msgid "You have no bookmarks yet."
+msgstr ""
+
+#: links/templates/links/_list_partial.html:65
+msgid "Add your first one"
+msgstr ""
+
+#: links/templates/links/_modal_form.html:15 links/templates/links/form.html:13
+msgid "Submit"
+msgstr ""
+
+#: links/templates/links/_modal_form.html:16
+#: links/templates/links/confirm_delete.html:17
+#: links/templates/links/form.html:14 links/templates/links/import.html:39
+msgid "Cancel"
+msgstr ""
+
+#: links/templates/links/_sidebar_partial.html:18
+msgid "Filter tags…"
+msgstr ""
+
+#: links/templates/links/confirm_delete.html:3
+#: links/templates/links/confirm_delete.html:7
+msgid "Delete bookmark"
+msgstr ""
+
+#: links/templates/links/confirm_delete.html:9
+msgid "Are you sure you want to delete this bookmark?"
+msgstr ""
+
+#: links/templates/links/confirm_delete.html:16
+msgid "Yes, delete"
+msgstr ""
+
+#: links/templates/links/import.html:3 links/templates/links/import.html:7
+msgid "Import bookmarks"
+msgstr ""
+
+#: links/templates/links/import.html:11
+msgid "Import complete:"
+msgstr ""
+
+#: links/templates/links/import.html:12
+msgid "bookmark added"
+msgid_plural "bookmarks added"
+msgstr[0] ""
+msgstr[1] ""
+
+#: links/templates/links/import.html:13
+msgid "skipped (already exist)."
+msgstr ""
+
+#: links/templates/links/import.html:15
+msgid "View your bookmarks"
+msgstr ""
+
+#: links/templates/links/import.html:22
+msgid "Supported formats:"
+msgstr ""
+
+#: links/templates/links/import.html:25
+msgid ""
+"Netscape HTML bookmark file (<code>.html</code>) — exported by most browsers "
+"and by Pinboard."
+msgstr ""
+
+#: links/templates/links/import.html:26
+msgid "Pinboard JSON export (<code>.json</code>)."
+msgstr ""
+
+#: links/templates/links/import.html:28
+msgid "Existing bookmarks with the same URL are not duplicated."
+msgstr ""
+
+#: links/templates/links/import.html:33
+msgid "Bookmark file"
+msgstr ""
+
+#: links/templates/links/import.html:38 templates/base.html:37
+msgid "Import"
+msgstr ""
+
+#: links/templates/links/list.html:13 links/views.py:82 links/views.py:90
+#: links/views.py:93
+msgid "Add bookmark"
+msgstr ""
+
+#: links/templates/links/list.html:15
+msgid "Search bookmarks"
+msgstr ""
+
+#: links/templates/links/list.html:21
+msgid "Search titles, descriptions, URLs…"
+msgstr ""
+
+#: links/views.py:132 links/views.py:140
+msgid "Edit bookmark"
+msgstr ""
+
+#: links/views.py:177
+msgid "No file selected."
+msgstr ""
+
+#: links/views.py:184
+msgid "Could not read the file."
+msgstr ""
+
+#: templates/base.html:27 templates/base.html:30
+msgid "Home"
+msgstr ""
+
+#: templates/base.html:38
+msgid "Export HTML"
+msgstr ""
+
+#: templates/base.html:39
+msgid "Export JSON"
+msgstr ""
+
+#: templates/base.html:40
+#, python-format
+msgid "Account (%(name)s)"
+msgstr ""
+
+#: templates/base.html:43
+msgid "Log out"
+msgstr ""
+
+#: templates/base.html:54
+msgid "All bookmarks"
+msgstr ""
+
+#: templates/base.html:62 templates/base_slim.html:27
+msgid "Notifications"
+msgstr ""
+
+#: templates/base.html:75
+msgid "xdeb.net Bookmarks"
+msgstr ""
+
+#: templates/base.html:81 templates/base_slim.html:39
+msgid "Loading"
+msgstr ""
