@@ -38,6 +38,8 @@ def bookmark_add(request, slug: str = ""):
             bookmark.save()
             tags_changed = bool(set(bookmark.tags) - old_tags)
             invalidate_user_caches(request.user, tags_changed=tags_changed)
+            if request.POST.get("bookmarklet"):
+                return HttpResponse("<script>window.close()</script>")
             if request.htmx:
                 tag = request.GET.get("tag", "").strip()
                 query = request.GET.get("q", "").strip()

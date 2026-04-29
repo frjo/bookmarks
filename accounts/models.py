@@ -59,6 +59,11 @@ class User(AbstractBaseUser, PermissionsMixin):
         """Return a URL-safe slug from a username for use in URL paths."""
         return slugify(self.username) if self.username else self.id
 
+    @property
+    def get_display_name(self):
+        """Return username or short id."""
+        return self.username or str(self.id)[0:7]
+
     def __str__(self) -> str:
         return self.username or self.id
 

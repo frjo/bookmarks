@@ -6,7 +6,7 @@
       {% elif query %}
         Searched for <em>{{ query }}</em> in your bookmarks
       {% else %}
-        {{ user }} bookmarks
+        {{ user.get_display_name }} bookmarks
       {% endif %}
     </h1>
     <span>Found {{ total }} results.</span>

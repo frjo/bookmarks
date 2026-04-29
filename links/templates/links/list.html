@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}{{ user }} bookmarks{% endblock %}
+{% block title %}{{ user.get_display_name }} bookmarks{% endblock %}
 
 {% block page_class %}layout__sidebar-second{% endblock %}
 

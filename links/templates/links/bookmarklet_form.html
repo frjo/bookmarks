@@ -6,6 +6,7 @@
     <h1>{{ action }}</h1>
 
     <form method="post" novalidate>
+      <input type="hidden" name="bookmarklet" value="1">
       {% include "links/_form_include.html" %}
 
       <div><button type="submit" class="button button--small">{{ action }}</button></div>

@@ -34,6 +34,14 @@
       </form>
     </section>
 
+    <section aria-labelledby="bookmarklet-heading">
+      <h2 id="bookmarklet-heading">Bookmarklet</h2>
+      <p>
+        Your bookmarklet: <strong><a href="javascript:q=location.href;p=document.title;if(document.getSelection)%7Bd=document.getSelection();%7Delse%7Bd='';%7D;void(open('{{ request.scheme }}://{{ request.get_host }}/{{ user.slug }}/add/?bookmarklet=1&url='+encodeURIComponent(q)+'&title='+encodeURIComponent(p)+'&description='+encodeURIComponent(d),'Bookmark','toolbar=no,width=650,height=450'));">Bookmark</a></strong>
+      </p>
+      <p>Drag the "Bookmark" bookmarklet to e.g. your favorite bar. Clicking it will open a small window with a form to save a bookmark. Url and title will be prefilled from the current web site. If you select some text it will be copied in as a description. Quick and easy way to save a bookmark.</p>
+    </section>
+
     <section aria-labelledby="api-heading">
       <h2 id="api-heading">API token</h2>
       {% if api_token %}

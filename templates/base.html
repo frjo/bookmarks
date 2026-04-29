@@ -37,7 +37,7 @@
             <li class="desktop"><a href="{% url 'bookmark_import' slug=user.slug %}">Import</a></li>
             <li class="desktop"><a href="{% url 'bookmark_export' slug=user.slug %}">Export HTML</a></li>
             <li class="desktop"><a href="{% url 'bookmark_export' slug=user.slug %}?format=json">Export JSON</a></li>
-            <li><a href="{% url 'account' slug=user.slug %}">Account ({{ user.username }})</a></li>
+            <li><a href="{% url 'account' slug=user.slug %}">Account ({{ user.get_display_name }})</a></li>
             <li><form method="post" action="{% url 'logout' %}">
               {% csrf_token %}
               <button class="button button--small" type="submit">Log out</button>
