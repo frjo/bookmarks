@@ -1,14 +1,16 @@
 {% extends "base.html" %}
-{% load i18n %}
+{% load i18n static %}
 {% block title %}{% trans "Subscribe" %} — {% trans "Bookmarks" %}{% endblock %}
 
 {% block content %}
   <section>
     <h1>{% trans "Subscribe" %}</h1>
 
+    <img alt="{% trans 'Swish logo' %}" src="{% static 'images/swish-logo.svg' %}" width="96" height="96" class="image right">
+
     <p>{% blocktrans with limit=subscription_free_limit %}You can save up to {{ limit }} bookmarks for free. A subscription gives you unlimited bookmarks.{% endblocktrans %}</p>
 
-    <p>{% trans "After payment, your subscription will be activated manually. This usually happens within one business day." %}</p>
+    <p class="clearfix">{% trans "After payment, your subscription will be activated manually. This usually happens within one business day. For now the only payment option is Swish." %}</p>
 
     <div class="cards cards--swish">
       {% for option in options %}
@@ -23,6 +25,7 @@
                 ({% blocktrans with pct=option.price.discount_pct %}{{ pct }}% discount{% endblocktrans %})
               </span>
             {% endif %}
+            <br><span class="meta">{% blocktrans with vat=option.price.vat_amount cur=option.price.currency %}incl. VAT {{ vat }} {{ cur }}{% endblocktrans %}</span>
           </p>
           {% if option.svg %}
             {{ option.svg|safe }}

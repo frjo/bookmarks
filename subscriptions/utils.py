@@ -2,7 +2,7 @@ from decimal import ROUND_HALF_UP, Decimal
 
 from django.conf import settings
 
-_TWO_PLACES = Decimal("0.01")
+_WHOLE = Decimal("1")
 
 
 def calculate_price(
@@ -22,14 +22,14 @@ def calculate_price(
     discount_factor = 1 - (discount_pct / 100)
 
     amount_excl_vat = (base_price * years * discount_factor).quantize(
-        _TWO_PLACES, ROUND_HALF_UP
+        _WHOLE, ROUND_HALF_UP
     )
 
     if include_vat:
-        vat_amount = (amount_excl_vat * vat_rate).quantize(_TWO_PLACES, ROUND_HALF_UP)
+        vat_amount = (amount_excl_vat * vat_rate).quantize(_WHOLE, ROUND_HALF_UP)
     else:
         vat_rate = Decimal("0.0000")
-        vat_amount = Decimal("0.00")
+        vat_amount = Decimal("0")
 
     amount_incl_vat = amount_excl_vat + vat_amount
 
