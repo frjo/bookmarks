@@ -6,7 +6,10 @@
 
   <p>{% blocktrans with limit=subscription_free_limit %}Create an account and add up to {{ limit }} bookmarks for free. Subscribe to save unlimited bookmarks.{% endblocktrans %}</p>
 
-  <p>{% blocktrans with price_sek=subscription_price_sek currency="SEK" %}The subscription costs {{ price_sek }} {{ currency }} per year (excl. VAT).{% endblocktrans %}</p>
+  <p>
+    {% blocktrans with amount=subscription_price.amount_incl_vat currency=subscription_price.currency %}A subscription costs {{ amount }} {{ currency }} per year{% endblocktrans %}
+    <span class="meta">({% blocktrans with vat=subscription_price.vat_amount cur=subscription_price.currency %}incl. VAT {{ vat }} {{ cur }}{% endblocktrans %})</span>
+  </p>
 
   <p class="flex-inline flex-inline--baseline">
     <a class="button" href="{% url 'register' %}">{% trans "Create account" %}</a>

@@ -16,7 +16,7 @@
       {% for option in options %}
         <div class="card card--swish text-center">
           <h2>
-            {% blocktrans with years=option.years %}{{ years }} year{% endblocktrans %}{% if option.years > 1 %}s{% endif %}
+            {% blocktrans count years=option.years %}{{ years }} year{% plural %}{{ years }} years{% endblocktrans %}
           </h2>
           <p class="swish-price">
             <strong>{{ option.price.amount_incl_vat }} {{ option.price.currency }}</strong>

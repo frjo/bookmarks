@@ -39,8 +39,8 @@ def _swish_qr_svg(merchant: str, amount: int, message: str) -> str:
     style = ET.Element(f"{{{_SVG_NS}}}style")
     style.text = (
         "@media(prefers-color-scheme:dark){"
-        ".segno{background:#1a1a1a}"
-        ".qrline{stroke:#fff}"
+        ".segno{background:#17191f}"
+        ".qrline{stroke:#e8e6e0}"
         "}"
     )
     root.insert(0, style)
@@ -64,7 +64,7 @@ def pay(request):
     merchant = getattr(settings, "SWISH_MERCHANT_NUMBER", "")
     options = []
     for years in range(1, _MAX_YEARS + 1):
-        price = calculate_price(years, "SEK", include_vat=True)
+        price = calculate_price(years, "SEK", include_vat=False)
         amount = int(price["amount_incl_vat"])
         year_label = "year" if years == 1 else "years"
         message = f"Bookmarks {years} {year_label}: {request.user.id}"
