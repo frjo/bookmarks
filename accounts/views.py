@@ -1,5 +1,6 @@
 import base64
 import json
+import logging
 import secrets
 
 import nh3
@@ -7,7 +8,8 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
-from django.http import JsonResponse
+from django.db import transaction
+from django.http import HttpResponseBadRequest, JsonResponse
 from django.shortcuts import redirect, render
 from django.utils import timezone
 from django.utils.http import url_has_allowed_host_and_scheme
@@ -28,6 +30,7 @@ from webauthn.helpers.structs import (
     AuthenticatorAttestationResponse,
     AuthenticatorSelectionCriteria,
     AuthenticatorTransport,
+    PublicKeyCredentialDescriptor,
     RegistrationCredential,
     ResidentKeyRequirement,
     UserVerificationRequirement,
@@ -35,8 +38,10 @@ from webauthn.helpers.structs import (
 
 from .models import APIToken, User, WebAuthnCredential
 
+logger = logging.getLogger(__name__)
 
-def _registration_options(user_handle, username):
+
+def _registration_options(user_handle, username, exclude_credentials=None):
     return generate_registration_options(
         rp_id=settings.WEBAUTHN_RP_ID,
         rp_name=settings.WEBAUTHN_RP_NAME,
@@ -47,6 +52,7 @@ def _registration_options(user_handle, username):
             resident_key=ResidentKeyRequirement.REQUIRED,
             user_verification=UserVerificationRequirement.REQUIRED,
         ),
+        exclude_credentials=exclude_credentials or [],
     )
 
 
@@ -66,12 +72,13 @@ def _verify_registration(data, challenge):
             transports=transports or None,
         ),
     )
-    return verify_registration_response(
+    verification = verify_registration_response(
         credential=credential,
         expected_challenge=challenge,
         expected_rp_id=settings.WEBAUTHN_RP_ID,
         expected_origin=settings.WEBAUTHN_ORIGIN,
     )
+    return verification, [t.value for t in transports]
 
 
 # ---------------------------------------------------------------------------
@@ -150,10 +157,11 @@ def register_complete(request):
     try:
         challenge = base64.b64decode(challenge_b64)
         data = json.loads(request.body)
-        verification = _verify_registration(data, challenge)
-    except Exception as exc:
+        verification, transports = _verify_registration(data, challenge)
+    except Exception:
+        logger.exception("WebAuthn registration verification failed")
         return JsonResponse(
-            {"error": _("Verification failed: %(exc)s") % {"exc": exc}}, status=400
+            {"error": _("Verification failed. Please try again.")}, status=400
         )
 
     user = User.objects.create_user(username=username)
@@ -162,7 +170,7 @@ def register_complete(request):
         credential_id=bytes(verification.credential_id),
         public_key=bytes(verification.credential_public_key),
         sign_count=verification.sign_count,
-        transports=[],
+        transports=transports,
         name=nh3.clean(data.get("name", "").strip(), tags=set()),
     )
 
@@ -170,6 +178,11 @@ def register_complete(request):
     request.session.pop("reg_username", None)
 
     login(request, user, backend="accounts.backends.PasskeyBackend")
+    logger.info(
+        "audit: registration complete user=%s ip=%s",
+        user.pk,
+        request.META.get("REMOTE_ADDR"),
+    )
     return JsonResponse({"status": "ok"})
 
 
@@ -224,36 +237,64 @@ def login_complete(request):
             ),
         )
 
-        stored = WebAuthnCredential.objects.select_related("user").get(
-            credential_id=bytes(raw_id)
-        )
+        with transaction.atomic():
+            stored = (
+                WebAuthnCredential.objects.select_related("user")
+                .select_for_update()
+                .get(credential_id=bytes(raw_id))
+            )
 
-        verification = verify_authentication_response(
-            credential=credential,
-            expected_challenge=challenge,
-            expected_rp_id=settings.WEBAUTHN_RP_ID,
-            expected_origin=settings.WEBAUTHN_ORIGIN,
-            credential_public_key=bytes(stored.public_key),
-            credential_current_sign_count=stored.sign_count,
-        )
+            verification = verify_authentication_response(
+                credential=credential,
+                expected_challenge=challenge,
+                expected_rp_id=settings.WEBAUTHN_RP_ID,
+                expected_origin=settings.WEBAUTHN_ORIGIN,
+                credential_public_key=bytes(stored.public_key),
+                credential_current_sign_count=stored.sign_count,
+            )
+
+            if (
+                verification.new_sign_count != 0 or stored.sign_count != 0
+            ) and verification.new_sign_count <= stored.sign_count:
+                logger.warning(
+                    "Possible cloned authenticator for credential %s (user %s): stored=%d new=%d",
+                    stored.pk,
+                    stored.user_id,
+                    stored.sign_count,
+                    verification.new_sign_count,
+                )
+                return JsonResponse(
+                    {"error": _("Authentication failed. Please try again.")}, status=401
+                )
+
+            stored.sign_count = verification.new_sign_count
+            stored.last_used_at = timezone.now()
+            stored.save(update_fields=["sign_count", "last_used_at"])
+
     except WebAuthnCredential.DoesNotExist:
-        return JsonResponse({"error": _("Passkey not recognised.")}, status=401)
-    except Exception as exc:
-        return JsonResponse(
-            {"error": _("Authentication failed: %(exc)s") % {"exc": exc}}, status=401
+        logger.warning(
+            "audit: login failed (unknown credential) ip=%s",
+            request.META.get("REMOTE_ADDR"),
         )
-
-    stored.sign_count = verification.new_sign_count
-    stored.last_used_at = timezone.now()
-    stored.save(update_fields=["sign_count", "last_used_at"])
+        return JsonResponse({"error": _("Passkey not recognised.")}, status=401)
+    except Exception:
+        logger.exception("WebAuthn authentication verification failed")
+        logger.warning(
+            "audit: login failed (verification error) ip=%s",
+            request.META.get("REMOTE_ADDR"),
+        )
+        return JsonResponse(
+            {"error": _("Authentication failed. Please try again.")}, status=401
+        )
 
     request.session.pop("auth_challenge", None)
 
-    remember_me = data.get("remember_me", False)
-    if not remember_me:
-        request.session.set_expiry(0)
-
     login(request, stored.user, backend="accounts.backends.PasskeyBackend")
+    logger.info(
+        "audit: login success user=%s ip=%s",
+        stored.user.pk,
+        request.META.get("REMOTE_ADDR"),
+    )
 
     next_url = data.get("next", "").strip()
     if not url_has_allowed_host_and_scheme(
@@ -287,7 +328,13 @@ def passkey_add_begin(request):
     """Begin adding a new passkey for an already-authenticated user."""
     user = request.user
     user_handle = base64.urlsafe_b64encode(user.username.encode()).rstrip(b"=")
-    options = _registration_options(user_handle, user.username)
+    existing = [
+        PublicKeyCredentialDescriptor(id=bytes(c.credential_id))
+        for c in user.credentials.all()
+    ]
+    options = _registration_options(
+        user_handle, user.username, exclude_credentials=existing
+    )
     request.session["add_passkey_challenge"] = base64.b64encode(
         options.challenge
     ).decode()
@@ -308,19 +355,26 @@ def passkey_add_complete(request):
     try:
         challenge = base64.b64decode(challenge_b64)
         data = json.loads(request.body)
-        verification = _verify_registration(data, challenge)
-    except Exception as exc:
+        verification, transports = _verify_registration(data, challenge)
+    except Exception:
+        logger.exception("WebAuthn passkey-add verification failed")
         return JsonResponse(
-            {"error": _("Verification failed: %(exc)s") % {"exc": exc}}, status=400
+            {"error": _("Verification failed. Please try again.")}, status=400
         )
 
-    WebAuthnCredential.objects.create(
+    credential = WebAuthnCredential.objects.create(
         user=request.user,
         credential_id=bytes(verification.credential_id),
         public_key=bytes(verification.credential_public_key),
         sign_count=verification.sign_count,
-        transports=[],
+        transports=transports,
         name=nh3.clean(data.get("name", "").strip(), tags=set()),
+    )
+    logger.info(
+        "audit: passkey added user=%s credential=%s ip=%s",
+        request.user.pk,
+        credential.pk,
+        request.META.get("REMOTE_ADDR"),
     )
 
     request.session.pop("add_passkey_challenge", None)
@@ -342,6 +396,9 @@ def account_view(request, slug: str = ""):
     if request.method == "POST":
         action = request.POST.get("action")
 
+        if action not in {"update_username", "regenerate_token"}:
+            return HttpResponseBadRequest()
+
         if action == "update_username":
             new_username = nh3.clean(
                 request.POST.get("username", "").strip(), tags=set()
@@ -357,8 +414,16 @@ def account_view(request, slug: str = ""):
             ):
                 messages.error(request, _("That username is already taken."))
             else:
+                old_username = user.username
                 user.username = new_username
                 user.save(update_fields=["username"])
+                logger.info(
+                    "audit: username changed user=%s old=%s new=%s ip=%s",
+                    user.pk,
+                    old_username,
+                    new_username,
+                    request.META.get("REMOTE_ADDR"),
+                )
                 messages.success(request, _("Username updated."))
 
         elif action == "regenerate_token":
@@ -366,6 +431,11 @@ def account_view(request, slug: str = ""):
             api_token, _created = APIToken.objects.update_or_create(
                 user=user,
                 defaults={"token": new_token},
+            )
+            logger.info(
+                "audit: api token regenerated user=%s ip=%s",
+                user.pk,
+                request.META.get("REMOTE_ADDR"),
             )
             messages.success(request, _("API token regenerated."))
 

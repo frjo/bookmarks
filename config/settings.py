@@ -89,14 +89,22 @@ LAX_RATE_LIMIT = env.str("LAX_RATE_LIMIT", "1/s")
 STRICT_RATE_LIMIT = env.str("STRICT_RATE_LIMIT", "10/h")
 
 # ---------------------------------------------------------------------------
-# Sessions
+# Sessions and security
 # ---------------------------------------------------------------------------
 SESSION_COOKIE_AGE = env.int("SESSION_COOKIE_AGE", 60 * 60 * 24 * 7 * 2)  # 2 weeks
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SAMESITE = "Strict"
+CSRF_COOKIE_SAMESITE = "Strict"
+X_FRAME_OPTIONS = "DENY"
+SECURE_REFERRER_POLICY = "strict-origin-when-cross-origin"
 if not DEBUG:
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
     SECURE_SSL_REDIRECT = True
     SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+    SECURE_HSTS_SECONDS = 31536000
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
 
 # ---------------------------------------------------------------------------
 # Cache

@@ -7,6 +7,7 @@ import segno
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
+from django.templatetags.static import static
 
 from .utils import calculate_price
 
@@ -54,7 +55,7 @@ def _swish_qr_svg(merchant: str, amount: int, message: str) -> str:
     img.set("y", str(offset))
     img.set("width", str(logo_size))
     img.set("height", str(logo_size))
-    img.set("href", "/static/images/swish-qr-logo.svg")
+    img.set("href", static("images/swish-qr-logo.svg"))
 
     return ET.tostring(root, encoding="unicode")
 
@@ -64,7 +65,7 @@ def pay(request):
     merchant = getattr(settings, "SWISH_MERCHANT_NUMBER", "")
     options = []
     for years in range(1, _MAX_YEARS + 1):
-        price = calculate_price(years, "SEK", include_vat=False)
+        price = calculate_price(years, "SEK")
         amount = int(price["amount_incl_vat"])
         year_label = "year" if years == 1 else "years"
         message = f"Bookmarks {years} {year_label}: {request.user.id}"

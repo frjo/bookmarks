@@ -91,13 +91,13 @@ def _result_error(request, msg: str, status: int = 400) -> HttpResponse:
 
 
 def _url_hash(url: str) -> str:
-    return hashlib.md5(url.encode()).hexdigest()  # noqa: S324
+    return hashlib.sha256(url.encode()).hexdigest()
 
 
 def _bookmark_meta(bm: Bookmark) -> str:
     """Derive a change-detection hash from the bookmark's updated_at."""
     raw = f"{bm.url}{bm.updated_at.isoformat()}"
-    return hashlib.md5(raw.encode()).hexdigest()  # noqa: S324
+    return hashlib.sha256(raw.encode()).hexdigest()
 
 
 def _serialize_post(bm: Bookmark, *, include_meta: bool = False) -> dict:

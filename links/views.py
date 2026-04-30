@@ -24,6 +24,7 @@ from .importexport import (
 from .models import Bookmark
 
 _MIN_SEARCH_LENGTH = 3
+_MAX_UPLOADED_SIZE = 10  # In MB.
 
 
 @login_required
@@ -208,6 +209,16 @@ def bookmark_import(request, slug: str = ""):
         if not uploaded:
             return render(
                 request, "links/import.html", {"error": _("No file selected.")}
+            )
+
+        if uploaded.size > _MAX_UPLOADED_SIZE * 1024 * 1024:
+            return render(
+                request,
+                "links/import.html",
+                {
+                    "error": _("File too large (max %(max)s MB).")
+                    % {"max": _MAX_UPLOADED_SIZE}
+                },
             )
 
         try:
