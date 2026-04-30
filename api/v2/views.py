@@ -419,9 +419,12 @@ def tags_rename(request):
     if not old or not new:
         return _error("missing_params", _("old and new are required"))
 
-    for bm in Bookmark.objects.filter(user=user, tags__contains=[old]):
+    bookmarks = list(
+        Bookmark.objects.filter(user=user, tags__contains=[old]).only("pk", "tags")
+    )
+    for bm in bookmarks:
         bm.tags = sorted({new if t == old else t for t in bm.tags})
-        bm.save(update_fields=["tags"])
+    Bookmark.objects.bulk_update(bookmarks, ["tags"], batch_size=500)
 
     invalidate_user_caches(user)
     return _ok({"result_code": "done"})
@@ -442,9 +445,12 @@ def tags_delete(request):
     if not tag:
         return _error("missing_tag", _("tag is required"))
 
-    for bm in Bookmark.objects.filter(user=user, tags__contains=[tag]):
+    bookmarks = list(
+        Bookmark.objects.filter(user=user, tags__contains=[tag]).only("pk", "tags")
+    )
+    for bm in bookmarks:
         bm.tags = [t for t in bm.tags if t != tag]
-        bm.save(update_fields=["tags"])
+    Bookmark.objects.bulk_update(bookmarks, ["tags"], batch_size=500)
 
     invalidate_user_caches(user)
     return _ok({"result_code": "done"})

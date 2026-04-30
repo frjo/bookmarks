@@ -1,6 +1,9 @@
 from cuid2 import Cuid
 from django.conf import settings
+from django.core.cache import cache
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.utils import timezone
 
 _cuid = Cuid(length=24)
@@ -38,3 +41,8 @@ class Subscription(models.Model):
 
         warning_days = settings.SUBSCRIPTION_EXPIRY_WARNING_DAYS
         return self.expires_at <= timezone.now() + timedelta(days=warning_days)
+
+
+@receiver(post_save, sender=Subscription)
+def invalidate_subscription_cache(sender, instance, **kwargs):
+    cache.delete(f"sub_expiry:{instance.user_id}")
