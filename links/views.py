@@ -1,12 +1,17 @@
 from django.conf import settings
+from django.contrib import messages as django_messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.postgres.search import SearchQuery, SearchRank
 from django.core.paginator import Paginator
 from django.db.models import F
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
+from django.utils.html import format_html
 from django.utils.translation import gettext as _
 from django_ratelimit.decorators import ratelimit
+
+from subscriptions.utils import can_add_bookmark
 
 from .cache import get_bookmark_count, get_user_tags, invalidate_user_caches
 from .forms import BookmarkForm
@@ -24,7 +29,22 @@ _MIN_SEARCH_LENGTH = 3
 @login_required
 @ratelimit(key="user", rate=settings.LAX_RATE_LIMIT)
 def bookmark_add(request, slug: str = ""):
+    limit_reached = not can_add_bookmark(request.user)
     if request.method == "POST":
+        if limit_reached:
+            if request.htmx:
+                response = HttpResponse(
+                    format_html(
+                        '{} <a href="{}">{}</a>',
+                        _("You have reached the free bookmark limit."),
+                        reverse("subscriptions:pay"),
+                        _("Subscribe to add more bookmarks."),
+                    ),
+                    status=403,
+                )
+                response["HX-Retarget"] = "#bookmark-limit-error"
+                return response
+            return redirect(reverse("subscriptions:pay"))
         form = BookmarkForm(request.POST)
         if form.is_valid():
             bookmark = form.save(commit=False)
@@ -73,6 +93,16 @@ def bookmark_add(request, slug: str = ""):
             "description": request.GET.get("description", ""),
         }
         form = BookmarkForm(initial=initial)
+    if limit_reached:
+        django_messages.warning(
+            request,
+            format_html(
+                '{} <a href="{}">{}</a>',
+                _("You have reached the free bookmark limit."),
+                reverse("subscriptions:pay"),
+                _("Subscribe to add more bookmarks."),
+            ),
+        )
     if request.htmx:
         return render(
             request,
@@ -81,16 +111,19 @@ def bookmark_add(request, slug: str = ""):
                 "form": form,
                 "action": _("Add bookmark"),
                 "form_url": request.get_full_path(),
+                "limit_reached": limit_reached,
             },
         )
     if request.GET.get("bookmarklet", ""):
         return render(
             request,
             "links/bookmarklet_form.html",
-            {"form": form, "action": _("Add bookmark")},
+            {"form": form, "action": _("Add bookmark"), "limit_reached": limit_reached},
         )
     return render(
-        request, "links/form.html", {"form": form, "action": _("Add bookmark")}
+        request,
+        "links/form.html",
+        {"form": form, "action": _("Add bookmark"), "limit_reached": limit_reached},
     )
 
 

@@ -7,11 +7,20 @@
 {% endblock %}
 
 {% block content %}
-  <h1>A bookmarking service from xdeb.net</h1>
+  <h1>{% trans "A bookmarking service from xdeb.net" %}</h1>
 
-  <p>You are free to create an account and add up to 10 bookmarks, after that you will need to pay a monthly or yearly fee.</p>
+  <p>{% blocktrans with limit=subscription_free_limit %}Create an account and add up to {{ limit }} bookmarks for free. Subscribe to save unlimited bookmarks.{% endblocktrans %}</p>
 
-  <p>The cost is 20 Euro per year.</p>
+  <p>{% blocktrans with price_sek=subscription_price_sek currency="SEK" %}The subscription costs {{ price_sek }} {{ currency }} per year (excl. VAT).{% endblocktrans %}</p>
 
-  <p>Only passkeys are accepted for logins. Each user gets a random id (cuid). No username or e-mail address is needed, you can add a username if you wish on the account page.</p>
+  {% if user.is_authenticated %}
+    <p><a href="{% url 'subscriptions:pay' %}" class="button">{% trans "Subscribe" %}</a></p>
+  {% else %}
+    <p>
+      <a href="{% url 'register' %}" class="button">{% trans "Create account" %}</a>
+      <a href="{% url 'login' %}">{% trans "Log in" %}</a>
+    </p>
+  {% endif %}
+
+  <p><small>{% trans "Only passkeys are accepted for login. Each user gets a random account ID. No username or email address is required — you can optionally add a username on the account page." %}</small></p>
 {% endblock %}

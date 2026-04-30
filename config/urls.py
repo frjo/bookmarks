@@ -6,6 +6,7 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("", include("home.urls")),
     path("", include("accounts.urls")),
+    path("subscriptions/", include("subscriptions.urls")),
     path("api/v1/", include("api.v1.urls")),
     path("api/v2/", include("api.v2.urls")),
     path("<str:slug>/", include("links.urls")),

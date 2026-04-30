@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}{% trans "Pay with Swish" %} — {% trans "Bookmarks" %}{% endblock %}
+
+{% block content %}
+  <section>
+    <h1>{% trans "Pay with Swish" %}</h1>
+
+    <dl>
+      <dt>{% trans "Period" %}</dt>
+      <dd>{% blocktrans with years=intent.years %}{{ years }} year(s){% endblocktrans %}</dd>
+      <dt>{% trans "Total" %}</dt>
+      <dd>{{ intent.price.amount_incl_vat }} {{ intent.price.currency }}</dd>
+    </dl>
+
+    {% if swish_error %}
+      <p class="form-error" role="alert">{{ swish_error }}</p>
+    {% endif %}
+
+    <form method="post">
+      {% csrf_token %}
+      <div>
+        <label for="id_phone">{% trans "Your Swish phone number" %}</label>
+        <input type="tel"
+               id="id_phone"
+               name="phone"
+               required
+               placeholder="070 123 45 67"
+               autocomplete="tel"
+               aria-describedby="phone-hint">
+        <p id="phone-hint"><small>{% trans "The Swedish mobile number linked to your Swish account." %}</small></p>
+        {% if phone_error %}
+          <p class="form-error" role="alert">{{ phone_error }}</p>
+        {% endif %}
+      </div>
+      <button type="submit" class="button">{% trans "Initiate Swish payment" %}</button>
+    </form>
+
+    <p><a href="{% url 'subscriptions:pay' %}">{% trans "← Back" %}</a></p>
+  </section>
+{% endblock %}

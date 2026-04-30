@@ -34,6 +34,38 @@
       </form>
     </section>
 
+    <section aria-labelledby="subscription-heading">
+      <h2 id="subscription-heading">{% trans "Subscription" %}</h2>
+      {% if subscription and subscription.is_active %}
+        <p>
+          {% trans "Status" %}: <strong>{% trans "Active" %}</strong><br>
+          {% trans "Expires" %}: <time datetime="{{ subscription.expires_at|date:'Y-m-d' }}">{{ subscription.expires_at|date:"DATE_FORMAT" }}</time>
+        </p>
+        {% if subscription.is_expiring_soon %}
+          <p class="message warning">
+            {% blocktrans with date=subscription.expires_at|date:"DATE_FORMAT" %}Your subscription expires on {{ date }}.{% endblocktrans %}
+          </p>
+        {% endif %}
+      {% else %}
+        <p>{% trans "Status" %}: <strong>{% trans "No active subscription" %}</strong></p>
+        <p><small>{% blocktrans with limit=subscription_free_limit %}You can add up to {{ limit }} bookmarks for free.{% endblocktrans %}</small></p>
+      {% endif %}
+      <p><a href="{% url 'subscriptions:pay' %}" class="button button--small">{% trans "Subscribe / Renew" %}</a></p>
+      {% if recent_paid_payments %}
+        <h3>{% trans "Payment history" %}</h3>
+        <ul>
+          {% for payment in recent_paid_payments %}
+            <li>
+              {{ payment.invoice_number }} —
+              {{ payment.amount_incl_vat }} {{ payment.currency }} —
+              {{ payment.paid_at|date:"DATE_FORMAT" }} —
+              <a href="{% url 'subscriptions:invoice' payment.id %}">{% trans "Invoice" %}</a>
+            </li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    </section>
+
     <section aria-labelledby="bookmarklet-heading">
       <h2 id="bookmarklet-heading">{% trans "Bookmarklet" %}</h2>
       <p>

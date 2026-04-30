@@ -15,6 +15,7 @@ INSTALLED_APPS = [
     "home",
     "accounts",
     "links",
+    "subscriptions",
 ]
 
 MIDDLEWARE = [

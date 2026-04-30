@@ -9,7 +9,7 @@
       <input type="hidden" name="bookmarklet" value="1">
       {% include "links/_form_include.html" %}
 
-      <div><button type="submit" class="button button--small">{{ action }}</button></div>
+      <div><button type="submit" class="button button--small"{% if limit_reached %} disabled{% endif %}>{{ action }}</button></div>
     </form>
   </section>
 {% endblock %}

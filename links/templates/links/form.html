@@ -10,7 +10,7 @@
       {% include "links/_form_include.html" %}
 
       <div class="flex-inline">
-        <button type="submit">{% trans "Submit" %}</button>
+        <button type="submit"{% if limit_reached %} disabled{% endif %}>{% trans "Submit" %}</button>
         <a class="button button--outline" href="{% url 'bookmark_list' slug=user.slug %}">{% trans "Cancel" %}</a>
       </div>
     </form>

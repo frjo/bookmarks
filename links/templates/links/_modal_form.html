@@ -1,6 +1,14 @@
 {% load i18n %}
 <h2>{{ action }}</h2>
 
+{% if messages %}
+  <ul class="messages" aria-label="{% trans 'Notifications' %}">
+    {% for message in messages %}
+      <li class="message {{ message.tags }}" role="status">{{ message }}</li>
+    {% endfor %}
+  </ul>
+{% endif %}
+
 <form
   method="post"
   action="{{ form_url }}"
@@ -12,7 +20,7 @@
   {% include "links/_form_include.html" %}
 
   <div class="flex-inline">
-    <button type="submit">{% trans "Submit" %}</button>
+    <button type="submit"{% if limit_reached %} disabled{% endif %}>{% trans "Submit" %}</button>
     <button type="button" class="button button--outline" onclick="document.getElementById('bookmarks-modal').close()">{% trans "Cancel" %}</button>
   </div>
 </form>
