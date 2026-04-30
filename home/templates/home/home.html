@@ -1,5 +1,17 @@
 {% extends "base.html" %}
+{% load i18n %}
+
+{% block menu_anon %}
+  <li><a href="{% url 'login' %}">{% trans "Log in" %}</a></li>
+  <li><a href="{% url 'register' %}">{% trans "Register" %}</a></li>
+{% endblock %}
 
 {% block content %}
-  <p>Hello world!</p>
+  <h1>A bookmarking service from xdeb.net</h1>
+
+  <p>You are free to create an account and add up to 10 bookmarks, after that you will need to pay a monthly or yearly fee.</p>
+
+  <p>The cost is 20 Euro per year.</p>
+
+  <p>Only passkeys are accepted for logins. Each user gets a random id (cuid). No username or e-mail address is needed, you can add a username if you wish on the account page.</p>
 {% endblock %}

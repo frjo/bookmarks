@@ -47,10 +47,10 @@
       {% if api_token %}
         <p>
           {% trans "Your API token:" %}
-          <code>{{ user.id }}:{{ api_token.token }}</code>
+          <code class="wrap-any">{{ user.id }}:{{ api_token.token }}</code>
         </p>
         <p>
-          <small>{% blocktrans with scheme=request.scheme host=request.get_host uid=user.id token=api_token.token %}Use this as the <code>auth_token</code> query parameter when calling the API, e.g. <code>{{ scheme }}://{{ host }}/api/v2/posts/recent?auth_token={{ uid }}:{{ token }}</code>{% endblocktrans %}</small>
+          <small>{% blocktrans with scheme=request.scheme host=request.get_host uid=user.id token=api_token.token %}Use this as the <code>auth_token</code> query parameter when calling the API, e.g. <code class="wrap-any">{{ scheme }}://{{ host }}/api/v2/posts/recent?auth_token={{ uid }}:{{ token }}</code>{% endblocktrans %}</small>
         </p>
       {% else %}
         <p>{% trans "You don't have an API token yet." %}</p>

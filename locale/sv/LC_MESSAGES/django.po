@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-04-29 21:11+0000\n"
+"POT-Creation-Date: 2026-04-30 06:14+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,7 +21,7 @@ msgstr ""
 #: accounts/templates/accounts/account.html:3
 #: accounts/templates/accounts/account.html:7
 msgid "Account"
-msgstr ""
+msgstr "Konto"
 
 #: accounts/templates/accounts/account.html:3
 #: accounts/templates/accounts/login.html:3
@@ -30,15 +30,15 @@ msgstr ""
 #: links/templates/links/form.html:3 links/templates/links/import.html:3
 #: templates/base.html:9 templates/base.html:30 templates/base_slim.html:9
 msgid "Bookmarks"
-msgstr ""
+msgstr "Bokmärken"
 
 #: accounts/templates/accounts/account.html:10
 msgid "Profile"
-msgstr ""
+msgstr "Profil"
 
 #: accounts/templates/accounts/account.html:12
 msgid "Account ID"
-msgstr ""
+msgstr "Konto ID"
 
 #: accounts/templates/accounts/account.html:19
 msgid "Display username"
@@ -46,111 +46,115 @@ msgstr ""
 
 #: accounts/templates/accounts/account.html:31
 msgid "3–50 characters."
-msgstr ""
+msgstr "3-50 tecken"
 
 #: accounts/templates/accounts/account.html:33
 msgid "Update username"
-msgstr ""
+msgstr "Uppdatera användarnamnet"
 
 #: accounts/templates/accounts/account.html:38
 msgid "Bookmarklet"
-msgstr ""
+msgstr "Bookmarklet"
 
 #: accounts/templates/accounts/account.html:40
 msgid "Your bookmarklet:"
-msgstr ""
+msgstr "Ditt bookmarklet:"
 
 #: accounts/templates/accounts/account.html:40
 msgid "Bookmark"
-msgstr ""
+msgstr "Bokmärke"
 
 #: accounts/templates/accounts/account.html:42
-msgid "Drag the \\"
+msgid ""
+"Drag the \"Bookmark\" bookmarklet to e.g. your favorite bar. Clicking it "
+"will open a small window with a form to save a bookmark. Url and title will "
+"be prefilled from the current web site. If you select some text it will be "
+"copied in as a description. Quick and easy way to save a bookmark."
 msgstr ""
 
 #: accounts/templates/accounts/account.html:46
 msgid "API token"
-msgstr ""
+msgstr "API token"
 
 #: accounts/templates/accounts/account.html:49
 msgid "Your API token:"
-msgstr ""
+msgstr "Ditt API token"
 
 #: accounts/templates/accounts/account.html:53
 #, python-format
 msgid ""
 "Use this as the <code>auth_token</code> query parameter when calling the "
-"API, e.g. <code>%(scheme)s://%(host)s/api/v2/posts/recent?auth_token=%(uid)s:"
-"%(token)s</code>"
+"API, e.g. <code class=\"wrap-any\">%(scheme)s://%(host)s/api/v2/posts/recent?"
+"auth_token=%(uid)s:%(token)s</code>"
 msgstr ""
 
 #: accounts/templates/accounts/account.html:56
 msgid "You don't have an API token yet."
-msgstr ""
+msgstr "Du har inget API token ännu."
 
 #: accounts/templates/accounts/account.html:62
 msgid "Regenerate token"
-msgstr ""
+msgstr "Skapa ett nytt token"
 
 #: accounts/templates/accounts/account.html:62
 msgid "Generate token"
-msgstr ""
+msgstr "Skapa ett token"
 
 #: accounts/templates/accounts/account.html:68
 msgid "Passkeys"
-msgstr ""
+msgstr "Passkeys"
 
 #: accounts/templates/accounts/account.html:73
 #, python-format
 msgid "Passkey %(counter)s"
-msgstr ""
+msgstr "Passkey %(counter)s"
 
 #: accounts/templates/accounts/account.html:74
 msgid "added"
-msgstr ""
+msgstr "tillagd"
 
 #: accounts/templates/accounts/account.html:75
 msgid "last used"
-msgstr ""
+msgstr "senasrt använd"
 
 #: accounts/templates/accounts/account.html:80
 msgid "No passkeys found."
-msgstr ""
+msgstr "Hittar inga passkeys."
 
 #: accounts/templates/accounts/account.html:84
 msgid "Add a passkey"
-msgstr ""
+msgstr "Lägg till en passkey."
 
 #: accounts/templates/accounts/account.html:89
 msgid "Could not begin passkey registration."
-msgstr ""
+msgstr "Kunde inte påbörja en passkey registrering"
 
 #: accounts/templates/accounts/account.html:90
 msgid "Passkey registration failed."
-msgstr ""
+msgstr "Passkey registrering misslyckades"
 
 #: accounts/templates/accounts/account.html:91
 #: accounts/templates/accounts/register.html:19
 msgid "A passkey for this authenticator is already registered."
-msgstr ""
+msgstr "En passkey för denna verifierare är redan registrerad."
 
 #: accounts/templates/accounts/account.html:95
 msgid "Passkey name (optional)"
-msgstr ""
+msgstr "Passkey name (valfri)"
 
 #: accounts/templates/accounts/account.html:96
 msgid "e.g. MacBook Touch ID"
-msgstr ""
+msgstr "t. ex. MacBook Touch ID"
 
 #: accounts/templates/accounts/account.html:99
 msgid "Add passkey"
-msgstr ""
+msgstr "Lägg till passkey"
 
 #: accounts/templates/accounts/login.html:3
 #: accounts/templates/accounts/login.html:7
-#: accounts/templates/accounts/register.html:46
+#: accounts/templates/accounts/register.html:46 home/templates/home/home.html:5
 msgid "Log in"
-msgstr ""
+msgstr "Logga in"
 
 #: accounts/templates/accounts/login.html:9
 msgid "Use a passkey saved on this device to log in."
@@ -170,7 +174,7 @@ msgid "Don't have an account yet?"
 msgstr ""
 
 #: accounts/templates/accounts/login.html:29
-#: accounts/templates/accounts/register.html:3
+#: accounts/templates/accounts/register.html:3 home/templates/home/home.html:6
 msgid "Register"
 msgstr ""
 
@@ -526,18 +530,18 @@ msgstr ""
 msgid "Log out"
 msgstr ""
 
-#: templates/base.html:54
+#: templates/base.html:60
 msgid "All bookmarks"
-msgstr ""
+msgstr "Alla bokmärken"
 
-#: templates/base.html:62 templates/base_slim.html:27
+#: templates/base.html:68 templates/base_slim.html:27
 msgid "Notifications"
 msgstr ""
 
-#: templates/base.html:75
+#: templates/base.html:81
 msgid "xdeb.net Bookmarks"
-msgstr ""
+msgstr "xdeb.net Bokmärken"
 
-#: templates/base.html:81 templates/base_slim.html:39
+#: templates/base.html:87 templates/base_slim.html:39
 msgid "Loading"
-msgstr ""
+msgstr "Laddar"
