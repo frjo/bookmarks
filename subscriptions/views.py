@@ -10,7 +10,8 @@ from django.shortcuts import render
 
 from .utils import calculate_price
 
-_MAX_YEARS = 5
+_MAX_YEARS = 6
+_QR_SIZE = 200
 
 _SVG_NS = "http://www.w3.org/2000/svg"
 
@@ -30,6 +31,10 @@ def _swish_qr_svg(merchant: str, amount: int, message: str) -> str:
     qr.save(buf, kind="svg", scale=4, border=2, xmldecl=False, nl=False)
 
     root = ET.fromstring(buf.getvalue())
+    w = root.get("width", "0")
+    root.set("viewBox", f"0 0 {w} {w}")
+    root.set("width", str(_QR_SIZE))
+    root.set("height", str(_QR_SIZE))
 
     style = ET.Element(f"{{{_SVG_NS}}}style")
     style.text = (
@@ -40,7 +45,7 @@ def _swish_qr_svg(merchant: str, amount: int, message: str) -> str:
     )
     root.insert(0, style)
 
-    w = float(root.get("width", "0"))
+    w = float(w)
     logo_size = round(w * 0.20)
     offset = round((w - logo_size) / 2)
 
