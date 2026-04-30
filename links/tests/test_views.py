@@ -273,9 +273,9 @@ class TestBookmarkExport:
 
 @pytest.mark.django_db
 class TestIndexView:
-    def test_unauthenticated_redirects_to_login(self, client):
+    def test_unauthenticated_shows_home(self, client):
         response = client.get("/")
-        assert response.status_code == 302
+        assert response.status_code == 200
 
     def test_authenticated_redirects_to_list(self, client, user):
         client.force_login(user)

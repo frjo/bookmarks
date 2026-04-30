@@ -26,7 +26,7 @@ def api_token(user):
 
 @pytest.fixture
 def auth_token_str(user, api_token):
-    return f"{user.username}:{api_token.token}"
+    return f"{user.id}:{api_token.token}"
 
 
 @pytest.fixture

@@ -487,7 +487,7 @@ class TestUserApiToken:
         )
         assert response.status_code == 200
         data = response.json()
-        assert data["result"].startswith(f"{user.username}:")
+        assert data["result"].startswith(f"{user.id}:")
 
     def test_returns_xml(self, client, auth_token_str):
         response = get(client, reverse("api_v1_user_api_token"), auth_token_str)
