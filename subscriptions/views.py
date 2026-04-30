@@ -1,5 +1,6 @@
 import io
 import xml.etree.ElementTree as ET
+from functools import lru_cache
 from urllib.parse import quote
 
 import segno
@@ -16,6 +17,7 @@ _SVG_NS = "http://www.w3.org/2000/svg"
 ET.register_namespace("", _SVG_NS)
 
 
+@lru_cache(maxsize=256)
 def _swish_qr_svg(merchant: str, amount: int, message: str) -> str:
     """Generate a Swish QR code as inline SVG with the Swish logo centered.
 
