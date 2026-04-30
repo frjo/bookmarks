@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-04-30 11:07+0000\n"
+"POT-Creation-Date: 2026-04-30 15:58+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,6 +17,25 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#, python-format
+msgid "Passkey %(counter)s"
+msgstr ""
+
+msgid "added"
+msgstr ""
+
+msgid "last used"
+msgstr ""
+
+msgid "Delete this passkey?"
+msgstr ""
+
+msgid "Delete"
+msgstr ""
+
+msgid "No passkeys found."
+msgstr ""
 
 msgid "Account"
 msgstr ""
@@ -102,19 +121,6 @@ msgstr ""
 msgid "Passkeys"
 msgstr ""
 
-#, python-format
-msgid "Passkey %(counter)s"
-msgstr ""
-
-msgid "added"
-msgstr ""
-
-msgid "last used"
-msgstr ""
-
-msgid "No passkeys found."
-msgstr ""
-
 msgid "Add a passkey"
 msgstr ""
 
@@ -195,21 +201,32 @@ msgstr ""
 msgid "Registration session expired. Please try again."
 msgstr ""
 
-#, python-format
-msgid "Verification failed: %(exc)s"
+msgid "Verification failed. Please try again."
 msgstr ""
 
 msgid "Authentication session expired. Please try again."
+msgstr ""
+
+msgid "Authentication failed. Please try again."
 msgstr ""
 
 msgid "Passkey not recognised."
 msgstr ""
 
 #, python-format
-msgid "Authentication failed: %(exc)s"
+msgid "You have reached the maximum number of passkeys (%(max)s)."
 msgstr ""
 
 msgid "Session expired. Please try again."
+msgstr ""
+
+msgid "You must keep at least one passkey."
+msgstr ""
+
+msgid "Passkey not found."
+msgstr ""
+
+msgid "Passkey deleted."
 msgstr ""
 
 msgid "Username updated."
@@ -261,7 +278,11 @@ msgid ""
 msgstr ""
 
 #, python-format
-msgid "The subscription costs %(price_sek)s %(currency)s per year (excl. VAT)."
+msgid "A subscription costs %(amount)s %(currency)s per year"
+msgstr ""
+
+#, python-format
+msgid "incl. VAT %(vat)s %(cur)s"
 msgstr ""
 
 msgid ""
@@ -427,6 +448,10 @@ msgstr ""
 msgid "No file selected."
 msgstr ""
 
+#, python-format
+msgid "File too large (max %(max)s MB)."
+msgstr ""
+
 msgid "Could not read the file."
 msgstr ""
 
@@ -439,6 +464,9 @@ msgstr ""
 msgid "Subscribe"
 msgstr ""
 
+msgid "Swish logo"
+msgstr ""
+
 #, python-format
 msgid ""
 "You can save up to %(limit)s bookmarks for free. A subscription gives you "
@@ -447,12 +475,14 @@ msgstr ""
 
 msgid ""
 "After payment, your subscription will be activated manually. This usually "
-"happens within one business day."
+"happens within one business day. For now the only payment option is Swish."
 msgstr ""
 
 #, python-format
 msgid "%(years)s year"
-msgstr ""
+msgid_plural "%(years)s years"
+msgstr[0] ""
+msgstr[1] ""
 
 #, python-format
 msgid "%(pct)s%% discount"

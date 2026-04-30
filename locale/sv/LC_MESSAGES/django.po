@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-04-30 11:07+0000\n"
+"POT-Creation-Date: 2026-04-30 15:58+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,6 +17,31 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: accounts/templates/accounts/_passkeys_list.html:7
+#, python-format
+msgid "Passkey %(counter)s"
+msgstr "Passkey %(counter)s"
+
+#: accounts/templates/accounts/_passkeys_list.html:8
+msgid "added"
+msgstr "tillagd"
+
+#: accounts/templates/accounts/_passkeys_list.html:9
+msgid "last used"
+msgstr "senast använd"
+
+#: accounts/templates/accounts/_passkeys_list.html:17
+msgid "Delete this passkey?"
+msgstr ""
+
+#: accounts/templates/accounts/_passkeys_list.html:18
+msgid "Delete"
+msgstr ""
+
+#: accounts/templates/accounts/_passkeys_list.html:24
+msgid "No passkeys found."
+msgstr "Hittar inga passkeys."
 
 #: accounts/templates/accounts/account.html:3
 #: accounts/templates/accounts/account.html:7
@@ -93,7 +118,7 @@ msgstr "Ditt bookmarklet:"
 
 #: accounts/templates/accounts/account.html:54
 msgid "Bookmark"
-msgstr "Bokmärke"
+msgstr "Bokmärk"
 
 #: accounts/templates/accounts/account.html:56
 msgid ""
@@ -135,56 +160,39 @@ msgstr "Skapa ett token"
 msgid "Passkeys"
 msgstr "Passkeys"
 
-#: accounts/templates/accounts/account.html:87
-#, python-format
-msgid "Passkey %(counter)s"
-msgstr "Passkey %(counter)s"
-
-#: accounts/templates/accounts/account.html:88
-msgid "added"
-msgstr "tillagd"
-
-#: accounts/templates/accounts/account.html:89
-msgid "last used"
-msgstr "senast använd"
-
-#: accounts/templates/accounts/account.html:94
-msgid "No passkeys found."
-msgstr "Hittar inga passkeys."
-
-#: accounts/templates/accounts/account.html:98
+#: accounts/templates/accounts/account.html:86
 msgid "Add a passkey"
 msgstr "Lägg till en passkey."
 
-#: accounts/templates/accounts/account.html:103
+#: accounts/templates/accounts/account.html:91
 msgid "Could not begin passkey registration."
 msgstr "Kunde inte påbörja en passkey registrering"
 
-#: accounts/templates/accounts/account.html:104
+#: accounts/templates/accounts/account.html:92
 msgid "Passkey registration failed."
 msgstr "Passkey registrering misslyckades"
 
-#: accounts/templates/accounts/account.html:105
+#: accounts/templates/accounts/account.html:93
 #: accounts/templates/accounts/register.html:19
 msgid "A passkey for this authenticator is already registered."
 msgstr "En passkey för denna verifierare är redan registrerad."
 
-#: accounts/templates/accounts/account.html:109
+#: accounts/templates/accounts/account.html:97
 msgid "Passkey name (optional)"
 msgstr "Passkey name (valfri)"
 
-#: accounts/templates/accounts/account.html:110
+#: accounts/templates/accounts/account.html:98
 msgid "e.g. MacBook Touch ID"
 msgstr "t. ex. MacBook Touch ID"
 
-#: accounts/templates/accounts/account.html:113
+#: accounts/templates/accounts/account.html:101
 msgid "Add passkey"
 msgstr "Lägg till passkey"
 
 #: accounts/templates/accounts/login.html:3
 #: accounts/templates/accounts/login.html:7
 #: accounts/templates/accounts/register.html:46
-#: home/templates/home/home.html:13
+#: home/templates/home/home.html:16
 msgid "Log in"
 msgstr "Logga in"
 
@@ -205,7 +213,7 @@ msgstr ""
 msgid "Don't have an account yet?"
 msgstr ""
 
-#: accounts/templates/accounts/login.html:29 home/templates/home/home.html:12
+#: accounts/templates/accounts/login.html:29 home/templates/home/home.html:15
 msgid "Create account"
 msgstr ""
 
@@ -247,49 +255,66 @@ msgstr ""
 msgid "Already have an account?"
 msgstr ""
 
-#: accounts/views.py:96
+#: accounts/views.py:105
 msgid "Invalid request body."
 msgstr ""
 
-#: accounts/views.py:102 accounts/views.py:352
+#: accounts/views.py:111 accounts/views.py:451
 msgid "Username must be 3–50 characters."
 msgstr ""
 
-#: accounts/views.py:107 accounts/views.py:148 accounts/views.py:358
+#: accounts/views.py:116 accounts/views.py:157 accounts/views.py:457
 msgid "That username is already taken."
 msgstr ""
 
-#: accounts/views.py:144
+#: accounts/views.py:153
 msgid "Registration session expired. Please try again."
 msgstr ""
 
-#: accounts/views.py:156 accounts/views.py:314
-#, python-format
-msgid "Verification failed: %(exc)s"
+#: accounts/views.py:166 accounts/views.py:372
+msgid "Verification failed. Please try again."
 msgstr ""
 
-#: accounts/views.py:205
+#: accounts/views.py:220
 msgid "Authentication session expired. Please try again."
 msgstr ""
 
-#: accounts/views.py:240
+#: accounts/views.py:269 accounts/views.py:289
+msgid "Authentication failed. Please try again."
+msgstr ""
+
+#: accounts/views.py:281
 msgid "Passkey not recognised."
 msgstr ""
 
-#: accounts/views.py:243
+#: accounts/views.py:335
 #, python-format
-msgid "Authentication failed: %(exc)s"
-msgstr ""
-
-#: accounts/views.py:305
-msgid "Session expired. Please try again."
+msgid "You have reached the maximum number of passkeys (%(max)s)."
 msgstr ""
 
 #: accounts/views.py:362
+msgid "Session expired. Please try again."
+msgstr ""
+
+#: accounts/views.py:401
+msgid "You must keep at least one passkey."
+msgstr ""
+
+#: accounts/views.py:406
+#, fuzzy
+#| msgid "No passkeys found."
+msgid "Passkey not found."
+msgstr "Hittar inga passkeys."
+
+#: accounts/views.py:422
+msgid "Passkey deleted."
+msgstr ""
+
+#: accounts/views.py:469
 msgid "Username updated."
 msgstr ""
 
-#: accounts/views.py:370
+#: accounts/views.py:482
 msgid "API token regenerated."
 msgstr ""
 
@@ -349,12 +374,18 @@ msgid ""
 "save unlimited bookmarks."
 msgstr ""
 
-#: home/templates/home/home.html:9
+#: home/templates/home/home.html:10
 #, python-format
-msgid "The subscription costs %(price_sek)s %(currency)s per year (excl. VAT)."
+msgid "A subscription costs %(amount)s %(currency)s per year"
 msgstr ""
 
-#: home/templates/home/home.html:16
+#: home/templates/home/home.html:11
+#: subscriptions/templates/subscriptions/pay.html:28
+#, python-format
+msgid "incl. VAT %(vat)s %(cur)s"
+msgstr ""
+
+#: home/templates/home/home.html:19
 msgid ""
 "Only passkeys are accepted for login. Each user gets a random account ID. No "
 "username or email address is required — you can optionally add a username on "
@@ -547,8 +578,8 @@ msgstr ""
 msgid "Import"
 msgstr ""
 
-#: links/templates/links/list.html:13 links/views.py:112 links/views.py:121
-#: links/views.py:126
+#: links/templates/links/list.html:13 links/views.py:113 links/views.py:122
+#: links/views.py:127
 msgid "Add bookmark"
 msgstr ""
 
@@ -560,23 +591,28 @@ msgstr ""
 msgid "Search titles, descriptions, URLs…"
 msgstr ""
 
-#: links/views.py:39 links/views.py:101
+#: links/views.py:40 links/views.py:102
 msgid "You have reached the free bookmark limit."
 msgstr ""
 
-#: links/views.py:41 links/views.py:103
+#: links/views.py:42 links/views.py:104
 msgid "Subscribe to add more bookmarks."
 msgstr ""
 
-#: links/views.py:165 links/views.py:173
+#: links/views.py:166 links/views.py:174
 msgid "Edit bookmark"
 msgstr ""
 
-#: links/views.py:210
+#: links/views.py:211
 msgid "No file selected."
 msgstr ""
 
-#: links/views.py:217
+#: links/views.py:219
+#, python-format
+msgid "File too large (max %(max)s MB)."
+msgstr ""
+
+#: links/views.py:228
 msgid "Could not read the file."
 msgstr ""
 
@@ -593,29 +629,35 @@ msgid "Subscribe"
 msgstr ""
 
 #: subscriptions/templates/subscriptions/pay.html:9
+msgid "Swish logo"
+msgstr ""
+
+#: subscriptions/templates/subscriptions/pay.html:11
 #, python-format
 msgid ""
 "You can save up to %(limit)s bookmarks for free. A subscription gives you "
 "unlimited bookmarks."
 msgstr ""
 
-#: subscriptions/templates/subscriptions/pay.html:11
+#: subscriptions/templates/subscriptions/pay.html:13
 msgid ""
 "After payment, your subscription will be activated manually. This usually "
-"happens within one business day."
+"happens within one business day. For now the only payment option is Swish."
 msgstr ""
 
-#: subscriptions/templates/subscriptions/pay.html:17
+#: subscriptions/templates/subscriptions/pay.html:19
 #, python-format
 msgid "%(years)s year"
-msgstr ""
+msgid_plural "%(years)s years"
+msgstr[0] ""
+msgstr[1] ""
 
-#: subscriptions/templates/subscriptions/pay.html:23
+#: subscriptions/templates/subscriptions/pay.html:25
 #, python-format
 msgid "%(pct)s%% discount"
 msgstr ""
 
-#: subscriptions/templates/subscriptions/pay.html:30
+#: subscriptions/templates/subscriptions/pay.html:33
 msgid "QR code not available (merchant number not configured)."
 msgstr ""
 
