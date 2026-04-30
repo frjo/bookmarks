@@ -40,6 +40,8 @@ from .models import APIToken, User, WebAuthnCredential
 
 logger = logging.getLogger(__name__)
 
+_MAX_PASSKEYS = 10
+
 
 def _registration_options(user_handle, username, exclude_credentials=None):
     return generate_registration_options(
@@ -327,6 +329,14 @@ def logout_view(request):
 def passkey_add_begin(request):
     """Begin adding a new passkey for an already-authenticated user."""
     user = request.user
+    if user.credentials.count() >= _MAX_PASSKEYS:
+        return JsonResponse(
+            {
+                "error": _("You have reached the maximum number of passkeys (%(max)s).")
+                % {"max": _MAX_PASSKEYS}
+            },
+            status=400,
+        )
     user_handle = base64.urlsafe_b64encode(user.username.encode()).rstrip(b"=")
     existing = [
         PublicKeyCredentialDescriptor(id=bytes(c.credential_id))
@@ -379,6 +389,31 @@ def passkey_add_complete(request):
 
     request.session.pop("add_passkey_challenge", None)
     return JsonResponse({"status": "ok"})
+
+
+@login_required
+@require_POST
+@ratelimit(key="user", rate=settings.DEFAULT_RATE_LIMIT)
+def passkey_delete(request, pk: str):
+    """Delete one of the authenticated user's passkeys."""
+    user = request.user
+    if user.credentials.count() <= 1:
+        messages.error(request, _("You must keep at least one passkey."))
+        return redirect("account", slug=user.slug)
+    try:
+        credential = user.credentials.get(pk=pk)
+    except user.credentials.model.DoesNotExist:
+        messages.error(request, _("Passkey not found."))
+        return redirect("account", slug=user.slug)
+    credential.delete()
+    logger.info(
+        "audit: passkey deleted user=%s credential=%s ip=%s",
+        user.pk,
+        pk,
+        request.META.get("REMOTE_ADDR"),
+    )
+    messages.success(request, _("Passkey deleted."))
+    return redirect("account", slug=user.slug)
 
 
 # ---------------------------------------------------------------------------

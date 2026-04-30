@@ -17,4 +17,5 @@ urlpatterns = [
         views.passkey_add_complete,
         name="passkey_add_complete",
     ),
+    path("passkeys/delete/<str:pk>/", views.passkey_delete, name="passkey_delete"),
 ]
