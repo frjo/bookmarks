@@ -78,8 +78,11 @@ textarea {
   }
 }
 
-.bookmarklet-form {
+.page--slim {
   padding: var(--spacing-s);
+}
+
+.bookmarklet-form {
   font-size: var(--fs-s);
 
   form {
@@ -158,6 +161,19 @@ textarea {
   font-family: var(--ff-alt);
 }
 
+.cards--swish {
+  --grid-group-column-min: 300px;
+  --grid-group-gap: 10rem;
+}
+
+.card--swish {
+  svg {
+    display: inline-block;
+  }
+}
+
+
+
 .htmx-indicator {
   position: fixed;
   inset: 0;
@@ -184,3 +200,4 @@ textarea {
   50%  { opacity: 0; }
   100% { opacity: 1; }
 }
+

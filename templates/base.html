@@ -30,8 +30,8 @@
       <a href="{% url 'index' %}" title="{% trans 'Home' %}" class="header__site-link" rel="home"><span>{% trans "Bookmarks" %}</span></a>
       </span>
 
+      {% if user.is_authenticated %}
       <div class="region header__region">
-        {% if user.is_authenticated %}
         <nav class="secondary-menu" aria-label="Secondary navigation">
           <ul class="flex-inline mx--0">
             <li class="desktop"><a href="{% url 'bookmark_import' slug=user.slug %}">{% trans "Import" %}</a></li>
@@ -44,14 +44,8 @@
             </form></li>
           </ul>
         </nav>
-        {% else %}
-        <nav class="main-menu mx--xs layout__navigation" aria-label="Main navigation">
-          <ul class="flex-inline mx--0">
-            {% block menu_anon %}{% endblock %}
-          </ul>
-        </nav>
-        {% endif %}
       </div>
+      {% endif %}
     </header>
 
       {% if user.is_authenticated %}

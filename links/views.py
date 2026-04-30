@@ -97,7 +97,7 @@ def bookmark_add(request, slug: str = ""):
         django_messages.warning(
             request,
             format_html(
-                '{} <a href="{}">{}</a>',
+                '{}<br><a href="{}">{}</a>',
                 _("You have reached the free bookmark limit."),
                 reverse("subscriptions:pay"),
                 _("Subscribe to add more bookmarks."),

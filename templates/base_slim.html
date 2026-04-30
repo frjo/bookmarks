@@ -20,7 +20,7 @@
 </head>
 
 <body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
-  <div class="page {% block page_class %}{% endblock %}">
+  <div class="page page--slim {% block page_class %}{% endblock %}">
 
     <main class="main">
       {% if messages %}
