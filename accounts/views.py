@@ -490,5 +490,6 @@ def account_view(request, slug: str = ""):
             "api_token": api_token,
             "credentials": credentials,
             "subscription_free_limit": settings.SUBSCRIPTION_FREE_LIMIT,
+            "subscription": getattr(request.user, "subscription", None),
         },
     )

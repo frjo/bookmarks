@@ -17,18 +17,12 @@
             class="tag-filter mb--0"
             placeholder="{% trans 'Filter tags…' %}"
             autocomplete="off"
-            oninput="
-                     const q = this.value.toLowerCase();
-                     document.querySelectorAll('#tag-list li').forEach(li => {
-                     li.hidden = !li.textContent.toLowerCase().includes(q);
-                     });
-                    "
           >
         {% endif %}
       </header>
       <ul class="meta" id="tag-list">
         {% for t in all_tags %}
-          <li>
+          <li data-tag="{{ t }}">
             <a
               href="?tag={{ t }}"
               hx-get="?tag={{ t }}"
@@ -40,5 +34,20 @@
         {% endfor %}
       </ul>
     </nav>
+    {% if all_tags|length > 10 %}
+      <script>
+        {
+          const input = document.getElementById('tag-filter');
+          const items = Array.from(document.querySelectorAll('#tag-list li'));
+          input.addEventListener('input', function () {
+            const q = this.value.toLowerCase();
+            for (const li of items) {
+              const show = !q || li.dataset.tag.includes(q);
+              if (li.hidden !== !show) li.hidden = !show;
+            }
+          });
+        }
+      </script>
+    {% endif %}
   {% endif %}
 </aside>
