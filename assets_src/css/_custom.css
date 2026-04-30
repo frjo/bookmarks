@@ -161,6 +161,11 @@ textarea {
   font-family: var(--ff-alt);
 }
 
+.passkey {
+  button {
+    margin-inline-start: 1rem;
+  }
+}
 .cards--swish {
   --grid-group-column-min: 300px;
   --grid-group-gap: 10rem;

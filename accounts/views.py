@@ -412,6 +412,13 @@ def passkey_delete(request, pk: str):
         pk,
         request.META.get("REMOTE_ADDR"),
     )
+    if request.htmx:
+        credentials = user.credentials.order_by("created_at")
+        return render(
+            request,
+            "accounts/_passkeys_list.html",
+            {"credentials": credentials},
+        )
     messages.success(request, _("Passkey deleted."))
     return redirect("account", slug=user.slug)
 

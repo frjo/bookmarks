@@ -1,0 +1,26 @@
+{% load i18n %}
+<div id="passkeys-list">
+  {% if credentials %}
+    <ul>
+      {% for cred in credentials %}
+        <li class="passkey mb--xs">
+          {% if cred.name %}{{ cred.name }}{% else %}{% blocktrans with counter=forloop.counter %}Passkey {{ counter }}{% endblocktrans %}{% endif %} —
+          {% trans "added" %} <time datetime="{{ cred.created_at|date:"Y-m-d" }}">{{ cred.created_at|date:"DATE_FORMAT" }}</time>{% if cred.last_used_at %},
+            {% trans "last used" %} <time datetime="{{ cred.last_used_at|date:"Y-m-d" }}">{{ cred.last_used_at|date:"DATE_FORMAT" }}</time>{% endif %}
+          {% if credentials|length > 1 %}
+            <button
+              type="button"
+              class="button button--small button--outline button--delete"
+              hx-post="{% url 'passkey_delete' cred.pk %}"
+              hx-target="#passkeys-list"
+              hx-swap="outerHTML"
+              hx-confirm="{% trans 'Delete this passkey?' %}"
+            >{% trans "Delete" %}</button>
+          {% endif %}
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>{% trans "No passkeys found." %}</p>
+  {% endif %}
+</div>
