@@ -28,6 +28,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "django_htmx.middleware.HtmxMiddleware",
+    "subscriptions.middleware.SubscriptionWarningMiddleware",
 ]
 
 ROOT_URLCONF = "config.urls"

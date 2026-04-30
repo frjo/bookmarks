@@ -41,11 +41,6 @@
           {% trans "Status" %}: <strong>{% trans "Active" %}</strong><br>
           {% trans "Expires" %}: <time datetime="{{ subscription.expires_at|date:'Y-m-d' }}">{{ subscription.expires_at|date:"DATE_FORMAT" }}</time>
         </p>
-        {% if subscription.is_expiring_soon %}
-          <p class="message warning">
-            {% blocktrans with date=subscription.expires_at|date:"DATE_FORMAT" %}Your subscription expires on {{ date }}.{% endblocktrans %}
-          </p>
-        {% endif %}
       {% else %}
         <p>{% trans "Status" %}: <strong>{% trans "No active subscription" %}</strong></p>
         <p><small>{% blocktrans with limit=subscription_free_limit %}You can add up to {{ limit }} bookmarks for free.{% endblocktrans %}</small></p>

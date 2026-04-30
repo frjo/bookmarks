@@ -1,6 +1,0 @@
-{% load i18n %}
-{% if subscription_is_expiring_soon and subscription %}
-  <div class="message warning" role="alert">
-    {% url 'subscriptions:pay' as pay_url %}{% blocktrans with date=subscription.expires_at|date:"DATE_FORMAT" url=pay_url %}Your subscription expires on {{ date }}. <a href="{{ url }}">Renew now</a> to keep full access.{% endblocktrans %}
-  </div>
-{% endif %}
