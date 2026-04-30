@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-04-30 06:14+0000\n"
+"POT-Creation-Date: 2026-04-30 11:07+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -28,7 +28,8 @@ msgstr "Konto"
 #: accounts/templates/accounts/register.html:3
 #: links/templates/links/confirm_delete.html:3
 #: links/templates/links/form.html:3 links/templates/links/import.html:3
-#: templates/base.html:9 templates/base.html:30 templates/base_slim.html:9
+#: subscriptions/templates/subscriptions/pay.html:3 templates/base.html:9
+#: templates/base.html:30 templates/base_slim.html:9
 msgid "Bookmarks"
 msgstr "Bokmärken"
 
@@ -53,18 +54,48 @@ msgid "Update username"
 msgstr "Uppdatera användarnamnet"
 
 #: accounts/templates/accounts/account.html:38
+msgid "Subscription"
+msgstr ""
+
+#: accounts/templates/accounts/account.html:41
+#: accounts/templates/accounts/account.html:45
+msgid "Status"
+msgstr ""
+
+#: accounts/templates/accounts/account.html:41
+msgid "Active"
+msgstr "Aktiv"
+
+#: accounts/templates/accounts/account.html:42
+msgid "Expires"
+msgstr "Går ut"
+
+#: accounts/templates/accounts/account.html:45
+msgid "No active subscription"
+msgstr "Inga aktiva prenumerationer"
+
+#: accounts/templates/accounts/account.html:46
+#, python-format
+msgid "You can add up to %(limit)s bookmarks for free."
+msgstr ""
+
+#: accounts/templates/accounts/account.html:48
+msgid "Subscribe / Renew"
+msgstr "Prenumerera / förnya"
+
+#: accounts/templates/accounts/account.html:52
 msgid "Bookmarklet"
 msgstr "Bookmarklet"
 
-#: accounts/templates/accounts/account.html:40
+#: accounts/templates/accounts/account.html:54
 msgid "Your bookmarklet:"
 msgstr "Ditt bookmarklet:"
 
-#: accounts/templates/accounts/account.html:40
+#: accounts/templates/accounts/account.html:54
 msgid "Bookmark"
 msgstr "Bokmärke"
 
-#: accounts/templates/accounts/account.html:42
+#: accounts/templates/accounts/account.html:56
 msgid ""
 "Drag the \"Bookmark\" bookmarklet to e.g. your favorite bar. Clicking it "
 "will open a small window with a form to save a bookmark. Url and title will "
@@ -72,15 +103,15 @@ msgid ""
 "copied in as a description. Quick and easy way to save a bookmark."
 msgstr ""
 
-#: accounts/templates/accounts/account.html:46
+#: accounts/templates/accounts/account.html:60
 msgid "API token"
 msgstr "API token"
 
-#: accounts/templates/accounts/account.html:49
+#: accounts/templates/accounts/account.html:63
 msgid "Your API token:"
 msgstr "Ditt API token"
 
-#: accounts/templates/accounts/account.html:53
+#: accounts/templates/accounts/account.html:67
 #, python-format
 msgid ""
 "Use this as the <code>auth_token</code> query parameter when calling the "
@@ -88,71 +119,72 @@ msgid ""
 "auth_token=%(uid)s:%(token)s</code>"
 msgstr ""
 
-#: accounts/templates/accounts/account.html:56
+#: accounts/templates/accounts/account.html:70
 msgid "You don't have an API token yet."
 msgstr "Du har inget API token ännu."
 
-#: accounts/templates/accounts/account.html:62
+#: accounts/templates/accounts/account.html:76
 msgid "Regenerate token"
 msgstr "Skapa ett nytt token"
 
-#: accounts/templates/accounts/account.html:62
+#: accounts/templates/accounts/account.html:76
 msgid "Generate token"
 msgstr "Skapa ett token"
 
-#: accounts/templates/accounts/account.html:68
+#: accounts/templates/accounts/account.html:82
 msgid "Passkeys"
 msgstr "Passkeys"
 
-#: accounts/templates/accounts/account.html:73
+#: accounts/templates/accounts/account.html:87
 #, python-format
 msgid "Passkey %(counter)s"
 msgstr "Passkey %(counter)s"
 
-#: accounts/templates/accounts/account.html:74
+#: accounts/templates/accounts/account.html:88
 msgid "added"
 msgstr "tillagd"
 
-#: accounts/templates/accounts/account.html:75
+#: accounts/templates/accounts/account.html:89
 msgid "last used"
-msgstr "senasrt använd"
+msgstr "senast använd"
 
-#: accounts/templates/accounts/account.html:80
+#: accounts/templates/accounts/account.html:94
 msgid "No passkeys found."
 msgstr "Hittar inga passkeys."
 
-#: accounts/templates/accounts/account.html:84
+#: accounts/templates/accounts/account.html:98
 msgid "Add a passkey"
 msgstr "Lägg till en passkey."
 
-#: accounts/templates/accounts/account.html:89
+#: accounts/templates/accounts/account.html:103
 msgid "Could not begin passkey registration."
 msgstr "Kunde inte påbörja en passkey registrering"
 
-#: accounts/templates/accounts/account.html:90
+#: accounts/templates/accounts/account.html:104
 msgid "Passkey registration failed."
 msgstr "Passkey registrering misslyckades"
 
-#: accounts/templates/accounts/account.html:91
+#: accounts/templates/accounts/account.html:105
 #: accounts/templates/accounts/register.html:19
 msgid "A passkey for this authenticator is already registered."
 msgstr "En passkey för denna verifierare är redan registrerad."
 
-#: accounts/templates/accounts/account.html:95
+#: accounts/templates/accounts/account.html:109
 msgid "Passkey name (optional)"
 msgstr "Passkey name (valfri)"
 
-#: accounts/templates/accounts/account.html:96
+#: accounts/templates/accounts/account.html:110
 msgid "e.g. MacBook Touch ID"
 msgstr "t. ex. MacBook Touch ID"
 
-#: accounts/templates/accounts/account.html:99
+#: accounts/templates/accounts/account.html:113
 msgid "Add passkey"
 msgstr "Lägg till passkey"
 
 #: accounts/templates/accounts/login.html:3
 #: accounts/templates/accounts/login.html:7
-#: accounts/templates/accounts/register.html:46 home/templates/home/home.html:5
+#: accounts/templates/accounts/register.html:46
+#: home/templates/home/home.html:13
 msgid "Log in"
 msgstr "Logga in"
 
@@ -173,14 +205,17 @@ msgstr ""
 msgid "Don't have an account yet?"
 msgstr ""
 
-#: accounts/templates/accounts/login.html:29
-#: accounts/templates/accounts/register.html:3 home/templates/home/home.html:6
-msgid "Register"
+#: accounts/templates/accounts/login.html:29 home/templates/home/home.html:12
+msgid "Create account"
 msgstr ""
+
+#: accounts/templates/accounts/register.html:3
+msgid "Register"
+msgstr "Registrera"
 
 #: accounts/templates/accounts/register.html:7
 msgid "Create an account"
-msgstr ""
+msgstr "Skapa ett konto"
 
 #: accounts/templates/accounts/register.html:9
 msgid ""
@@ -194,15 +229,15 @@ msgstr ""
 
 #: accounts/templates/accounts/register.html:18
 msgid "Registration failed."
-msgstr ""
+msgstr "Registreringen misslyckades"
 
 #: accounts/templates/accounts/register.html:22
 msgid "Username"
-msgstr ""
+msgstr "Användarnamn"
 
 #: accounts/templates/accounts/register.html:33
 msgid "Optional. 3–50 characters."
-msgstr ""
+msgstr "Valfritt. 3-50 tecken."
 
 #: accounts/templates/accounts/register.html:42
 msgid "Register with passkey"
@@ -303,6 +338,29 @@ msgstr ""
 msgid "Invalid auth token"
 msgstr ""
 
+#: home/templates/home/home.html:5
+msgid "A bookmarking service from xdeb.net"
+msgstr ""
+
+#: home/templates/home/home.html:7
+#, python-format
+msgid ""
+"Create an account and add up to %(limit)s bookmarks for free. Subscribe to "
+"save unlimited bookmarks."
+msgstr ""
+
+#: home/templates/home/home.html:9
+#, python-format
+msgid "The subscription costs %(price_sek)s %(currency)s per year (excl. VAT)."
+msgstr ""
+
+#: home/templates/home/home.html:16
+msgid ""
+"Only passkeys are accepted for login. Each user gets a random account ID. No "
+"username or email address is required — you can optionally add a username on "
+"the account page."
+msgstr ""
+
 #: links/forms.py:31 links/templates/links/_bookmark_item.html:14
 #: links/templates/links/_form_include.html:62
 #: links/templates/links/_sidebar_partial.html:12
@@ -323,11 +381,11 @@ msgstr ""
 
 #: links/templates/links/_delete_confirm.html:8
 msgid "cancel"
-msgstr ""
+msgstr "avbryt"
 
 #: links/templates/links/_delete_confirm.html:14
 msgid "yes, delete"
-msgstr ""
+msgstr "ja, radera"
 
 #: links/templates/links/_delete_link.html:7
 msgid "delete"
@@ -335,23 +393,23 @@ msgstr ""
 
 #: links/templates/links/_form_include.html:5
 msgid "Form errors"
-msgstr ""
+msgstr "Fel i formuläret"
 
 #: links/templates/links/_form_include.html:13
 msgid "URL"
-msgstr ""
+msgstr "URL"
 
 #: links/templates/links/_form_include.html:32
 msgid "Title"
-msgstr ""
+msgstr "Titel"
 
 #: links/templates/links/_form_include.html:48
 msgid "Description"
-msgstr ""
+msgstr "Beskrivning"
 
 #: links/templates/links/_list_partial.html:2
 msgid "Bookmark list"
-msgstr ""
+msgstr "Bökmärkeslista"
 
 #: links/templates/links/_list_partial.html:6
 msgid "Showing bookmarks tagged"
@@ -359,7 +417,7 @@ msgstr ""
 
 #: links/templates/links/_list_partial.html:8
 msgid "Searched for"
-msgstr ""
+msgstr "Sök efter"
 
 #: links/templates/links/_list_partial.html:8
 msgid "in your bookmarks"
@@ -382,7 +440,7 @@ msgstr ""
 
 #: links/templates/links/_list_partial.html:34
 msgid "Previous"
-msgstr ""
+msgstr "Föregående"
 
 #: links/templates/links/_list_partial.html:37
 #, python-format
@@ -391,7 +449,7 @@ msgstr ""
 
 #: links/templates/links/_list_partial.html:48
 msgid "Next"
-msgstr ""
+msgstr "Nästa"
 
 #: links/templates/links/_list_partial.html:56
 msgid "No bookmarks match your search."
@@ -409,15 +467,20 @@ msgstr ""
 msgid "Add your first one"
 msgstr ""
 
-#: links/templates/links/_modal_form.html:15 links/templates/links/form.html:13
-msgid "Submit"
-msgstr ""
+#: links/templates/links/_modal_form.html:5 templates/base.html:62
+#: templates/base_slim.html:27
+msgid "Notifications"
+msgstr "Notofieringar"
 
-#: links/templates/links/_modal_form.html:16
+#: links/templates/links/_modal_form.html:23 links/templates/links/form.html:13
+msgid "Submit"
+msgstr "Skicka"
+
+#: links/templates/links/_modal_form.html:24
 #: links/templates/links/confirm_delete.html:17
 #: links/templates/links/form.html:14 links/templates/links/import.html:39
 msgid "Cancel"
-msgstr ""
+msgstr "Avbryt"
 
 #: links/templates/links/_sidebar_partial.html:18
 msgid "Filter tags…"
@@ -434,7 +497,7 @@ msgstr ""
 
 #: links/templates/links/confirm_delete.html:16
 msgid "Yes, delete"
-msgstr ""
+msgstr "Ja, radera"
 
 #: links/templates/links/import.html:3 links/templates/links/import.html:7
 msgid "Import bookmarks"
@@ -484,8 +547,8 @@ msgstr ""
 msgid "Import"
 msgstr ""
 
-#: links/templates/links/list.html:13 links/views.py:82 links/views.py:90
-#: links/views.py:93
+#: links/templates/links/list.html:13 links/views.py:112 links/views.py:121
+#: links/views.py:126
 msgid "Add bookmark"
 msgstr ""
 
@@ -497,21 +560,68 @@ msgstr ""
 msgid "Search titles, descriptions, URLs…"
 msgstr ""
 
-#: links/views.py:132 links/views.py:140
+#: links/views.py:39 links/views.py:101
+msgid "You have reached the free bookmark limit."
+msgstr ""
+
+#: links/views.py:41 links/views.py:103
+msgid "Subscribe to add more bookmarks."
+msgstr ""
+
+#: links/views.py:165 links/views.py:173
 msgid "Edit bookmark"
 msgstr ""
 
-#: links/views.py:177
+#: links/views.py:210
 msgid "No file selected."
 msgstr ""
 
-#: links/views.py:184
+#: links/views.py:217
 msgid "Could not read the file."
+msgstr ""
+
+#: subscriptions/middleware.py:22
+#, python-brace-format
+msgid ""
+"Your subscription expires on {date}. <a href=\"{url}\">Renew now</a> to keep "
+"full access."
+msgstr ""
+
+#: subscriptions/templates/subscriptions/pay.html:3
+#: subscriptions/templates/subscriptions/pay.html:7
+msgid "Subscribe"
+msgstr ""
+
+#: subscriptions/templates/subscriptions/pay.html:9
+#, python-format
+msgid ""
+"You can save up to %(limit)s bookmarks for free. A subscription gives you "
+"unlimited bookmarks."
+msgstr ""
+
+#: subscriptions/templates/subscriptions/pay.html:11
+msgid ""
+"After payment, your subscription will be activated manually. This usually "
+"happens within one business day."
+msgstr ""
+
+#: subscriptions/templates/subscriptions/pay.html:17
+#, python-format
+msgid "%(years)s year"
+msgstr ""
+
+#: subscriptions/templates/subscriptions/pay.html:23
+#, python-format
+msgid "%(pct)s%% discount"
+msgstr ""
+
+#: subscriptions/templates/subscriptions/pay.html:30
+msgid "QR code not available (merchant number not configured)."
 msgstr ""
 
 #: templates/base.html:27 templates/base.html:30
 msgid "Home"
-msgstr ""
+msgstr "Hem"
 
 #: templates/base.html:38
 msgid "Export HTML"
@@ -528,20 +638,16 @@ msgstr ""
 
 #: templates/base.html:43
 msgid "Log out"
-msgstr ""
+msgstr "Logga ut"
 
-#: templates/base.html:60
+#: templates/base.html:54
 msgid "All bookmarks"
 msgstr "Alla bokmärken"
 
-#: templates/base.html:68 templates/base_slim.html:27
-msgid "Notifications"
-msgstr ""
-
-#: templates/base.html:81
+#: templates/base.html:75
 msgid "xdeb.net Bookmarks"
 msgstr "xdeb.net Bokmärken"
 
-#: templates/base.html:87 templates/base_slim.html:39
+#: templates/base.html:81 templates/base_slim.html:39
 msgid "Loading"
 msgstr "Laddar"

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-04-30 06:14+0000\n"
+"POT-Creation-Date: 2026-04-30 11:07+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -37,6 +37,28 @@ msgid "3–50 characters."
 msgstr ""
 
 msgid "Update username"
+msgstr ""
+
+msgid "Subscription"
+msgstr ""
+
+msgid "Status"
+msgstr ""
+
+msgid "Active"
+msgstr ""
+
+msgid "Expires"
+msgstr ""
+
+msgid "No active subscription"
+msgstr ""
+
+#, python-format
+msgid "You can add up to %(limit)s bookmarks for free."
+msgstr ""
+
+msgid "Subscribe / Renew"
 msgstr ""
 
 msgid "Bookmarklet"
@@ -127,6 +149,9 @@ msgid "Your browser does not support passkeys."
 msgstr ""
 
 msgid "Don't have an account yet?"
+msgstr ""
+
+msgid "Create account"
 msgstr ""
 
 msgid "Register"
@@ -226,6 +251,25 @@ msgstr ""
 msgid "Invalid auth token"
 msgstr ""
 
+msgid "A bookmarking service from xdeb.net"
+msgstr ""
+
+#, python-format
+msgid ""
+"Create an account and add up to %(limit)s bookmarks for free. Subscribe to "
+"save unlimited bookmarks."
+msgstr ""
+
+#, python-format
+msgid "The subscription costs %(price_sek)s %(currency)s per year (excl. VAT)."
+msgstr ""
+
+msgid ""
+"Only passkeys are accepted for login. Each user gets a random account ID. No "
+"username or email address is required — you can optionally add a username on "
+"the account page."
+msgstr ""
+
 msgid "Tags"
 msgstr ""
 
@@ -304,6 +348,9 @@ msgstr ""
 msgid "Add your first one"
 msgstr ""
 
+msgid "Notifications"
+msgstr ""
+
 msgid "Submit"
 msgstr ""
 
@@ -368,6 +415,12 @@ msgstr ""
 msgid "Search titles, descriptions, URLs…"
 msgstr ""
 
+msgid "You have reached the free bookmark limit."
+msgstr ""
+
+msgid "Subscribe to add more bookmarks."
+msgstr ""
+
 msgid "Edit bookmark"
 msgstr ""
 
@@ -375,6 +428,37 @@ msgid "No file selected."
 msgstr ""
 
 msgid "Could not read the file."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Your subscription expires on {date}. <a href=\"{url}\">Renew now</a> to keep "
+"full access."
+msgstr ""
+
+msgid "Subscribe"
+msgstr ""
+
+#, python-format
+msgid ""
+"You can save up to %(limit)s bookmarks for free. A subscription gives you "
+"unlimited bookmarks."
+msgstr ""
+
+msgid ""
+"After payment, your subscription will be activated manually. This usually "
+"happens within one business day."
+msgstr ""
+
+#, python-format
+msgid "%(years)s year"
+msgstr ""
+
+#, python-format
+msgid "%(pct)s%% discount"
+msgstr ""
+
+msgid "QR code not available (merchant number not configured)."
 msgstr ""
 
 msgid "Home"
@@ -394,9 +478,6 @@ msgid "Log out"
 msgstr ""
 
 msgid "All bookmarks"
-msgstr ""
-
-msgid "Notifications"
 msgstr ""
 
 msgid "xdeb.net Bookmarks"

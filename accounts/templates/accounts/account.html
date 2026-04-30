@@ -45,7 +45,7 @@
         <p>{% trans "Status" %}: <strong>{% trans "No active subscription" %}</strong></p>
         <p><small>{% blocktrans with limit=subscription_free_limit %}You can add up to {{ limit }} bookmarks for free.{% endblocktrans %}</small></p>
       {% endif %}
-      <p><a href="{% url 'subscriptions:pay' %}" class="button button--small">{% trans "Subscribe / Renew" %}</a></p>
+      <p><a href="{% url 'subscriptions:pay' %}" class="button">{% trans "Subscribe / Renew" %}</a></p>
     </section>
 
     <section aria-labelledby="bookmarklet-heading">
