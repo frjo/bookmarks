@@ -6,65 +6,32 @@
   <section>
     <h1>{% trans "Subscribe" %}</h1>
 
-    <p>{% blocktrans with limit=subscription_free_limit %}You have used your free {{ limit }} bookmarks. A subscription gives you unlimited bookmarks.{% endblocktrans %}</p>
+    <p>{% blocktrans with limit=subscription_free_limit %}You can save up to {{ limit }} bookmarks for free. A subscription gives you unlimited bookmarks.{% endblocktrans %}</p>
 
-    <form method="post"
-          hx-boost="false"
-          id="pay-form">
-      {% csrf_token %}
+    <p>{% trans "After payment, your subscription will be activated manually. This usually happens within one business day." %}</p>
 
-      <section aria-labelledby="years-heading">
-        <h2 id="years-heading">{% trans "Subscription period" %}</h2>
-        <div>
-          <label for="id_years">{% trans "Number of years" %}</label>
-          <select name="years" id="id_years"
-                  hx-get="{% url 'subscriptions:pay_price_partial' %}"
-                  hx-target="#price-breakdown"
-                  hx-include="#id_vat_number"
-                  hx-trigger="change">
-            {% for y in years_range %}
-              <option value="{{ y }}" {% if y == 1 %}selected{% endif %}>{{ y }}</option>
-            {% endfor %}
-          </select>
-          {% if max_years == 1 %}
-            <p><small>{% trans "You can add at most 1 more year at this time." %}</small></p>
+    <div class="cards cards--swish">
+      {% for option in options %}
+        <div class="card card--swish text-center">
+          <h2>
+            {% blocktrans with years=option.years %}{{ years }} year{% endblocktrans %}{% if option.years > 1 %}s{% endif %}
+          </h2>
+          <p class="swish-price">
+            <strong>{{ option.price.amount_incl_vat }} {{ option.price.currency }}</strong>
+            {% if option.price.discount_pct %}
+              <span class="meta">
+                ({% blocktrans with pct=option.price.discount_pct %}{{ pct }}% discount{% endblocktrans %})
+              </span>
+            {% endif %}
+          </p>
+          {% if option.svg %}
+            {{ option.svg|safe }}
+          {% else %}
+            <p><em>{% trans "QR code not available (merchant number not configured)." %}</em></p>
           {% endif %}
+          <p class="meta">{{ option.message }}</p>
         </div>
-      </section>
-
-      <section aria-labelledby="vat-heading">
-        <h2 id="vat-heading">{% trans "VAT" %}</h2>
-        <p><small>{% trans "If you are a business with a valid EU VAT number, enter it below to purchase without VAT." %}</small></p>
-        <div>
-          <label for="id_vat_number">{% trans "EU VAT number (optional)" %}</label>
-          <input type="text"
-                 id="id_vat_number"
-                 name="vat_number"
-                 value="{{ vat_number }}"
-                 maxlength="30"
-                 placeholder="SE556000000001"
-                 autocomplete="off"
-                 hx-get="{% url 'subscriptions:pay_price_partial' %}"
-                 hx-target="#price-breakdown"
-                 hx-include="#id_years"
-                 hx-trigger="blur changed">
-          {% if vat_error %}
-            <p class="form-error" role="alert">{{ vat_error }}</p>
-          {% endif %}
-        </div>
-      </section>
-
-      <section aria-labelledby="price-heading">
-        <h2 id="price-heading">{% trans "Price" %}</h2>
-        {% include "subscriptions/_price_breakdown.html" %}
-      </section>
-
-      <section aria-labelledby="payment-heading">
-        <h2 id="payment-heading">{% trans "Payment method" %}</h2>
-        <button type="submit" name="method" value="swish" class="button">
-          {% trans "Pay with Swish" %}
-        </button>
-      </section>
-    </form>
+      {% endfor %}
+    </div>
   </section>
 {% endblock %}

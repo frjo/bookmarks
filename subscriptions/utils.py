@@ -1,9 +1,6 @@
-from datetime import timedelta
 from decimal import ROUND_HALF_UP, Decimal
 
 from django.conf import settings
-from django.db import transaction
-from django.utils import timezone
 
 _TWO_PLACES = Decimal("0.01")
 
@@ -11,7 +8,6 @@ _TWO_PLACES = Decimal("0.01")
 def calculate_price(
     years: int, currency: str = "SEK", include_vat: bool = True
 ) -> dict:
-    """Return a full price breakdown for N years of subscription."""
     base_price = Decimal(
         str(
             settings.SUBSCRIPTION_PRICE_SEK
@@ -49,26 +45,7 @@ def calculate_price(
     }
 
 
-def get_max_payable_years(user) -> int:
-    """How many years can this user still pay for (respecting advance limit)?"""
-    max_years = settings.SUBSCRIPTION_MAX_ADVANCE_YEARS
-    now = timezone.now()
-    max_expiry = now + timedelta(days=365 * max_years)
-
-    try:
-        sub = user.subscription
-        current_expiry = (
-            sub.expires_at if sub.expires_at and sub.expires_at > now else now
-        )
-    except Exception:
-        current_expiry = now
-
-    remaining_days = (max_expiry - current_expiry).days
-    return max(1, min(max_years, remaining_days // 365))
-
-
 def can_add_bookmark(user) -> bool:
-    """True if the user is allowed to save another bookmark."""
     try:
         if user.subscription.is_active:
             return True
@@ -79,39 +56,3 @@ def can_add_bookmark(user) -> bool:
 
     count = Bookmark.objects.filter(user=user).count()
     return count < settings.SUBSCRIPTION_FREE_LIMIT
-
-
-@transaction.atomic
-def generate_invoice_number() -> str:
-    """Generate a unique sequential invoice number for the current year."""
-    from .models import Payment
-
-    year = timezone.now().year
-    last = (
-        Payment.objects.filter(invoice_number__startswith=f"INV-{year}-")
-        .select_for_update()
-        .order_by("-invoice_number")
-        .first()
-    )
-
-    if last:
-        try:
-            seq = int(last.invoice_number.split("-")[-1]) + 1
-        except (ValueError, IndexError):
-            seq = 1
-    else:
-        seq = 1
-
-    return f"INV-{year}-{seq:04d}"
-
-
-def extend_subscription(user, years: int):
-    """Extend user's subscription by years, stacking from current expiry."""
-    from .models import Subscription
-
-    sub, _ = Subscription.objects.get_or_create(user=user)
-    now = timezone.now()
-    start = sub.expires_at if sub.expires_at and sub.expires_at > now else now
-    sub.expires_at = start + timedelta(days=365 * years)
-    sub.save(update_fields=["expires_at", "updated_at"])
-    return sub

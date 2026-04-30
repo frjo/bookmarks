@@ -51,19 +51,6 @@
         <p><small>{% blocktrans with limit=subscription_free_limit %}You can add up to {{ limit }} bookmarks for free.{% endblocktrans %}</small></p>
       {% endif %}
       <p><a href="{% url 'subscriptions:pay' %}" class="button button--small">{% trans "Subscribe / Renew" %}</a></p>
-      {% if recent_paid_payments %}
-        <h3>{% trans "Payment history" %}</h3>
-        <ul>
-          {% for payment in recent_paid_payments %}
-            <li>
-              {{ payment.invoice_number }} —
-              {{ payment.amount_incl_vat }} {{ payment.currency }} —
-              {{ payment.paid_at|date:"DATE_FORMAT" }} —
-              <a href="{% url 'subscriptions:invoice' payment.id %}">{% trans "Invoice" %}</a>
-            </li>
-          {% endfor %}
-        </ul>
-      {% endif %}
     </section>
 
     <section aria-labelledby="bookmarklet-heading">

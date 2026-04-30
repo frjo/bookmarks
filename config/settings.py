@@ -25,19 +25,12 @@ SUBSCRIPTION_PRICE_SEK = env.str("SUBSCRIPTION_PRICE_SEK", "220")
 SUBSCRIPTION_PRICE_EUR = env.str("SUBSCRIPTION_PRICE_EUR", "20")
 SUBSCRIPTION_VAT_RATE = env.str("SUBSCRIPTION_VAT_RATE", "0.25")
 SUBSCRIPTION_EXPIRY_WARNING_DAYS = env.int("SUBSCRIPTION_EXPIRY_WARNING_DAYS", 20)
-SUBSCRIPTION_MAX_ADVANCE_YEARS = env.int("SUBSCRIPTION_MAX_ADVANCE_YEARS", 5)
 SUBSCRIPTION_DISCOUNT_PCT_PER_YEAR = env.str("SUBSCRIPTION_DISCOUNT_PCT_PER_YEAR", "5")
 
 # ---------------------------------------------------------------------------
 # Swish
 # ---------------------------------------------------------------------------
 SWISH_MERCHANT_NUMBER = env.str("SWISH_MERCHANT_NUMBER", "")
-# Use "simulator" for MSS (https://mss.cpc.getswish.net) or "production".
-# Simulator cert setup: see subscriptions/swish.py docstring.
-SWISH_ENVIRONMENT = env.str("SWISH_ENVIRONMENT", "simulator")
-SWISH_CERT_PATH = env.str("SWISH_CERT_PATH", "")
-SWISH_KEY_PATH = env.str("SWISH_KEY_PATH", "")
-SWISH_CA_CERT_PATH = env.str("SWISH_CA_CERT_PATH", "")
 
 # ---------------------------------------------------------------------------
 # Core

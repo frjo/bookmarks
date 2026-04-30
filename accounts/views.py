@@ -371,19 +371,12 @@ def account_view(request, slug: str = ""):
 
         return redirect("account", slug=user.slug)
 
-    from subscriptions.models import Payment
-
-    recent_paid_payments = Payment.objects.filter(
-        user=user, status=Payment.STATUS_PAID
-    ).order_by("-paid_at")[:10]
-
     return render(
         request,
         "accounts/account.html",
         {
             "api_token": api_token,
             "credentials": credentials,
-            "recent_paid_payments": recent_paid_payments,
             "subscription_free_limit": settings.SUBSCRIPTION_FREE_LIMIT,
         },
     )
