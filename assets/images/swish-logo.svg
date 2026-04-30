@@ -22,6 +22,12 @@
         fill: #17191f;
       }
 
+      @media (prefers-color-scheme: dark) {
+        .cls-5 {
+          fill: #e8e6e0;
+        }
+      }
+
       .cls-4 {
         fill: url(#linear-gradient);
       }

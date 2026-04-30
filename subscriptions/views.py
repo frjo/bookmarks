@@ -28,6 +28,16 @@ def _swish_qr_svg(merchant: str, amount: int, message: str) -> str:
     qr.save(buf, kind="svg", scale=4, border=2, xmldecl=False, nl=False)
 
     root = ET.fromstring(buf.getvalue())
+
+    style = ET.Element(f"{{{_SVG_NS}}}style")
+    style.text = (
+        "@media(prefers-color-scheme:dark){"
+        ".segno{background:#1a1a1a}"
+        ".qrline{stroke:#fff}"
+        "}"
+    )
+    root.insert(0, style)
+
     w = float(root.get("width", "0"))
     logo_size = round(w * 0.20)
     offset = round((w - logo_size) / 2)
