@@ -35,6 +35,8 @@ ROOT_URLCONF = "config.urls"
 
 WSGI_APPLICATION = "config.wsgi.application"
 
+ATOMIC_REQUESTS = True
+
 # ---------------------------------------------------------------------------
 # Authentication
 # ---------------------------------------------------------------------------

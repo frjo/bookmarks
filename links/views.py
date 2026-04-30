@@ -246,7 +246,12 @@ def bookmark_import(request, slug: str = ""):
 @ratelimit(key="user", rate=settings.STRICT_RATE_LIMIT)
 def bookmark_export(request, slug: str = ""):
     fmt = request.GET.get("format", "html")
-    bookmarks = Bookmark.objects.filter(user=request.user).order_by("-created_at")
+    bookmarks = (
+        Bookmark.objects.filter(user=request.user)
+        .only("url", "title", "description", "created_at", "tags")
+        .order_by("-created_at")
+        .iterator(chunk_size=2000)
+    )
 
     if fmt == "json":
         content = export_json(bookmarks)
