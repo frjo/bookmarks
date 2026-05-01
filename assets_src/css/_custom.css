@@ -76,6 +76,16 @@ textarea {
   &::backdrop {
     background-color: var(--color-black-60);
   }
+
+  & > * {
+    &:first-child {
+      margin-block-start: 0;
+    }
+
+    &:last-child {
+      margin-block-end: 0;
+    }
+  }
 }
 
 .page--slim {

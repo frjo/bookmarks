@@ -15,3 +15,11 @@ def index(request):
             },
         )
     return redirect("bookmark_list", slug=request.user.slug)
+
+
+def about(request):
+    return render(request, "home/about.html", {})
+
+
+def tos(request):
+    return render(request, "home/tos.html", {})
