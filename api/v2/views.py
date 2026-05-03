@@ -147,7 +147,7 @@ def _params(request):
 
 @_READ
 @_api_auth
-@ratelimit(key="user", rate=settings.DEFAULT_RATE_LIMIT)
+@ratelimit(key="user", rate=settings.LAX_RATE_LIMIT)
 def posts_get(request):
     """Return bookmarks matching URL, tags, and/or date."""
     user = request.api_user
@@ -189,7 +189,7 @@ def posts_get(request):
 
 @_READ
 @_api_auth
-@ratelimit(key="user", rate=settings.DEFAULT_RATE_LIMIT)
+@ratelimit(key="user", rate=settings.LAX_RATE_LIMIT)
 def posts_recent(request):
     user = request.api_user
     params = _params(request)
@@ -222,7 +222,7 @@ def posts_recent(request):
 
 @_READ
 @_api_auth
-@ratelimit(key="user", rate=settings.DEFAULT_RATE_LIMIT)
+@ratelimit(key="user", rate=settings.LAX_RATE_LIMIT)
 def posts_all(request):
     user = request.api_user
     params = _params(request)
@@ -372,7 +372,7 @@ def posts_delete(request):
 
 @_READ
 @_api_auth
-@ratelimit(key="user", rate=settings.DEFAULT_RATE_LIMIT)
+@ratelimit(key="user", rate=settings.LAX_RATE_LIMIT)
 def posts_dates(request):
     user = request.api_user
     params = _params(request)
@@ -388,7 +388,7 @@ def posts_dates(request):
 
 @_READ
 @_api_auth
-@ratelimit(key="user", rate=settings.DEFAULT_RATE_LIMIT)
+@ratelimit(key="user", rate=settings.LAX_RATE_LIMIT)
 def tags_get(request):
     from links.models import Unnest
 
@@ -463,7 +463,7 @@ def tags_delete(request):
 
 @_READ
 @_api_auth
-@ratelimit(key="user", rate=settings.DEFAULT_RATE_LIMIT)
+@ratelimit(key="user", rate=settings.STRICT_RATE_LIMIT)
 def user_api_token(request):
     user = request.api_user
     return _ok({"result": f"{user.id}:{request.api_token}"})

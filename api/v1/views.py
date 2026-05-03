@@ -165,7 +165,7 @@ def _api_auth(view_func):
 
 @_ALLOW
 @_api_auth
-@ratelimit(key="user", rate=settings.DEFAULT_RATE_LIMIT)
+@ratelimit(key="user", rate=settings.LAX_RATE_LIMIT)
 def posts_update(request):
     """Return the timestamp of the most recent bookmark change."""
     ts = get_posts_update_time(request.api_user)
@@ -267,7 +267,7 @@ def posts_delete(request):
 
 @_ALLOW
 @_api_auth
-@ratelimit(key="user", rate=settings.DEFAULT_RATE_LIMIT)
+@ratelimit(key="user", rate=settings.LAX_RATE_LIMIT)
 def posts_get(request):
     """Return bookmarks matching URL, tags, and/or date."""
     user = request.api_user
@@ -316,7 +316,7 @@ def posts_get(request):
 
 @_ALLOW
 @_api_auth
-@ratelimit(key="user", rate=settings.DEFAULT_RATE_LIMIT)
+@ratelimit(key="user", rate=settings.LAX_RATE_LIMIT)
 def posts_recent(request):
     user = request.api_user
     params = request.GET if request.method == "GET" else request.POST
@@ -356,7 +356,7 @@ def posts_recent(request):
 
 @_ALLOW
 @_api_auth
-@ratelimit(key="user", rate=settings.DEFAULT_RATE_LIMIT)
+@ratelimit(key="user", rate=settings.LAX_RATE_LIMIT)
 def posts_all(request):
     user = request.api_user
     params = request.GET if request.method == "GET" else request.POST
@@ -407,7 +407,7 @@ def posts_all(request):
 
 @_ALLOW
 @_api_auth
-@ratelimit(key="user", rate=settings.DEFAULT_RATE_LIMIT)
+@ratelimit(key="user", rate=settings.LAX_RATE_LIMIT)
 def posts_dates(request):
     user = request.api_user
     params = request.GET if request.method == "GET" else request.POST
@@ -430,7 +430,7 @@ def posts_dates(request):
 
 @_ALLOW
 @_api_auth
-@ratelimit(key="user", rate=settings.DEFAULT_RATE_LIMIT)
+@ratelimit(key="user", rate=settings.LAX_RATE_LIMIT)
 def posts_suggest(request):
     """Return popular (site-wide) and recommended (personal) tags for a URL."""
     user = request.api_user
@@ -479,7 +479,7 @@ def posts_suggest(request):
 
 @_ALLOW
 @_api_auth
-@ratelimit(key="user", rate=settings.DEFAULT_RATE_LIMIT)
+@ratelimit(key="user", rate=settings.LAX_RATE_LIMIT)
 def tags_get(request):
     from links.models import Unnest
 
@@ -561,7 +561,7 @@ def tags_rename(request):
 
 @_ALLOW
 @_api_auth
-@ratelimit(key="user", rate=settings.DEFAULT_RATE_LIMIT)
+@ratelimit(key="user", rate=settings.STRICT_RATE_LIMIT)
 def user_secret(request):
     secret = _rss_secret(request.api_token)
     if _fmt(request) == "json":
@@ -577,7 +577,7 @@ def user_secret(request):
 
 @_ALLOW
 @_api_auth
-@ratelimit(key="user", rate=settings.DEFAULT_RATE_LIMIT)
+@ratelimit(key="user", rate=settings.STRICT_RATE_LIMIT)
 def user_api_token(request):
     user = request.api_user
     result = f"{user.id}:{request.api_token}"
@@ -594,7 +594,7 @@ def user_api_token(request):
 
 @_ALLOW
 @_api_auth
-@ratelimit(key="user", rate=settings.DEFAULT_RATE_LIMIT)
+@ratelimit(key="user", rate=settings.LAX_RATE_LIMIT)
 def notes_list(request):
     user = request.api_user
     if _fmt(request) == "json":
@@ -610,6 +610,6 @@ def notes_list(request):
 
 @_ALLOW
 @_api_auth
-@ratelimit(key="user", rate=settings.DEFAULT_RATE_LIMIT)
+@ratelimit(key="user", rate=settings.LAX_RATE_LIMIT)
 def notes_detail(request, note_id):
     return _result_error(request, _("note not found"), 404)
