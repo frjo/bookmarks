@@ -122,7 +122,8 @@ CACHES = {
 # ---------------------------------------------------------------------------
 STATIC_URL = "/static/"
 STATICFILES_DIRS = [BASE_DIR / "assets"]
-STATIC_ROOT = BASE_DIR / "static"
+STATIC_ROOT = env.str("STATIC_ROOT", BASE_DIR / "static")
+MEDIA_ROOT = env.str("MEDIA_ROOT", BASE_DIR / "media")
 
 # ---------------------------------------------------------------------------
 # Development
