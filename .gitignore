@@ -29,5 +29,4 @@ npm-debug.log
 *.sublime-project
 
 # Bookmarks built styles
-assets/css/styles.css
 assets/css/styles.css.map
