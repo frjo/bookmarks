@@ -22,13 +22,12 @@
             id="username"
             name="username"
             value="{{ user.username }}"
-            required
             minlength="3"
             maxlength="50"
             autocomplete="off"
             aria-describedby="username-hint"
           >
-          <p id="username-hint">{% trans "3–50 characters." %}</p>
+          <p id="username-hint" class="help-text meta">{% trans "3–50 characters." %}</p>
         </div>
         <button type="submit">{% trans "Update username" %}</button>
       </form>
