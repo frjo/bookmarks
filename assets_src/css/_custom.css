@@ -39,6 +39,12 @@ textarea {
   color: var(--color-error);
 }
 
+.main-menu,
+.secondary-menu,
+.footer {
+  font-family: var(--ff-alt);
+}
+
 .bookmarks {
   h1 {
     font-size: var(--fs-l);
