@@ -16,7 +16,6 @@
   <link rel="stylesheet" href="{% static 'css/styles.css' %}">
   <style> [x-cloak] {display: none !important} </style>
   <script defer src="{% static 'libs/alpine.min.js' %}"></script>
-  {% htmx_script %}
 </head>
 
 <body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
