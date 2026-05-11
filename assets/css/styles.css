@@ -1308,7 +1308,6 @@
     outline-width: 2px;
     outline-style: solid;
     width: 95%;
-    margin-block-end: 1rem;
     padding: .5rem;
 
     &.info {
@@ -1329,7 +1328,7 @@
   }
 
   .message--highlight {
-    animation: 3s ease-in-out infinite --outline-highlight;
+    animation: 2s ease-in-out infinite --outline-highlight;
   }
 
   @keyframes --outline-highlight {

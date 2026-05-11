@@ -11,8 +11,6 @@
   --color-message-bg: light-dark(oklch(from var(--color-message) 100% 0.03 h), oklch(from var(--color-message) calc(l + 0.07) c h));
   --color-message-border: light-dark(oklch(from var(--color-message) calc(l + 0.2) c h), oklch(from var(--color-message) calc(l - 0.07) c h));
 
-
-
   padding: .5rem;
   color: var(--color-message-text);
   background-color: var(--color-message-bg);
@@ -20,7 +18,6 @@
   outline-width: 2px;
   outline-style: solid;
   width: 95%;
-  margin-block-end: 1rem;
 
   &.info {
     --color-message: var(--color-info);
@@ -40,7 +37,7 @@
 }
 
 .message--highlight {
-  animation: 3s ease-in-out infinite --outline-highlight;
+  animation: 2s ease-in-out infinite --outline-highlight;
 }
 
 @keyframes --outline-highlight {
