@@ -1,3 +1,5 @@
+/* biome-ignore-all format: --- */
+
 /* Theme colours. */
 
 /* Override css variables in "assets/css/_custom.css" */
@@ -17,6 +19,7 @@
   --color-brand-200:              oklch(from var(--color-brand) calc(l + 0.2) c h);
   --color-brand-100:              oklch(from var(--color-brand) calc(l + 0.3) c h);
 
+  /* Brand alt variations */
   --color-brand-alt-900:          oklch(from var(--color-brand-alt) calc(l - 0.5) c h);
   --color-brand-alt-800:          oklch(from var(--color-brand-alt) calc(l - 0.4) c h);
   --color-brand-alt-700:          oklch(from var(--color-brand-alt) calc(l - 0.3) c h);

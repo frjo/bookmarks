@@ -132,7 +132,6 @@ textarea {
   button {
     grid-area: input;
   }
-
 }
 
 .tag-list {
@@ -146,7 +145,7 @@ textarea {
     --grid-tags-gap: 2ch;
 
     display: grid;
-    column-gap : var(--grid-tags-gap);
+    column-gap: var(--grid-tags-gap);
     grid-template-columns: repeat(auto-fit, minmax(min(var(--grid-tags-column-min), 100%), 1fr));
     padding: 0;
 

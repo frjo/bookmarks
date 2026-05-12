@@ -17,7 +17,7 @@ label {
 
   /* Display as block if before input. */
   &:has(+ input),
-  &:has(+ textarea){
+  &:has(+ textarea) {
     display: block;
   }
 
