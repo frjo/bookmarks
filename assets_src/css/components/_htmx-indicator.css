@@ -18,12 +18,12 @@
     opacity: 1;
     visibility: visible;
     animation:
-      fadeIn 2s linear forwards,
-      slide 1.2s ease-in-out infinite;
+      --fadein 2s linear forwards,
+      --slide 1.2s ease-in-out infinite;
   }
 }
 
-@keyframes slide {
+@keyframes --slide {
   0% {
     transform: translateX(-100%);
   }
@@ -32,7 +32,7 @@
   }
 }
 
-@keyframes fadeIn {
+@keyframes --fadein {
   0% {
     opacity: 0;
   }

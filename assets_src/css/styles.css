@@ -3,8 +3,10 @@
 @import './_colors.css' layer(vars);
 @import './_variables.css' layer(vars);
 @import './base/_document.css' layer(base);
+@import './base/_footer.css' layer(base);
 @import './base/_forms.css' layer(base);
 @import './base/_grouping.css' layer(base);
+@import './base/_header.css' layer(base);
 @import './base/_headings.css' layer(base);
 @import './base/_images.css' layer(base);
 @import './base/_links.css' layer(base);
@@ -20,10 +22,8 @@
 @import './components/_disabled.css' layer(components);
 @import './components/_flex-group.css' layer(components);
 @import './components/_flex-inline.css' layer(components);
-@import './components/_footer.css' layer(components);
 @import './components/_grid-group.css' layer(components);
 @import './components/_grid-stack.css' layer(components);
-@import './components/_header.css' layer(components);
 @import './components/_hidden.css' layer(components);
 @import './components/_htmx-indicator.css' layer(components);
 @import './components/_icon-inline.css' layer(components);
