@@ -6,7 +6,7 @@
 
 :root {
   /* Brand colours. */
-  --color-brand:                  oklch(0.4958 0.2838 263.94);
+  --color-brand:                  var(--color-black);
   --color-brand-alt:              var(--color-grey-500);
 
   /* Brand variations */
