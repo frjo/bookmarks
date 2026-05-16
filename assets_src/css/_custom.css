@@ -6,6 +6,7 @@
 
   /* Brand colours. */
   --color-brand: oklch(0.4958 0.2838 263.94);
+  --color-footer-bg: light-dark(var(--color-brand-400), var(--color-brand-800));
 }
 
 a {
@@ -45,6 +46,13 @@ textarea {
 .secondary-menu,
 .footer {
   font-family: var(--ff-alt);
+}
+
+.footer {
+   * {
+    color: var(--color-text);
+    color-scheme: dark;
+  }
 }
 
 .bookmarks {

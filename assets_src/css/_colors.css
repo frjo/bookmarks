@@ -138,10 +138,6 @@
   color-scheme: dark;
 }
 
-[data-theme="inverted"] {
-  background-color: var(--color-body-bg);
-}
-
 @container style(--theme: light) {
   [data-theme="inverted"] {
     color-scheme: dark;
